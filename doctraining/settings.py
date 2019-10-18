@@ -87,18 +87,30 @@ WSGI_APPLICATION = 'doctraining.wsgi.application'
 
 # 'ENGINE': 'django.db.backends.mysql',
 # 'ENGINE': 'mysql.connector.django',
+# DATABASES = {
+#     'default': {
+#         'ENGINE':  config('ENGINE'),
+#         'NAME': config('NAME'),
+#         'USER': config('USER'),
+#         'PASSWORD': config('PASSWORD'),
+#         'HOST': config('HOST'),
+#         'PORT': config('PORT'),
+#     }
+# }
+
+
+
+
 DATABASES = {
     'default': {
-        'ENGINE':  config('ENGINE'),
-        'NAME': config('NAME'),
-        'USER': config('USER'),
-        'PASSWORD': config('PASSWORD'),
-        'HOST': config('HOST'),
-        'PORT': config('PORT'),
+        'ENGINE':'mysql.connector.django',
+        'HOST':'doctraining.mysql.uhserver.com',
+        'PASSWORD':'docles2019*',
+        'USER':'mod_inteligente',
+        'NAME':'doctraining',
+        'PORT':'3306',
     }
 }
-
-
 
 
 # Password validation
