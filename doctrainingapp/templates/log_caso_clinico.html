@@ -1,0 +1,112 @@
+{% include 'cabecalho2.html' %}
+
+<h1>
+  Casos Clínicos
+</h1>
+
+{% if messages %}
+    <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {% if message.tags == 'success' %}
+                        <font color="green">{{ message }}</font>
+                    {% elif message.tags == 'error' %}
+                        <font color="red">{{ message }}</font>
+                    {% else %}
+                        <!-- warning -->
+                        <font color="blue">{{ message }}</font>
+                    {% endif %}
+                </li>
+            {% endfor %}
+    </ul>
+{% endif %}
+
+
+<p></p>
+<h3>Solicitação de Alteração de Amostras de Doenças</h3>
+<p></p>
+<!-- <div style="overflow: auto; border:solid 1px;""> -->
+<!-- <div style="overflow: auto; width: 1340px"> -->
+
+<p></p>
+<div style="overflow: auto; width: 100%; height: 500px; border:solid 1px; position: relative;">
+  <table class="ui celled striped table">
+    <thead>
+      <tr>
+        <!-- Colunas da tabela -->
+        <th>Data Avaliação</th> <!-- ação -->
+        <th>Solicitante</th>
+        <th>Data Solicitação</th>
+        <th>Tipo</th>
+        <th>Doença</th>
+        <th>Sintomas</th>
+        <th>Nova Doença</th>
+        <th>Novos Sintomas</th>
+
+        <th>Ação</th>
+        <th>Avaliado por</th>
+        <!-- colunas da tabela -->
+      </tr>
+    </thead>
+
+  <!--  Opções em cima da tabela-->
+
+    <tbody>
+      <!-- <tr><td>Dados</td></tr> -->
+
+      <!-- {% for solicitacao,x in dados_zipado  %}
+            <tr>
+              <td> <b>{{solicitacao.pk}}</b> </td>
+              <td> <b>{{solicitacao}}</b> </td>
+              <td> <b> {{x}}</b> </td>
+              <td> <a href="{% url 'doctrainingapp:solicitar_editar_caso_clinico' solicitacao.pk  %}" class="ui button" > Editar </a> </td>
+              <td> <a class="ui red button" type="submit" onclick="confirmExclusao({{solicitacao.pk}})"  > Remover Amostra </a> </td>
+            </tr>
+      {% endfor %} -->
+      {% for log in logs  %}
+            <tr>
+              <td> <b>{{log.data_alteracao}}</b> </td>
+              <td> <b>{{log.solicitante}}</b> </td>
+              <td> <b>{{log.data_solicitacao}}</b> </td>
+              <td> <b class="ui {{log.cor_DEF}} label">{{log.tipo_alteracao_DEF}}</b> </td>
+              <td> <b>{{log.doenca}} </b> </td>
+              <td> <b>{{log.sintomas}}</b> </td>
+              <td> <b>{{log.nova_doenca}}</b> </td>
+              <td> <b>{{log.novos_sintomas}}</b> </td>
+
+              <td> <b class="ui {{log.cor_acao_DEF}} label">{{log.acaoDEF}}</b> </td>
+              <td> <b>{{log.avaliado_por}}</b> </td>
+            </tr>
+      {% endfor %}
+
+    </tbody>
+  </table>
+
+</div>
+
+
+
+
+
+<!-- doenca_classificada = models.BooleanField(default = False) -->
+acao = models.PositiveIntegerField()#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+
+data_alteracao = models.DateTimeField(default=datetime.now)
+avaliado_por = models.CharField(max_length=100,blank=False, null=False)
+
+
+
+
+
+
+
+</div>
+
+</div>
+<!-- Cabecalho -->
+
+<div>
+
+
+
+{% include 'rodape.html' %}

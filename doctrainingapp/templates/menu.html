@@ -1,0 +1,49 @@
+{% load staticfiles %}
+
+<a class="toc item">  <i class="sidebar icon"></i>  </a>
+
+
+<div class="ui simple dropdown item">
+  Amostras de Doenças <i class="dropdown "></i>
+  <div class="menu">
+    <a class="item" href="#">Casos Clínicos</a><!-- colocar link -->
+    <a class="item" href="#">Diabetes</a>
+    <a class="item" href="#">Doença cardíaca</a>
+  </div>
+</div>
+
+
+<div class="ui simple dropdown item">
+  Pacientes Virtuais <i class="dropdown "></i>
+  <div class="menu">
+    <a class="item" href="#">Casos Clínicos</a>
+    <a class="item" href="#">Diabetes</a>
+    <a class="item" href="#">Doença cardíaca</a>
+  </div>
+</div>
+
+{%if usuario.id%}
+        <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Solicitações</a>
+        <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Histórico </a>
+{% endif %}
+
+
+<!-- <a href="#" class="item">Amostras de Doenças</a>
+
+<a href="#" class="item">Pacientes Virtuais</a> -->
+
+<!-- <a href="{% url 'doctrainingapp:index' %}" class="item">Sair</a> -->
+
+<div class="ui simple dropdown item right">
+  {%if usuario.id%}
+          {{usuario.username}} <i class="dropdown "></i>
+  {% else%}
+          Professor Fulano <i class="dropdown "></i>
+  {% endif %}
+
+  <div class="menu">
+    <a class="item" href="#">Alterar Perfil</a>
+
+    <a class="item" href="{% url 'doctrainingapp:logout' %}">Sair</a>
+  </div>
+</div>

@@ -1,0 +1,119 @@
+{% include 'cabecalho.html' %}
+
+
+  <!-- <div class="ui vertical stripe segment">
+    <div class="ui middle aligned stackable grid container">
+      <div class="row">
+        <div class="eight wide column">
+          <h3 class="ui header">We Help Companies and Companions</h3>
+          <p>We can give your company superpowers to do things that they never thought possible. Let us delight your customers and empower your needs...through pure data analytics.</p>
+          <h3 class="ui header">We Make Bananas That Can Dance</h3>
+          <p>Yes that's right, you thought it was the stuff of dreams, but even bananas can be bioengineered.</p>
+        </div>
+        <div class="six wide right floated column">
+          <img src="assets/images/wireframe/white-image.png" class="ui large bordered rounded image">
+        </div>
+      </div>
+      <div class="row">
+        <div class="center aligned column">
+          <a class="ui huge button">Check Them Out</a>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <script src="http://code.jquery.com/jquery-1.7.min.js"></script>
+  <script>
+  $(function () {
+      var messages = [],
+          titulo = []
+          index = 0;
+
+          titulo.push('Problemática');
+          titulo.push('Motivação');
+          titulo.push('Objetivo');
+
+          messages.push('Dados do Conselho Regional de Medicina do Estado de São Paulo afirmam que o há grande desconhecimento <br /> de casos clínicos, diabetes mellitu e infarto no miocárdio por estudantes de medicina.');
+          messages.push('Uma das vantagens da simulação virtual é que o treinamento pode ser realizado com uma duração fixa e um determinado número de casos, como também pode ser controlada por níveis de competência do usuário. Os Jogos para área da medicina apresentam a inexistência de riscos aos pacientes e estudantes, além de aumentar a precisão do aluno, e possibilitar repetição de treinamento.');
+          messages.push('Auxiliar no processo de ensino-aprendizagem dos estudantes de medicina <br /> por meio de um jogo sério 2D com Inteligência Artificial.');
+
+
+
+      function cycle() {
+          $('#texto_addF').html(messages[index]);
+          $('#titulo_addF').html(titulo[index]);
+          index++;
+
+          if (index === messages.length) {
+              index = 0;
+          }
+
+
+          setTimeout(cycle, 3000);
+      }
+
+      cycle();
+  });
+  </script>
+
+
+  <div class="ui vertical stripe quote segment">
+    <div class="ui equal width stackable internally celled grid">
+      <div class="center aligned row">
+        <div class="column">
+          <h3 id="titulo_addF"> </h3>
+          <p id="texto_addF"> </p>
+          <!-- <p>A partir de uma visão computacional, o problema está em criar uma Inteligência Artificial que retorne uma ou mais soluções no menor tempo possível, visto a grande quantidade de sintomas e doenças existentes.</p> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="ui vertical stripe quote segment">
+    <div class="ui equal width stackable internally celled grid">
+      <div class="center aligned row">
+        <div class="column">
+                    <h2 class="ui icon header">
+                         <i class="mobile alternate icon"></i>
+                         <div class="content">
+                           Jogo Mobile
+                           <div class="sub header">Jogo Mobile disponível para smartphones em 2D baseado em atendimento clínico com Pontuação, Nível de Experiência, Ranking, Conquistas e Itens Colecionáveis.</div>
+                         </div>
+                         <!-- >O Ambiente 2D faz com que o usuário perceba por meio de um ou mais sentidos uma simulação interativa -->
+                   </h2>
+          </div>
+        <div class="column">
+          <!-- <h3>APRENDIZADO DE MÁQUINA</h3> -->
+           <!-- <p> <img src="assets/images/avatar/nan.jpg" class="ui avatar image"> <b>Nan</b> O Aprendizado de Máquina é um sub-campo da inteligência artificial dedicado ao desenvolvimento de algoritmos e técnicas que permitam ao computador aprender, isto é, que permitam ao computador aperfeiçoar seu desempenho em alguma tarefa.</p> -->
+                   <h2 class="ui icon header">
+                        <i class="settings icon"></i>
+                        <div class="content">
+                          Aprendizado de Máquina
+                          <div class="sub header">O Aprendizado de Máquina é uma subárea de pesquisa muito importante da Inteligência Artificial, com uma importante característica para o comportamento de inteligência, que são a capacidade de aprender, generalizar, extrair padrões ou características dos dados.</div>
+                        </div>
+                        <!-- mobile alternate icon -->
+                  </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="ui vertical stripe segment">
+    <div class="ui text container">
+      <h3 class="ui header">Breaking The Grid, Grabs Your Attention</h3>
+      <p>Instead of focusing on content creation and hard work, we have learned how to master the art of doing nothing by providing massive amounts of whitespace and generic content that can seem massive, monolithic and worth your attention.</p>
+      <a class="ui large button">Read More</a>
+      <h4 class="ui horizontal header divider">
+        <a href="#">Case Studies</a>
+      </h4>
+      <h3 class="ui header">Did We Tell You About Our Bananas?</h3>
+      <p>Yes I know you probably disregarded the earlier boasts as non-sequitur filler content, but its really true. It took years of gene splicing and combinatory DNA research, but our bananas can really dance.</p>
+      <a class="ui large button">I'm Still Quite Interested</a>
+    </div>
+  </div> -->
+
+
+
+
+{% include 'rodape.html' %}
