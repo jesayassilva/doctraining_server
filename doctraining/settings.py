@@ -114,11 +114,11 @@ WSGI_APPLICATION = 'doctraining.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE':'mysql.connector.django',
-        'HOST': config('HOST'),
-        'PASSWORD': config('PASSWORD'),
-        'USER': config('USER'),
+        'ENGINE':  config('ENGINE'),
         'NAME': config('NAME'),
+        'USER': config('USER'),
+        'PASSWORD': config('PASSWORD'),
+        'HOST': config('HOST'),
         'PORT': config('PORT'),
     }
 }
