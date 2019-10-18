@@ -103,7 +103,7 @@ WSGI_APPLICATION = 'doctraining.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE':'mysql.connector.django',
+        'ENGINE': 'django.db.backends.mysql',
         'HOST':'doctraining.mysql.uhserver.com',
         'PASSWORD':'docles2019*',
         'USER':'mod_inteligente',
