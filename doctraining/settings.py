@@ -26,8 +26,8 @@ SECRET_KEY = config('SECRET_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
-# DEBUG = False
+# DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -101,27 +101,28 @@ WSGI_APPLICATION = 'doctraining.wsgi.application'
 
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE':'mysql.connector.django',
-#         'HOST':'doctraining.mysql.uhserver.com',
-#         'PASSWORD':'docles2019*',
-#         'USER':'mod_inteligente',
-#         'NAME':'doctraining',
-#         'PORT':'3306',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE':  config('ENGINE'),
-        'NAME': config('NAME'),
-        'USER': config('USER'),
-        'PASSWORD': config('PASSWORD'),
-        'HOST': config('HOST'),
-        'PORT':'3306'
+        'ENGINE':'mysql.connector.django',
+        # 'ENGINE': 'django.db.backends.mysql',
+        'HOST':'doctraining.mysql.uhserver.com',
+        'PASSWORD':'docles2019*',
+        'USER':'mod_inteligente',
+        'NAME':'doctraining',
+        'PORT':'3306',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE':  config('ENGINE'),
+#         'NAME': config('NAME'),
+#         'USER': config('USER'),
+#         'PASSWORD': config('PASSWORD'),
+#         'HOST': config('HOST'),
+#         'PORT':'3306'
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

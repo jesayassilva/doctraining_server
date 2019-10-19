@@ -513,6 +513,61 @@ def ler_dados_salvar(request):
 '''
 
 
+classe_casos_clinicos = 'class'
+def ler_dados_salvar(request):
+    df = pd.read_csv('casos_clinicos.csv') #lendo os dados
+    print(' -------- Data Frame --------')
+    print(df)
+
+    print(' -------- Salvando Doenças --------')
+    lista_doencas = df[classe_casos_clinicos].unique()
+    for item in lista_doencas:
+        try:
+            doenca = Doenca.objects.get(nome_doenca=item.upper().replace("_", " "))
+        except Exception as e:
+            doenca = Doenca(nome_doenca=item.upper().replace("_", " "))
+            doenca.save()
+            print(item.upper().replace("_", " "))
+
+    print(' -------- Salvando Sintomas --------')
+    lista_sintomas = df.columns
+    for item in lista_sintomas:
+        if item != classe_casos_clinicos:
+            try:
+                sintoma = Sintoma.objects.get(nome_sintoma=item.upper().replace("_", " "))
+            except Exception as e:
+                sintoma = Sintoma(nome_sintoma=item.upper().replace("_", " "))
+                sintoma.save()
+                print(item.upper().replace("_", " "))
+
+    print(' -------- Salvando Casos Clínicos --------')
+    for linha in df.values:#todas as Linhas do DataFrame
+        lista_sintomas_caso_clinico = []
+        doenca_caso_clinico = None
+        linhas_e_colunas = zip(linha,df.columns) #Zipar as duas variaveis em uma só ou seja Uma linhas com as colunas respectivas
+        for valor,coluna in linhas_e_colunas:#Rodar laço com nome da coluna e valor
+            if coluna != classe_casos_clinicos:#se aquela coluna não for do nome da doença
+                    if valor == 1:#Se tiver o sintoma
+                        # lista_sintomas_caso_clinico.append(coluna)
+                        lista_sintomas_caso_clinico.append(Sintoma.objects.get(nome_sintoma=coluna.upper().replace("_", " ")))
+            else:
+                doenca_caso_clinico = Doenca.objects.get(nome_doenca=valor.upper().replace("_", " "))
+
+        caso_clinico = Caso_Clinico()#Novo objeto de caso clinico
+        caso_clinico.doenca = doenca_caso_clinico#adicinando doenca
+        caso_clinico.doenca_classificada = True#adicionando se doença é classificada ou não
+        caso_clinico.save()#salvando o caso clinico
+        caso_clinico.sintomas.set(lista_sintomas_caso_clinico)#Adicionando os sintomas após objeto ser salvo pelo metodo get()
+        print(caso_clinico)
+
+
+
+
+    print(' -------- Todos os Dados Salvos --------')
+    return HttpResponse('Salvo com sucesso')
+    # return redirect('/')#voltar para tela inicial
+
+
 
 
 

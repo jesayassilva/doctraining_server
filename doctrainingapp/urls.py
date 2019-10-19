@@ -59,6 +59,6 @@ urlpatterns = [
 
 
 
-    # path('ler_dados_salvar/',ler_dados_salvar),
+    path('ler_dados_salvar/',ler_dados_salvar),
 
 ]
