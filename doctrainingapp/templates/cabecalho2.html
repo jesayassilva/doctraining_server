@@ -59,8 +59,8 @@
 
   <div class="ui vertical inverted sidebar menu left" style="">
     <!-- Este menu é usado em celular -->
-    <a class="item" href="#">exemplo1</a>
-    <a class="item" href="#">exemplo2</a>
+    <!-- <a class="item" href="#">exemplo1</a> -->
+    <a class="item" href="{% url 'doctrainingapp:casos_clinicos' %}">Casos Clínicos</a>
     {%if usuario.id%}
             <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Solicitações</a>
             <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Histórico </a>

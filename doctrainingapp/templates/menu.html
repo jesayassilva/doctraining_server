@@ -6,21 +6,21 @@
 <div class="ui simple dropdown item">
   Amostras de Doenças <i class="dropdown "></i>
   <div class="menu">
-    <a class="item" href="#">Casos Clínicos</a><!-- colocar link -->
+    <a class="item" href="{% url 'doctrainingapp:casos_clinicos' %}">Casos Clínicos</a><!-- colocar link -->
     <a class="item" href="#">Diabetes</a>
     <a class="item" href="#">Doença cardíaca</a>
   </div>
 </div>
 
 
-<div class="ui simple dropdown item">
+<!-- <div class="ui simple dropdown item">
   Pacientes Virtuais <i class="dropdown "></i>
   <div class="menu">
     <a class="item" href="#">Casos Clínicos</a>
     <a class="item" href="#">Diabetes</a>
     <a class="item" href="#">Doença cardíaca</a>
   </div>
-</div>
+</div> -->
 
 {%if usuario.id%}
         <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Solicitações</a>
