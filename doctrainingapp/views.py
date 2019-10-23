@@ -54,6 +54,7 @@ def solicitar_editar_caso_clinico(request,pk):
                 valor_on_off = request.POST.get(sintoma.nome_sintoma)#pegar valor da caisa de seleção no formulario (on ou off)
                 #se o sintoma tiver sido selecionado (on)
                 if valor_on_off == 'on':
+                    print(sintoma)
                     item = Sintoma.objects.get(nome_sintoma=sintoma)#pegar o sintoma selecionado no formulario
                     lista_sintomas_novo.append(item.pk)#adiciona o id do sintoma selecionado no formulario a uma lista
 
@@ -79,8 +80,12 @@ def solicitar_editar_caso_clinico(request,pk):
             solicitacao_alterar_caso_clinico.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
             solicitacao_alterar_caso_clinico.doenca_classificada = doenca_classificada
             solicitacao_alterar_caso_clinico.save()
-            solicitacao_alterar_caso_clinico.novos_sintomas.set(lista_objetos_sintomas_novo)#Inserirndo os sintomas após objeto salva pelo metodo get
-            messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação de edição de amostra.')#mensagem para o usuario
+            try:#tente adicionar sintomas
+                solicitacao_alterar_caso_clinico.novos_sintomas.set(lista_objetos_sintomas_novo)#Inserirndo os sintomas após objeto salva pelo metodo get
+                messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação de edição de amostra.')#mensagem para o usuario
+            except Exception as e:#se não salvar pelo menos apagar a solicitação mal formada
+                solicitacao_alterar_caso_clinico.delete()
+                messages.add_message(request, ERROR, 'Ocorreu um erro ao adicionar sintomas. Tente novamente mais tarde.')#mensagem para o usuario
             return redirect('/casos_clinicos/')
         except Exception as e:
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
@@ -113,8 +118,12 @@ def solicitar_deletar_caso_clinico(request,pk):
         solicitacao_alterar_caso_clinico.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
         solicitacao_alterar_caso_clinico.doenca_classificada = caso_clinico.doenca_classificada
         solicitacao_alterar_caso_clinico.save()
-        solicitacao_alterar_caso_clinico.novos_sintomas.set(caso_clinico.sintomas.all())
-        messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação de exclusão de amostra.')#mensagem para o usuario
+        try:#tente adicionar sintomas
+            solicitacao_alterar_caso_clinico.novos_sintomas.set(caso_clinico.sintomas.all())
+            messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação de exclusão de amostra.')#mensagem para o usuario
+        except Exception as e:#se não salvar pelo menos apagar a solicitação mal formada
+            messages.add_message(request, ERROR, 'Ocorreu um erro ao adicionar sintomas da exclusão. Tente novamente mais tarde.')#mensagem para o usuario
+            solicitacao_alterar_caso_clinico.delete()
         return redirect('/casos_clinicos/')
         # a4.publications.set([p3])
         # return HttpResponse(str(lista_sintomas_novo))
@@ -129,9 +138,10 @@ def solicitar_novo_caso_clinico(request):
         try:#tente
             lista_sintomas_novo = []#lista com novos sintomas
             for sintoma in Sintoma.objects.all():#Laço para adicomar id's dos sintomas a lista
-                valor_on_off = request.POST.get(sintoma.nome_sintoma)#pegar valor da caisa de seleção no formulario (on ou off)
+                valor_on_off = request.POST.get(sintoma.nome_sintoma)#pegar valor da caixa de seleção no formulario (on ou off) pelo id
                 #se o sintoma tiver sido selecionado (on)
                 if valor_on_off == 'on':
+                    print(sintoma)
                     item = Sintoma.objects.get(nome_sintoma=sintoma)#pegar o sintoma selecionado no formulario
                     lista_sintomas_novo.append(item.pk)#adiciona o id do sintoma selecionado no formulario a uma lista
             #se não tiver informado sintomas mostrar msg
@@ -155,8 +165,12 @@ def solicitar_novo_caso_clinico(request):
             solicitacao_alterar_caso_clinico.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
             solicitacao_alterar_caso_clinico.doenca_classificada = doenca_classificada
             solicitacao_alterar_caso_clinico.save()
-            solicitacao_alterar_caso_clinico.novos_sintomas.set(lista_objetos_sintomas_novo)#Inserirndo os sintomas após objeto salva pelo metodo get
-            messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação de nova de amostra.')
+            try:#tente adicionar sintomas
+                solicitacao_alterar_caso_clinico.novos_sintomas.set(lista_objetos_sintomas_novo)#Inserirndo os sintomas após objeto salva pelo metodo get
+                messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação de nova de amostra.')
+            except Exception as e:#se não salvar pelo menos apagar a solicitação mal formada
+                solicitacao_alterar_caso_clinico.delete()
+                messages.add_message(request, ERROR, 'Ocorreu um erro ao adicionar sintomas. Tente novamente mais tarde.')
             return redirect('/casos_clinicos/')
             # a4.publications.set([p3])
             # return HttpResponse(str(lista_sintomas_novo))
@@ -286,7 +300,7 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             #Inicio --------------Executar-------------------Salvar aqui nessa linha na tabela de log ------------------------------------------------
             log.save()
             #Fim-------------------Executar-------------------Salvar aqui na tabela de log ----------------------------------------------------------
-
+            solicitacao_alterar_caso_clinico.delete()#deletando solicitação, pois seus dados já se encontram na tabela de log
         #mensagem para usuario
         messages.add_message(request, SUCCESS, 'Foi aceitada a alteração da amostra.')
         return redirect('/casos_clinicos/solicitacoes/')

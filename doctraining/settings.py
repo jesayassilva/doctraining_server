@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-from decouple import config
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,7 +21,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+# SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = 'i96expt%3unxb1jb826onbqdl^@ke3+0s7mojx--=^lc92@+d!'
 
 
 
@@ -78,6 +79,19 @@ WSGI_APPLICATION = 'doctraining.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd7j8iei44b6dm6',
+        'USER': 'hxrxxeccyjhvky',
+        'PASSWORD': 'd19b0eb8138f99c5ed12eef3ed1740dff036df5a16eafd8f678e8563be8eb2ea',
+        'HOST': 'ec2-174-129-253-101.compute-1.amazonaws.com',
+        'PORT': '5432',
+    }
+}
+
+
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
@@ -99,20 +113,38 @@ WSGI_APPLICATION = 'doctraining.wsgi.application'
 # }
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.p',
+#         'HOST':'10.5.0.187',
+#         'PASSWORD':'z800lesi514',
+#         'USER':'root',
+#         'NAME':'doctrainingmobile',
+#         'PORT':'3306',
+#         'OPTIONS': {
+#           'autocommit': True,
+#         },
+#
+#     }
+# }
 
 
-DATABASES = {
-    'default': {
-        # 'ENGINE':'mysql.connector.django',
-        'ENGINE': 'django.db.backends.mysql',
-        'HOST':'doctraining.mysql.uhserver.com',
-        'PASSWORD':'docles2019*',
-        'USER':'mod_inteligente',
-        'NAME':'doctraining',
-        'PORT':'3306',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE':'mysql.connector.django',
+#         # 'ENGINE': 'django.db.backends.mysql',
+#         'HOST':'doctraining2.mysql.uhserver.com',
+#         'PASSWORD':'docles2019*',
+#         'USER':'mod_inteligente',
+#         'NAME':'doctraining2',
+#         'PORT':'3306',
+#         'OPTIONS': {
+#                   'autocommit': True,
+#                 },
+#     }
+# }
 
+#
 # DATABASES = {
 #     'default': {
 #         'ENGINE':  config('ENGINE'),
@@ -120,7 +152,10 @@ DATABASES = {
 #         'USER': config('USER'),
 #         'PASSWORD': config('PASSWORD'),
 #         'HOST': config('HOST'),
-#         'PORT':'3306'
+#         'PORT':'3306',
+#         'OPTIONS': {
+#           'autocommit': True,
+#         },
 #     }
 # }
 
