@@ -3,6 +3,11 @@
 <h1>
   Sala: {{sala.nome_sala}}
 </h1>
+{% if sala.descricao %}
+  <p>Descrição: {{sala.descricao}}</p>
+{% endif %}
+<p>Data da criação da sala: {{sala.data_criacao}}</p>
+
 
 {% if messages %}
     <ul class="messages">
@@ -24,8 +29,9 @@
 
 <a href="{% url 'doctrainingapp:nova_pergunta' sala.pk %}" class="ui button positive" > Nova Pergunta </a>
 
-
+<h2>Perguntas</h2>
 <p></p>
+
 
 {% for pergunta in perguntas %}
   <table class="ui celled striped table">
