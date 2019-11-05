@@ -60,14 +60,18 @@
   <div class="ui vertical inverted sidebar menu left" style="">
     <!-- Este menu é usado em celular -->
     <!-- <a class="item" href="#">exemplo1</a> -->
-    
-    <a class="item" href="{% url 'doctrainingapp:casos_clinicos' %}">Casos Clínicos</a>
+
+    <a class="item" href="{% url 'doctrainingapp:index' %}">DocTraining</a>
     <a class="item" href="{% url 'doctrainingapp:todas_salas' %}">Salas</a>
+    <a class="item" href="{% url 'doctrainingapp:casos_clinicos' %}">Casos Clínicos</a>
 
     <!-- se membro da aquipe ou adm, mesmo sem todos poderes no adm django -->
-    {%if request.user.is_staff%}
+    {%if request.user.is_staff %}
             <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Solicitações</a>
             <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Histórico </a>
+    {% else %}
+            <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Minhas Solicitações</a>
+            <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Meu Histórico </a>
     {% endif %}
     <a href="{% url 'doctrainingapp:logout' %}" class="item">Sair</a>
   </div>

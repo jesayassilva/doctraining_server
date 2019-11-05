@@ -44,7 +44,9 @@
         <th>Novos Sintomas</th>
 
         <th>Ação</th>
-        <th>Avaliado por</th>
+        {%if request.user.is_staff %}
+            <th>Avaliado por</th>
+        {% endif %}
         <!-- colunas da tabela -->
       </tr>
     </thead>
@@ -73,9 +75,10 @@
               <td> <b>{{log.sintomas}}</b> </td>
               <td> <b>{{log.nova_doenca}}</b> </td>
               <td> <b>{{log.novos_sintomas}}</b> </td>
-
               <td> <b class="ui {{log.cor_acao_DEF}} label">{{log.acaoDEF}}</b> </td>
-              <td> <b>{{log.avaliado_por}}</b> </td>
+              {%if request.user.is_staff %}
+                  <td> <b>{{log.avaliado_por}}</b> </td>
+              {% endif %}
             </tr>
       {% endfor %}
 

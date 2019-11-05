@@ -28,10 +28,12 @@ SECRET_KEY = 'i96expt%3unxb1jb826onbqdl^@ke3+0s7mojx--=^lc92@+d!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = config('DEBUG', default=False, cast=bool)
+
 # DEBUG = True
 DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['doctraining.herokuapp.com','https://doctraining.herokuapp.com']
+# ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -160,7 +162,7 @@ TIME_ZONE = 'America/Fortaleza'
 
 LOGIN_URL = "/login/"
 
-LOGIN_REDIRECT_URL = '/casos_clinicos/'
+LOGIN_REDIRECT_URL = '/salas/todas/'
 
 USE_I18N = True
 

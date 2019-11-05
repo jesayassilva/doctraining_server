@@ -70,7 +70,7 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
     nova_doenca = models.ForeignKey(Doenca, on_delete=models.CASCADE, blank=True, null=True)
     novos_sintomas = models.ManyToManyField(Sintoma, blank=False)
     doenca_classificada = models.BooleanField(default = True)
-    # solicitante = models.CharField(max_length=100,unique=True)
+    solicitante = models.ForeignKey(User, on_delete=models.CASCADE)
     tipo_alteracao = models.PositiveIntegerField()#0-DELETE; 1-CREATE; ou (2)-UPDATE
     acao = models.PositiveIntegerField(default= 2)#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
     data_solicitacao = models.DateTimeField(default=datetime.now)
@@ -103,7 +103,7 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
 
     #As demais Def são usadas no template puxando os dadas formatados
     def solicitante_DEF(self):#Nome do usuario que solicitou a alteração
-        return 'Fulano'
+        return self.solicitante.username
 
     def tipo_alteracao_DEF(self):#retorna nome da alteração
         if self.tipo_alteracao == 0:#0-DELETE; 1-CREATE; ou (2)-UPDATE
@@ -192,7 +192,7 @@ class Solicitacao_Alterar_Sintoma_Ou_Doenca(models.Model):
     doenca_a_modificar = models.ForeignKey(Doenca, on_delete=models.PROTECT, blank=True, null=True)
     nova_doenca = models.CharField(max_length=100,blank=True, null=True)
 
-    # solicitante = models.CharField(max_length=100,unique=True)
+    solicitante = models.ForeignKey(User, on_delete=models.CASCADE)
     tipo_alteracao = models.PositiveIntegerField()#0-DELETE; 1-CREATE; ou (2)-UPDATE
     acao = models.PositiveIntegerField(default= 2)#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
 
@@ -222,7 +222,7 @@ class Solicitacao_Alterar_Sintoma_Ou_Doenca(models.Model):
 
 
 class Log(models.Model):
-    data_solicitacao = data_solicitacao = models.DateTimeField()
+    data_solicitacao = models.DateTimeField()
     solicitante = models.CharField(max_length=100,blank=False, null=False)
     #Antigos
     doenca = models.CharField(max_length=100,blank=False, null=False)
@@ -237,6 +237,7 @@ class Log(models.Model):
 
     data_alteracao = models.DateTimeField(default=datetime.now)
     avaliado_por = models.CharField(max_length=100,blank=False, null=False)
+    id_user = models.PositiveIntegerField()#apenas id pois usuario pode ser apagado do banco, com isso vai ser usado apenas para buscar nos logs do proprio usuario
 
     def __str__(self):
         return '{ "Data Solicitação": "'+ str(self.data_solicitacao)+'", '+ '"Solicitante": "'+ self.solicitante +'", '+'"Doenca": "' + self.doenca +'", '+'"Sintomas": "'+ self.sintomas +'", '+'"Nova doenca": "'+ self.nova_doenca +'", '+'"Novos sintomas": "'+ self.novos_sintomas +'", '+'"Doenca classificada": "'+ str(self.doenca_classificada) +'", '+'"Tipo alteracao": "'+ str(self.tipo_alteracao_DEF()) +'", '+'"Acao": "'+ str(self.acaoDEF()) +'", '+'"Data alteracao": "'+ str(self.data_alteracao) +'", '+'"Avaliado por": "'+ str(self.avaliado_por) +'" }'
@@ -312,6 +313,10 @@ class Sala(models.Model):
     def __str__(self):
         return self.nome_sala
 
+    def save(self, force_insert=False, force_update=False):
+        self.nome_sala = self.nome_sala.upper()
+        super(Sala, self).save(force_insert, force_update)
+
 
 class Pergunta(models.Model):
     sala = models.ForeignKey(Sala, on_delete=models.CASCADE)
@@ -323,6 +328,10 @@ class Pergunta(models.Model):
     # email = models.EmailField(max_length=254,blank=True,null=True)
     def __str__(self):
         return self.pergunta
+
+    def save(self, force_insert=False, force_update=False):
+        self.pergunta = self.pergunta.upper()
+        super(Pergunta, self).save(force_insert, force_update)
 
 
 

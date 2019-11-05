@@ -59,7 +59,9 @@ function recusarAlteracao(id) {
         <th>Sintomas</th>
         <th>Nova Doença</th>
         <th>Novos Sintomas</th>
-        <th colspan="2"> Opções</th>
+        {%if request.user.is_staff %}
+          <th colspan="2"> Opções</th>
+        {% endif %}
         <!-- colunas da tabela -->
       </tr>
     </thead>
@@ -87,8 +89,10 @@ function recusarAlteracao(id) {
               <td> <b>{{solicitacao.sintomas_antigo_DEF}}</b> </td>
               <td> <b>{{solicitacao.nome_doenca_novo_DEF}}</b> </td>
               <td> <b>{{solicitacao.sintomas_novos_DEF}}</b> </td>
-              <td> <a class="ui green button" type="submit" onclick="aceitarAlteracao({{solicitacao.pk}})"  > Aceitar </a> </td>
-              <td> <a class="ui red button" type="submit" onclick="recusarAlteracao({{solicitacao.pk}})"  > Recusar </a> </td>
+              {%if request.user.is_staff %}
+                  <td> <a class="ui green button" type="submit" onclick="aceitarAlteracao({{solicitacao.pk}})"  > Aceitar </a> </td>
+                  <td> <a class="ui red button" type="submit" onclick="recusarAlteracao({{solicitacao.pk}})"  > Recusar </a> </td>
+              {% endif %}
             </tr>
       {% endfor %}
 

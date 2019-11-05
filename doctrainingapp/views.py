@@ -86,6 +86,7 @@ def solicitar_editar_caso_clinico(request,pk):
             solicitacao_alterar_caso_clinico.tipo_alteracao = 2#0-DELETE; 1-CREATE; ou (2)-UPDATE
             solicitacao_alterar_caso_clinico.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
             solicitacao_alterar_caso_clinico.doenca_classificada = doenca_classificada
+            solicitacao_alterar_caso_clinico.solicitante = usuario
             solicitacao_alterar_caso_clinico.save()
             try:#tente adicionar sintomas
                 solicitacao_alterar_caso_clinico.novos_sintomas.set(lista_objetos_sintomas_novo)#Inserirndo os sintomas após objeto salva pelo metodo get
@@ -124,6 +125,7 @@ def solicitar_deletar_caso_clinico(request,pk):
         solicitacao_alterar_caso_clinico.tipo_alteracao = 0#0-DELETE; 1-CREATE; ou (2)-UPDATE
         solicitacao_alterar_caso_clinico.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
         solicitacao_alterar_caso_clinico.doenca_classificada = caso_clinico.doenca_classificada
+        solicitacao_alterar_caso_clinico.solicitante = usuario
         solicitacao_alterar_caso_clinico.save()
         try:#tente adicionar sintomas
             solicitacao_alterar_caso_clinico.novos_sintomas.set(caso_clinico.sintomas.all())
@@ -171,6 +173,7 @@ def solicitar_novo_caso_clinico(request):
             solicitacao_alterar_caso_clinico.tipo_alteracao = 1#0-DELETE; 1-CREATE; ou (2)-UPDATE
             solicitacao_alterar_caso_clinico.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
             solicitacao_alterar_caso_clinico.doenca_classificada = doenca_classificada
+            solicitacao_alterar_caso_clinico.solicitante = usuario
             solicitacao_alterar_caso_clinico.save()
             try:#tente adicionar sintomas
                 solicitacao_alterar_caso_clinico.novos_sintomas.set(lista_objetos_sintomas_novo)#Inserirndo os sintomas após objeto salva pelo metodo get
@@ -197,14 +200,17 @@ def solicitar_novo_caso_clinico(request):
 
 #Ver todas as solicitações de alterar caso clinico
 def solicitacoes_alteracao_casos_clinicos(request):
-    if not request.user.is_staff:#Se não for administrador
-        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
-        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+    # if not request.user.is_staff:#Se não for administrador
+    #     messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
+    #     return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
 
     usuario = request.user
     try:
         #todas as solicitações ordenadas pel data
-        solicitacao_alterar_caso_clinico = Solicitacao_Alterar_Caso_Clinico.objects.filter().order_by('data_solicitacao')
+        if not usuario.is_staff:#Se não for administrador
+            solicitacao_alterar_caso_clinico = Solicitacao_Alterar_Caso_Clinico.objects.filter(solicitante = usuario).order_by('data_solicitacao')
+        else:#se for adm
+            solicitacao_alterar_caso_clinico = Solicitacao_Alterar_Caso_Clinico.objects.filter().order_by('data_solicitacao')
         return render(request,'solicitacao_alterar_caso_clinico.html',{'solicitacao_alterar_caso_clinico':solicitacao_alterar_caso_clinico,'usuario':usuario})
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
@@ -229,6 +235,7 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             log = Log()#cria objeto de log, linhas a seguir são de adicionar os dados
             log.data_solicitacao = solicitacao_alterar_caso_clinico.data_solicitacao#data e hora
             log.solicitante = solicitacao_alterar_caso_clinico.solicitante_DEF()#string
+            log.id_user = solicitacao_alterar_caso_clinico.solicitante.pk#id para busca enquanto existir user que solicitou
             #Antigos
             log.doenca = solicitacao_alterar_caso_clinico.nome_doenca_antigo_DEF()#string
             log.sintomas = solicitacao_alterar_caso_clinico.sintomas_antigo_DEF()#string
@@ -263,6 +270,7 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             log = Log()#cria objeto de log, linhas a seguir são de adicionar os dados
             log.data_solicitacao = solicitacao_alterar_caso_clinico.data_solicitacao#data e hora
             log.solicitante = solicitacao_alterar_caso_clinico.solicitante_DEF()#string
+            log.id_user = solicitacao_alterar_caso_clinico.solicitante.pk#id para busca enquanto existir user que solicitou
             #Antigos
             log.doenca = solicitacao_alterar_caso_clinico.nome_doenca_antigo_DEF()#string
             log.sintomas = solicitacao_alterar_caso_clinico.sintomas_antigo_DEF()#string
@@ -292,6 +300,7 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             log = Log()#cria objeto de log, linhas a seguir são de adicionar os dados
             log.data_solicitacao = solicitacao_alterar_caso_clinico.data_solicitacao#data e hora
             log.solicitante = solicitacao_alterar_caso_clinico.solicitante_DEF()#string
+            log.id_user = solicitacao_alterar_caso_clinico.solicitante.pk#id para busca enquanto existir user que solicitou
             #Antigos
             log.doenca = solicitacao_alterar_caso_clinico.nome_doenca_antigo_DEF()#string
             log.sintomas = solicitacao_alterar_caso_clinico.sintomas_antigo_DEF()#string
@@ -303,6 +312,7 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             log.tipo_alteracao = solicitacao_alterar_caso_clinico.tipo_alteracao#inteiro -> 0-DELETE; 1-CREATE; ou (2)-UPDATE
             log.acao = solicitacao_alterar_caso_clinico.acao#inteiro -> 0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
             log.avaliado_por = usuario.username#string
+
             #Fim----------------------------------Salvar aqui na tabela de log ------------------------------------------------
             # solicitacao_alterar_caso_clinico.salvar_log(usuario=usuario)
 
@@ -342,6 +352,7 @@ def rejeitar_solicitacao_alteracao_caso_clinico(request,pk):
         log = Log()#cria objeto de log, linhas a seguir são de adicionar os dados
         log.data_solicitacao = solicitacao_alterar_caso_clinico.data_solicitacao#data e hora
         log.solicitante = solicitacao_alterar_caso_clinico.solicitante_DEF()#string
+        log.id_user = solicitacao_alterar_caso_clinico.solicitante.pk#id para busca enquanto existir user que solicitou
         #Antigos
         log.doenca = solicitacao_alterar_caso_clinico.nome_doenca_antigo_DEF()#string
         log.sintomas = solicitacao_alterar_caso_clinico.sintomas_antigo_DEF()#string
@@ -372,14 +383,17 @@ def rejeitar_solicitacao_alteracao_caso_clinico(request,pk):
 
 #Ver todos os log de alterações aceitadas e recusadas
 def log_solicitacoes_alteracao_casos_clinicos(request):
-    if not request.user.is_staff:#Se não for administrador
-        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
-        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+    # if not request.user.is_staff:#Se não for administrador
+    #     messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
+    #     return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
 
     usuario = request.user
     try:
         #todas as solicitações ordenadas pel data
-        logs = Log.objects.filter().order_by('-data_alteracao')
+        if not usuario.is_staff:#Se não for administrador
+            logs = Log.objects.filter(id_user=usuario.pk).order_by('-data_alteracao')
+        else:#se for adm
+            logs = Log.objects.filter().order_by('-data_alteracao')
         return render(request,'log_caso_clinico.html',{'logs':logs})
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
@@ -465,7 +479,7 @@ def nova_pergunta(request,pk_sala):
             opcao_incorreta_2 = request.POST.get('opcao_incorreta_2')
             opcao_incorreta_3 = request.POST.get('opcao_incorreta_3')
             if( len(pergunta) < 10 or len(opcao_correta) <1 or len(opcao_incorreta_1) <1 or len(opcao_incorreta_2) <1 or len(opcao_incorreta_3) <1):
-                messages.add_message(request, ERROR, 'Ocorreu um erro ao salvar pergunta. Os dados são muito pequenos')#mensagem para o usuario
+                messages.add_message(request, ERROR, 'Os dados são muito pequenos')#mensagem para o usuario
                 return redirect('/salas/'+str(pk_sala)+'/perguntas/nova/')
             Pergunta(sala=sala, pergunta=pergunta, opcao_correta=opcao_correta, opcao_incorreta_1=opcao_incorreta_1, opcao_incorreta_2=opcao_incorreta_2, opcao_incorreta_3=opcao_incorreta_3 ).save()
             messages.add_message(request, SUCCESS, 'Foi adicionada uma pergunta na sala '+ str(sala.nome_sala) )
