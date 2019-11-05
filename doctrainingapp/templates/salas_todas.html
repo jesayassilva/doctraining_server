@@ -1,0 +1,102 @@
+{% include 'cabecalho2.html' %}
+
+<h1>
+  Salas
+</h1>
+
+{% if messages %}
+    <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {% if message.tags == 'success' %}
+                        <font color="green">{{ message }}</font>
+                    {% elif message.tags == 'error' %}
+                        <font color="red">{{ message }}</font>
+                    {% else %}
+                        <!-- warning -->
+                        <font color="blue">{{ message }}</font>
+                    {% endif %}
+                </li>
+            {% endfor %}
+    </ul>
+{% endif %}
+
+
+<a href="{% url 'doctrainingapp:nova_sala'%}" class="ui button positive" > Nova Sala </a>
+
+
+<p></p>
+<div style="overflow: auto; width: 100%; height: 500px; border:solid 1px; position: relative;">
+  <table class="ui celled striped table">
+    <thead>
+      <tr>
+        <!-- Colunas da tabela -->
+        <th>Sala</th>
+        <th>Descrição</th>
+        <th>Criado por</th>
+        <th>Data Abertura</th>
+        <!-- colunas da tabela -->
+        <th colspan="3"> </th>
+      </tr>
+    </thead>
+
+  <!--  Opções em cima da tabela-->
+
+    <tbody>
+      {% for sala in salas  %}
+            <tr>
+              <td> {{sala.nome_sala}} </td>
+              {% if sala.descricao  %}
+                    <td> <b>{{sala.descricao}}</b> </td>
+              {% else %}
+                    <td>  </td>
+               {% endif %}
+              <td> <b>{{sala.responsavel_sala}}</b> </td>
+              <td> <b>{{sala.data_criacao}}</b> </td>
+              <td>
+                  {% if request.user.pk == sala.responsavel_sala.pk %}
+                      <a href="{% url 'doctrainingapp:todas_perguntas' sala.pk  %}" class="ui blue button" > Visualizar   <i class="folder open icon"></i> </a>
+                  {% endif %}
+              </td>
+              <td>
+                  {% if request.user.pk == sala.responsavel_sala.pk %}
+                      <a href="{% url 'doctrainingapp:editar_sala' sala.pk  %}" class="ui button" >   Editar <i class="edit outline icon"></i> </a>
+                  {% endif %}
+              </td>
+              <td>
+                  {% if request.user.pk == sala.responsavel_sala.pk %}
+                      <a href="{% url 'doctrainingapp:delete_sala' sala.pk  %}" class="ui red button" >   Deletar </a>
+                  {% endif %}
+              </td>
+
+
+            </tr>
+      {% endfor %}
+
+    </tbody>
+  </table>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+<!-- Cabecalho -->
+
+<div>
+
+
+
+{% include 'rodape.html' %}

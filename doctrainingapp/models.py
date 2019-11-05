@@ -2,6 +2,13 @@ from django.db import models
 from django.core.exceptions import ValidationError
 # Create your models here.
 from datetime import datetime
+from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+
+
+
+
 
 class Doenca(models.Model):
     nome_doenca = models.CharField(max_length=100,unique=True)
@@ -177,7 +184,7 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
     #     log.avaliado_por = usuario.username
     #     log.save()
 
-
+#alterar apenas o campo doença ou o campo sintoma
 class Solicitacao_Alterar_Sintoma_Ou_Doenca(models.Model):
     sintoma_a_modificar = models.ForeignKey(Sintoma, on_delete=models.PROTECT, blank=True, null=True)
     nova_sintoma = models.CharField(max_length=100,blank=True, null=True)
@@ -271,10 +278,51 @@ class Log(models.Model):
 
 
 
+class Perfil(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    nome_completo = models.CharField(max_length=100,null=True)
+    apelido = models.CharField(max_length=100,null=True)
+    instituicao = models.CharField(max_length=100,null=True)
+    # curso = models.CharField(max_length=100, blank=True,null=True)
+    idade = models.PositiveIntegerField(null=True)
+
+    # email = models.EmailField(max_length=254,blank=True,null=True)
+    def __str__(self):
+        return self.user.username
+
+#usar isso para criar automaticamente um perfil
+@receiver(post_save, sender=User)
+def create_user_perfil(sender, instance, created, **kwargs):
+    if created:
+        Perfil.objects.create(user=instance)
+#usar isso para criar automaticamente um perfil
+@receiver(post_save, sender=User)
+def save_user_perfil(sender, instance, **kwargs):
+    instance.perfil.save()
 
 
 
 
+class Sala(models.Model):
+    responsavel_sala = models.ForeignKey(User, on_delete=models.CASCADE)
+    nome_sala = models.CharField(max_length=50, blank=False,null=False,unique=True)
+    descricao = models.CharField(max_length=100, blank=True,null=True)
+    data_criacao = models.DateTimeField(default=datetime.now)
+    # email = models.EmailField(max_length=254,blank=True,null=True)
+    def __str__(self):
+        return self.nome_sala
+
+
+class Pergunta(models.Model):
+    sala = models.ForeignKey(Sala, on_delete=models.CASCADE)
+    pergunta = models.TextField()
+    opcao_correta = models.CharField(max_length=100)
+    opcao_incorreta_1 = models.CharField(max_length=100)
+    opcao_incorreta_2 = models.CharField(max_length=100)
+    opcao_incorreta_3 = models.CharField(max_length=100)
+    # email = models.EmailField(max_length=254,blank=True,null=True)
+    def __str__(self):
+        return self.pergunta
 
 
 

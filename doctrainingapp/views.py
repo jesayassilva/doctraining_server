@@ -10,6 +10,10 @@ import pandas as pd
 import numpy as np
 
 from django.db import models
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from django.urls import reverse
+# import pyrebase
 
 # Create your views here.
 # DEBUG=10
@@ -17,6 +21,9 @@ from django.db import models
 SUCCESS=25
 WARNING=30
 ERROR=40
+
+
+redirecionar_sem_permissao = '/casos_clinicos/'
 
 
 def index(request):
@@ -35,7 +42,7 @@ def sair(request):
     logout(request)
     return redirect('/')#voltar para tela inicial
 
-
+#Todos os casos clinicos
 def casos_clinicos(request):
     usuario = request.user#usuario logado
     try:
@@ -44,7 +51,7 @@ def casos_clinicos(request):
     except Exception as e:
          return HttpResponse('Erro: '+ str(e))
 
-#solicitação de edicão de caso clinico
+#Solicitar edicão de caso clinico
 def solicitar_editar_caso_clinico(request,pk):
     usuario = request.user
     if  request.method == "POST":#se tiver sido eviado os dados no formulario
@@ -105,7 +112,7 @@ def solicitar_editar_caso_clinico(request,pk):
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
             return redirect('/casos_clinicos/')
 
-
+#Solicitar deletar um caso clinico
 def solicitar_deletar_caso_clinico(request,pk):
     usuario = request.user
     try:
@@ -131,7 +138,7 @@ def solicitar_deletar_caso_clinico(request,pk):
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
         return redirect('/casos_clinicos/')
 
-
+#Solicitar cadastrar caso clinico
 def solicitar_novo_caso_clinico(request):
     usuario = request.user
     if  request.method == "POST":#se tiver sido eviado os dados no formulario
@@ -188,8 +195,12 @@ def solicitar_novo_caso_clinico(request):
             # return HttpResponse('Erro: '+ str(e))
 
 
-
+#Ver todas as solicitações de alterar caso clinico
 def solicitacoes_alteracao_casos_clinicos(request):
+    if not request.user.is_staff:#Se não for administrador
+        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
+        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+
     usuario = request.user
     try:
         #todas as solicitações ordenadas pel data
@@ -199,8 +210,12 @@ def solicitacoes_alteracao_casos_clinicos(request):
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
         return redirect('/casos_clinicos/solicitacoes/')
 
-
+#Aceitar uma solicitação de alteração de caso clinico (Novo, Editar ou Deletar)
 def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
+    if not request.user.is_staff:#Se não for administrador
+        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
+        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+
     usuario = request.user#usuario logado, se tiver
     try:
         #Solicitação de alteração em casos clinicos
@@ -311,8 +326,12 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
 
 
 
-
+#Rejeitar pedido de alteração de casos clinico (editar, novo ou delete)
 def rejeitar_solicitacao_alteracao_caso_clinico(request,pk):
+    if not request.user.is_staff:#Se não for administrador
+        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
+        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+
     usuario = request.user#usuario logado, se tiver
     try:
         #Solicitação de alteração em casos clinicos
@@ -351,24 +370,174 @@ def rejeitar_solicitacao_alteracao_caso_clinico(request,pk):
 
 
 
-
+#Ver todos os log de alterações aceitadas e recusadas
 def log_solicitacoes_alteracao_casos_clinicos(request):
+    if not request.user.is_staff:#Se não for administrador
+        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
+        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+
     usuario = request.user
     try:
         #todas as solicitações ordenadas pel data
         logs = Log.objects.filter().order_by('-data_alteracao')
-        return render(request,'log_caso_clinico.html',{'logs':logs,'usuario':usuario})
+        return render(request,'log_caso_clinico.html',{'logs':logs})
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
         return redirect('/casos_clinicos/solicitacoes/')
 
+#LoginRequiredMixin significa que o usuario precisar estar logado pra acesssar a pagina
+
+
+
+################################################################### INICIO SALAS #################################################################################
+def todas_salas(request):
+    try:
+        #todas as solicitações ordenadas pel data
+        salas = Sala.objects.all().order_by('nome_sala')
+        return render(request,'salas_todas.html',{'salas':salas})
+    except Exception as e:
+        messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar salas. Tente novamente mais tarde.')#mensagem para o usuario
+        return redirect('/')
+
+class Nova_Sala(LoginRequiredMixin, CreateView):
+    model = Sala
+    success_url = reverse_lazy("doctrainingapp:todas_salas")
+    # success_url = reverse_lazy('todas_salas')
+    template_name = 'create_generico.html'
+    fields = ['nome_sala','descricao']
+    # fields = '__all__'
+    # exclude = ['user']
+    # success_url = reverse_lazy('author-list')
+    # from django.urls import reverse_lazy
+    def form_valid(self, form):
+        form.instance.responsavel_sala = self.request.user
+        return super().form_valid(form)
+
+    def get(self, request, *args, **kwargs):
+        messages.add_message(request, WARNING, 'Nova Sala Virtual .')#mensagem para o usuario
+        return super(Nova_Sala, self).get(request, *args, **kwargs)
+
+class Editar_Sala(UpdateView):
+    model = Sala
+    success_url = reverse_lazy("doctrainingapp:todas_salas")
+    template_name = 'update_generico.html'#
+    fields = ['nome_sala','descricao']
+
+    def get(self, request, *args, **kwargs):
+        if (self.get_object().responsavel_sala != self.request.user):
+            messages.add_message(request, ERROR, 'Você não tem Permissão para editar esta sala.')#mensagem para o usuario
+            return redirect('/salas/todas/')
+        messages.add_message(request, WARNING, 'Sala Virtual .')#mensagem para o usuario
+        return super(Editar_Sala, self).get(request, *args, **kwargs)
+
+class Deletar_Sala(DeleteView):
+    model = Sala
+    success_url = '/salas/todas/'
+    template_name = 'delete.html'
+
+    def get(self, request, *args, **kwargs):
+        if (self.get_object().responsavel_sala != self.request.user):
+            messages.add_message(request, ERROR, 'Você não tem Permissão para deletar esta sala.')#mensagem para o usuario
+            return redirect('/salas/todas/')
+        messages.add_message(request, WARNING, 'Sala "' + self.get_object().nome_sala + '" será excluida.')#mensagem para o usuario
+        messages.add_message(request, WARNING, 'Todas perguntas nesta sala serão excluidas.')#mensagem para o usuario
+        return super(Deletar_Sala, self).get(request, *args, **kwargs)
 
 
 
 
+def nova_pergunta(request,pk_sala):
+    try:
+        sala = Sala.objects.get(pk=pk_sala)
+        if(sala.responsavel_sala.pk != request.user.pk):
+            messages.add_message(request, ERROR, 'Você não tem Permissão para entrar nesta sala.')#mensagem para o usuario
+            return redirect('/salas/todas/')
+    except Exception as e:
+        messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar perguntas. Tente novamente mais tarde.')#mensagem para o usuario
+        return redirect('/salas/todas/')
 
-###################################################################### WEB SERVICE ##############################################################################
+    if  request.method == "POST":#se tiver sido eviado os dados no formulario
+        continuar = request.POST.get('post')
+        try:#tente
+            pergunta = request.POST.get('pergunta')
+            opcao_correta = request.POST.get('opcao_correta')
+            opcao_incorreta_1 = request.POST.get('opcao_incorreta_1')
+            opcao_incorreta_2 = request.POST.get('opcao_incorreta_2')
+            opcao_incorreta_3 = request.POST.get('opcao_incorreta_3')
+            if( len(pergunta) < 10 or len(opcao_correta) <1 or len(opcao_incorreta_1) <1 or len(opcao_incorreta_2) <1 or len(opcao_incorreta_3) <1):
+                messages.add_message(request, ERROR, 'Ocorreu um erro ao salvar pergunta. Os dados são muito pequenos')#mensagem para o usuario
+                return redirect('/salas/'+str(pk_sala)+'/perguntas/nova/')
+            Pergunta(sala=sala, pergunta=pergunta, opcao_correta=opcao_correta, opcao_incorreta_1=opcao_incorreta_1, opcao_incorreta_2=opcao_incorreta_2, opcao_incorreta_3=opcao_incorreta_3 ).save()
+            messages.add_message(request, SUCCESS, 'Foi adicionada uma pergunta na sala '+ str(sala.nome_sala) )
+            if ( continuar == 'Salvar'):
+                return redirect('/salas/'+str(pk_sala)+'/perguntas/')
+                # return reverse("doctrainingapp:todas_perguntas", args=[pk_sala])
+            else:
+                return render(request,'pergunta_na_sala_nova.html',{'sala':sala})
+        except Exception as e:
+            messages.add_message(request, ERROR, 'Ocorreu um erro ao salvar pergunta. Tente novamente mais tarde.')#mensagem para o usuario
+            return redirect('/salas/todas/')
+    else:#Abrir tela
+        return render(request,'pergunta_na_sala_nova.html',{'sala':sala})
+    #fields = ['pergunta','opcao_correta','opcao_incorreta_1','opcao_incorreta_2','opcao_incorreta_3']
 
+
+
+class Editar_Pergunta(UpdateView):
+    model = Pergunta
+    # success_url = '/salas/todas/'
+    # success_url = reverse_lazy("doctrainingapp:todas_salas")
+    template_name = 'update_generico.html'#
+    fields = ['pergunta','opcao_correta','opcao_incorreta_1','opcao_incorreta_2','opcao_incorreta_3']
+
+    def get(self, request, *args, **kwargs):
+        if (self.get_object().sala.responsavel_sala != self.request.user):
+            messages.add_message(request, ERROR, 'Você não tem Permissão para editar esta pergunta.')#mensagem para o usuario
+            return redirect('/salas/todas/')
+        # self.success_url = '/salas/'+ str(self.get_object().sala.pk) +'/perguntas/'
+        # self.success_url = '/'
+        messages.add_message(request, WARNING, 'Editar Pergunta.')#mensagem para o usuario
+        return super(Editar_Pergunta, self).get(request, *args, **kwargs)
+
+    def get_success_url(self, **kwargs):
+        # return '/salas/'+ str(self.get_object().sala.pk) +'/perguntas/'
+        return reverse_lazy("doctrainingapp:todas_perguntas", args=(self.get_object().sala.pk, ))
+
+class Deletar_Pergunta(DeleteView):
+    model = Pergunta
+    template_name = 'delete.html'
+
+    def get(self, request, *args, **kwargs):
+        if (self.get_object().sala.responsavel_sala != self.request.user):
+            messages.add_message(request, ERROR, 'Você não tem Permissão para deletar esta pergunta.')#mensagem para o usuario
+            return redirect('/salas/todas/')
+        messages.add_message(request, WARNING, 'Pergunta "' + self.get_object().pergunta + '" da Sala "'+self.get_object().sala.nome_sala+' "será excluida.')#mensagem para o usuario
+        return super(Deletar_Pergunta, self).get(request, *args, **kwargs)
+    def get_success_url(self, **kwargs):
+        # return '/salas/'+ str(self.get_object().sala.pk) +'/perguntas/'
+        return reverse_lazy("doctrainingapp:todas_perguntas", args=(self.get_object().sala.pk, ))
+
+def todas_perguntas(request,pk_sala):
+    try:
+        sala = Sala.objects.get(pk=pk_sala)
+        if(sala.responsavel_sala.pk != request.user.pk):
+            messages.add_message(request, ERROR, 'Você não tem Permissão para entrar nesta sala.')#mensagem para o usuario
+            return redirect('/salas/todas/')
+    except Exception as e:
+        messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar perguntas. Tente novamente mais tarde.')#mensagem para o usuario
+        return redirect('/salas/todas/')
+
+    try:
+        perguntas = Pergunta.objects.filter(sala=sala).order_by('pergunta')
+        # return HttpResponse(perguntas)
+        return render(request,'perguntas_sala_todas.html',{'sala':sala,'perguntas':perguntas})
+    except Exception as e:
+        messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar a sala. Tente novamente mais tarde.'+ str(e))#mensagem para o usuario
+        return redirect('/')
+
+
+###################################################################### INICIO API WEB SERVICE ##############################################################################
+#API
 def nome_doencas_casos_clinicos_api(request):
     if request.method == 'GET':#Mostra todos os objetos
         try:
@@ -383,10 +552,9 @@ def nome_doencas_casos_clinicos_api(request):
             return JsonResponse(json_lista_doencas,safe=False)
         except Exception as e:
              return JsonResponse({"Erro":str(e)}, status = 400)
-
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 400)
 
-
+#API
 def nome_sintomas_casos_clinicos_api(request):
     if request.method == 'GET':#Mostra todos os objetos
         try:
@@ -402,10 +570,9 @@ def nome_sintomas_casos_clinicos_api(request):
             return JsonResponse(json_lista_sintomas,safe=False)
         except Exception as e:
              return JsonResponse({"Erro":str(e)}, status = 400)
-
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 400)
 
-
+#API
 def nome_sintomas_casos_clinicos_api(request):
     if request.method == 'GET':#Mostra todos os objetos
         try:
@@ -421,12 +588,9 @@ def nome_sintomas_casos_clinicos_api(request):
             return JsonResponse(json_lista_sintomas,safe=False)
         except Exception as e:
              return JsonResponse({"Erro":str(e)}, status = 400)
-
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 400)
 
-
-
-
+#API
 def todos_casos_clinicos_doencas_sintomas_api(request):
     if request.method == 'GET':#Mostra todos os objetos
         try:
@@ -442,14 +606,12 @@ def todos_casos_clinicos_doencas_sintomas_api(request):
                 'sintomas': lista_sintomas
                 }
                 json_lista_casos_clinicos.append(linha_caso_clinico)
-
             return JsonResponse(json_lista_casos_clinicos,safe=False)
         except Exception as e:
              return JsonResponse({"Erro":str(e)}, status = 400)
-
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 400)
 
-
+#API
 def um_caso_clinico_doenca_sintomas_api(request):
     if request.method == 'GET':#Mostra todos os objetos
         try:
@@ -470,63 +632,52 @@ def um_caso_clinico_doenca_sintomas_api(request):
 
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 400)
 
-'''
-classe_casos_clinicos = 'class'
-def ler_dados_salvar(request):
-    df = pd.read_csv('casos_clinicos.csv') #lendo os dados
-    print(' -------- Data Frame --------')
-    print(df)
 
-    print(' -------- Salvando Doenças --------')
-    lista_doencas = df[classe_casos_clinicos].unique()
-    for item in lista_doencas:
+
+def perguntas_de_uma_sala_api(request,pk_sala):
+    if request.method == 'GET':#Mostra todos os objetos
         try:
-            doenca = Doenca.objects.get(nome_doenca=item.upper())
+            json_lista_perguntas_de_uma_sala = []
+            sala = Sala.objects.get(pk = pk_sala)
+            perguntas = Pergunta.objects.filter(sala=sala).order_by('pergunta')
+            for pergunta in perguntas:#todas as Linhas
+                linha_pergunta = {
+                'mainQuestion':pergunta.pergunta,
+                'rightOp': pergunta.opcao_correta,
+                'wrongOp01': pergunta.opcao_incorreta_1,
+                'wrongOp02': pergunta.opcao_incorreta_2,
+                'wrongOp03': pergunta.opcao_incorreta_3
+                }
+                json_lista_perguntas_de_uma_sala.append(linha_pergunta)
+            return JsonResponse(json_lista_perguntas_de_uma_sala,safe=False)
         except Exception as e:
-            doenca = Doenca(nome_doenca=item.upper())
-            doenca.save()
-            print(item.upper())
-
-    print(' -------- Salvando Sintomas --------')
-    lista_sintomas = df.columns
-    for item in lista_sintomas:
-        if item != classe_casos_clinicos:
-            try:
-                sintoma = Sintoma.objects.get(nome_sintoma=item.upper())
-            except Exception as e:
-                sintoma = Sintoma(nome_sintoma=item.upper())
-                sintoma.save()
-                print(item.upper())
-
-    print(' -------- Salvando Casos Clínicos --------')
-    for linha in df.values:#todas as Linhas do DataFrame
-        lista_sintomas_caso_clinico = []
-        doenca_caso_clinico = None
-        linhas_e_colunas = zip(linha,df.columns) #Zipar as duas variaveis em uma só ou seja Uma linhas com as colunas respectivas
-        for valor,coluna in linhas_e_colunas:#Rodar laço com nome da coluna e valor
-            if coluna != classe_casos_clinicos:#se aquela coluna não for do nome da doença
-                    if valor == 1:#Se tiver o sintoma
-                        # lista_sintomas_caso_clinico.append(coluna)
-                        lista_sintomas_caso_clinico.append(Sintoma.objects.get(nome_sintoma=coluna.upper()))
-            else:
-                doenca_caso_clinico = Doenca.objects.get(nome_doenca=valor.upper())
-
-        caso_clinico = Caso_Clinico()#Novo objeto de caso clinico
-        caso_clinico.doenca = doenca_caso_clinico#adicinando doenca
-        caso_clinico.doenca_classificada = True#adicionando se doença é classificada ou não
-        caso_clinico.save()#salvando o caso clinico
-        caso_clinico.sintomas.set(lista_sintomas_caso_clinico)#Adicionando os sintomas após objeto ser salvo pelo metodo get()
-        print(caso_clinico)
+             return JsonResponse({"Erro":str(e)}, status = 406)
+    return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
 
 
 
+def todos_salas_api(request):
+    if request.method == 'GET':#Mostra todos os objetos
+        try:
+            json_lista_salas = []
+            salas = Sala.objects.all().order_by('nome_sala')
+            for sala in salas:#todas as Linhas
+                linha_sala = {
+                'id':sala.pk,
+                'sala_nome': sala.nome_sala
+                }
+                json_lista_salas.append(linha_sala)
+            return JsonResponse(json_lista_salas,safe=False)
+        except Exception as e:
+             return JsonResponse({"Erro":str(e)}, status = 406)
+    return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
 
-    print(' -------- Todos os Dados Salvos --------')
-    return HttpResponse('Salvo com sucesso')
-    # return redirect('/')#voltar para tela inicial
-'''
+
+###################################################################### FIM API WEB SERVICE ##############################################################################
 
 
+
+###################################################################### INICIO SALVAR DADOS DO CSV NO BANCO ##############################################################################
 classe_casos_clinicos = 'class'
 def ler_dados_salvar(request):
     df = pd.read_csv('casos_clinicos.csv') #lendo os dados
@@ -580,10 +731,23 @@ def ler_dados_salvar(request):
     print(' -------- Todos os Dados Salvos --------')
     return HttpResponse('Salvo com sucesso')
     # return redirect('/')#voltar para tela inicial
+###################################################################### FIM SALVAR DADOS DO CSV NO BANCO ##############################################################################
 
 
 
 
 
+################### Cadastrar Perguntas e Respostas
 
+# def nova_pergunta_na_sala(request):
+#     usuario = request.user#usuario logado
+#     config = {
+#       "apiKey": "731895798258",#doctraining-510ff
+#       "authDomain": "doctraining-510ff",
+#       "databaseURL": "https://doctraining-510ff.firebaseio.com",
+#       "storageBucket": "doctraining-510ff.appspot.com"
+#     }
 #
+#     firebase = pyrebase.initialize_app(config)
+#
+#     return render(request,'perguntas/nova_pergunta_na_sala.html',{'usuario':usuario})

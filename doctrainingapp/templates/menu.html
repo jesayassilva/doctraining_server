@@ -12,6 +12,7 @@
   </div>
 </div>
 
+<a class="item" href="{% url 'doctrainingapp:todas_salas' %}">Salas</a>
 
 <!-- <div class="ui simple dropdown item">
   Pacientes Virtuais <i class="dropdown "></i>
@@ -21,8 +22,8 @@
     <a class="item" href="#">Doença cardíaca</a>
   </div>
 </div> -->
-
-{%if usuario.id%}
+<!-- se membro da aquipe ou adm, mesmo sem todos poderes no adm django -->
+{%if request.user.is_staff%}
         <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Solicitações</a>
         <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Histórico </a>
 {% endif %}
@@ -35,11 +36,8 @@
 <!-- <a href="{% url 'doctrainingapp:index' %}" class="item">Sair</a> -->
 
 <div class="ui simple dropdown item right">
-  {%if usuario.id%}
-          {{usuario.username}} <i class="dropdown "></i>
-  {% else%}
-          Professor Fulano <i class="dropdown "></i>
-  {% endif %}
+
+          <i class="user md icon"></i> {{request.user.username}} <i class="dropdown"></i>
 
   <div class="menu">
     <a class="item" href="#">Alterar Perfil</a>
