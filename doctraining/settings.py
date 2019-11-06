@@ -45,7 +45,7 @@ DATABASES = {
 # '''
 DEBUG = False
 ALLOWED_HOSTS = ['doctraining.herokuapp.com','https://doctraining.herokuapp.com']
-ADMINS = [('Jesaias Silva', 'jesayassilva@gmail.com')]
+ADMINS = [('Jesaias Silva', 'jesayassilva@gmail.com'),('DocTraining', 'doctraining.ufersa@gmail.com')]
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
