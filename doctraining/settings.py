@@ -182,8 +182,8 @@ USE_TZ = True
 
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_PASSWORD = 'jesaias09011996*'
-EMAIL_HOST_USER = 'jcps.suporte@gmail.com'
+EMAIL_HOST_PASSWORD = 'doc*suporte*2019'
+EMAIL_HOST_USER = 'doctraining.ufersa.contato@gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
