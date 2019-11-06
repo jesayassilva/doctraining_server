@@ -9,10 +9,18 @@ from django.conf.urls import url
 app_name="doctrainingapp"
 
 urlpatterns = [
-    
+
     path('', index, name='index'),
     path('login/',auth_views.LoginView.as_view(template_name="login.html",redirect_authenticated_user=True),name='login'),#,redirect_authenticated_user=True
     path('logout/',sair,name='logout'),
+
+
+    # path('user/senha/<int:pk>/',login_required(SenhaAndUserUpdate.as_view()),name='senha_user_update'),
+    path('user/perfil/editar/<int:pk>/',login_required(PerfilUpdate.as_view()),name='perfil_update'),
+    path('user/<int:pk>/',login_required(UserUpdate.as_view()),name='user_update'),
+
+
+
 
 
     #WEB Solicitações Editar, deletar e novo

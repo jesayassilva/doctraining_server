@@ -1,0 +1,51 @@
+{% include 'cabecalho2.html' %}
+
+<!-- {% extends "app/html_base.html"
+%} -->
+{% block tudo %}
+<div class="ui container text" style="text-align: center;padding-top: 2em">
+{% if validlink %}
+
+Por favor, informe sua nova senha duas vezes para que possamos
+</br>verificar se você a digitou corretamente.<a href="/"> Voltar para o login</a>
+
+<form method="post" class="ui form"  style="margin-top: 2em">{% csrf_token %}
+    <div class="required field" style="max-width: 250px;margin: 0 auto;margin-top: 1em;margin-bottom: 1em;">
+        {{ form.new_password1.errors }}
+        <label>Nova senha:</label>
+        {{ form.new_password1 }}
+    </div>
+    <div class="required field" style="max-width: 250px;margin: 0 auto;margin-top: 1em;margin-bottom: 1em;">
+        {{ form.new_password2.errors }}
+        <label>Confirme a senha:</label>
+        {{ form.new_password2 }}
+    </div>
+    <input type="submit" class="ui button positive" value="Alterar minha senha" />
+</form>
+
+{% else %}
+
+O link para a recuperação de senha era inválido,
+possivelmente porque já foi utilizado.</br>
+Por favor, solicite uma nova recuperação de senha.<a href="/"> Voltar para o login</a></br>
+
+{% endif %}
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+</div>
+<!-- Cabecalho -->
+<div>
+{% include 'rodape.html' %}

@@ -76,6 +76,10 @@
 
         <button type="submit" class="ui fluid large teal submit button">Entrar</button>
         <input type="hidden" name="next" value="{% url 'doctrainingapp:todas_salas' %}" />
+
+
+
+
         <!-- {%
           url 'doctrainingapp:doencas_e_sintomas'
           %} -->
@@ -100,7 +104,7 @@
 
     <div class="ui message">
       <!--  url 'secretariaapp:esqueceuSenha'  -->
-      <a href="#" class="ui green" >Esqueceu sua senha?</a>
+      <a href="{% url 'password_reset' %}" class="ui green" >Esqueceu sua senha?</a>
     </div>
   </div>
 </div>

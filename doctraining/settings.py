@@ -22,19 +22,44 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = config('SECRET_KEY')
+
+
 SECRET_KEY = 'i96expt%3unxb1jb826onbqdl^@ke3+0s7mojx--=^lc92@+d!'
-
-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = config('DEBUG', default=False, cast=bool)
 
-# DEBUG = True
+#Modo de teste
+'''
+DEBUG = True
+ALLOWED_HOSTS = ['*']
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
+'''
+
+# Mode de Produção
+# '''
 DEBUG = False
-
 ALLOWED_HOSTS = ['doctraining.herokuapp.com','https://doctraining.herokuapp.com']
-# ALLOWED_HOSTS = ['*']
+ADMINS = [('Jesaias Silva', 'jesayassilva@gmail.com')]
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'd7j8iei44b6dm6',
+        'USER': 'hxrxxeccyjhvky',
+        'PASSWORD': 'd19b0eb8138f99c5ed12eef3ed1740dff036df5a16eafd8f678e8563be8eb2ea',
+        'HOST': 'ec2-174-129-253-101.compute-1.amazonaws.com',
+        'PORT': '5432',
+    }
+}
+# '''
 
+# Database
+# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 # Application definition
 
@@ -79,28 +104,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'doctraining.wsgi.application'
 
 
+
+
+
+
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd7j8iei44b6dm6',
-        'USER': 'hxrxxeccyjhvky',
-        'PASSWORD': 'd19b0eb8138f99c5ed12eef3ed1740dff036df5a16eafd8f678e8563be8eb2ea',
-        'HOST': 'ec2-174-129-253-101.compute-1.amazonaws.com',
-        'PORT': '5432',
-    }
-}
-
-
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
 
 
 # DATABASES = {
@@ -169,6 +178,15 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_PASSWORD = 'jesaias09011996*'
+EMAIL_HOST_USER = 'jcps.suporte@gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 # Static files (CSS, JavaScript, Images)

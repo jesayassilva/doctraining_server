@@ -15,8 +15,28 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # path('accounts/password_change/', auth_views.PasswordChangeView.as_view(template_name='change-password.html')),
+    path('contas/alterar_senha/', auth_views.PasswordChangeView.as_view(template_name='registration/alterar_senha.html'), name='password_change'),
+    path('contas/alterar_senha/completo/', auth_views.PasswordChangeDoneView.as_view(template_name='registration/alterar_senha_completo.html'), name='password_change_done'),
+    path('contas/recuperar_senha/', auth_views.PasswordResetView.as_view(template_name='registration/recuperar_senha.html'), name='password_reset'),
+    path('contas/recuperar_senha/completo/', auth_views.PasswordResetDoneView.as_view(template_name='registration/recuperar_senha_completo.html'), name='password_reset_done'),
+    path('contas/resetar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/confirmar_recuperacao.html'), name='password_reset_confirm'),
+    path('contas/resetar/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/confirmar_recuperacao_completo.html'), name='password_reset_complete'),
+
     path('', include('doctrainingapp.urls',namespace='doctrainingapp'))
 ]
+
+# accounts/password_change/ [name='password_change']
+# accounts/password_change/done/ [name='password_change_done']
+# accounts/password_reset/ [name='password_reset']
+# accounts/password_reset/done/ [name='password_reset_done']
+# accounts/reset/<uidb64>/<token>/ [name='password_reset_confirm']
+# accounts/reset/done/ [name='password_reset_complete']
+
+
+#

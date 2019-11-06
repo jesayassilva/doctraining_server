@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from .models import *
 from django.views.generic.edit import DeleteView,CreateView,UpdateView
+from django.contrib.auth.forms import  UserCreationForm#,AuthenticationForm,UserChangeForm,PasswordResetForm
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth import logout
@@ -751,17 +752,50 @@ def ler_dados_salvar(request):
 
 
 
-################### Cadastrar Perguntas e Respostas
+################################################################### INICIO USER ##################################################
 
-# def nova_pergunta_na_sala(request):
-#     usuario = request.user#usuario logado
-#     config = {
-#       "apiKey": "731895798258",#doctraining-510ff
-#       "authDomain": "doctraining-510ff",
-#       "databaseURL": "https://doctraining-510ff.firebaseio.com",
-#       "storageBucket": "doctraining-510ff.appspot.com"
-#     }
+# class SenhaAndUserUpdate(UpdateView):
+#     model = User
+#     form_class = UserCreationForm
+#     #form_class = ProvaForm
+#     success_url = '/'
+#     template_name = 'update_generico.html'
 #
-#     firebase = pyrebase.initialize_app(config)
-#
-#     return render(request,'perguntas/nova_pergunta_na_sala.html',{'usuario':usuario})
+#     def get(self, request, *args, **kwargs):
+#         if (self.get_object().pk != self.request.user.pk):
+#             messages.add_message(request, ERROR, 'Você não tem Permissão para editar este usuário.')#mensagem para o usuario
+#             return redirect('/salas/todas/')
+#         messages.add_message(request, WARNING, 'Atualizar Usuário.')#mensagem para o usuario
+#         return super(SenhaAndUserUpdate, self).get(request, *args, **kwargs)
+
+
+class UserUpdate(UpdateView):
+    model = User
+    # form_class = UserCreationForm
+    #form_class = username
+    fields = ['username','first_name','last_name','email']
+    success_url = '/'
+    template_name = 'update_generico.html'
+
+    def get(self, request, *args, **kwargs):
+        if (self.get_object().pk != self.request.user.pk):
+            messages.add_message(request, ERROR, 'Você não tem Permissão para editar este usuário.')#mensagem para o usuario
+            return redirect('/salas/todas/')
+        # messages.add_message(request, WARNING, 'Atualizar Usuário.')#mensagem para o usuario
+        return super(UserUpdate, self).get(request, *args, **kwargs)
+
+
+
+
+class PerfilUpdate(UpdateView):
+    model = Perfil
+    success_url = '/'
+    template_name = 'update_generico.html'
+    fields = ['nome_completo','apelido','instituicao','idade']
+
+    def get(self, request, *args, **kwargs):
+        if (self.get_object().user.pk != self.request.user.pk):
+            messages.add_message(request, ERROR, 'Você não tem Permissão para editar este perfil.')#mensagem para o usuario
+            return redirect('/salas/todas/')
+        messages.add_message(request, WARNING, 'Atualizar Perfil.')#mensagem para o usuario
+        return super(PerfilUpdate, self).get(request, *args, **kwargs)
