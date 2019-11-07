@@ -14,6 +14,8 @@ urlpatterns = [
     path('login/',auth_views.LoginView.as_view(template_name="login.html",redirect_authenticated_user=True),name='login'),#,redirect_authenticated_user=True
     path('logout/',sair,name='logout'),
 
+    path('doctraining/',login_required(doctraining),name='doctraining'),
+
 
     # path('user/senha/<int:pk>/',login_required(SenhaAndUserUpdate.as_view()),name='senha_user_update'),
     path('user/perfil/editar/<int:pk>/',login_required(PerfilUpdate.as_view()),name='perfil_update'),
@@ -66,7 +68,11 @@ urlpatterns = [
     path('api/salas/',todos_salas_api,name='todos_salas_api'),
 
 
-    # path('aprender/',aprender,name='aprender'),
+    path('ativar_am/', login_required(ativar_am), name='ativar_am'),
+    path('desativar_am/', login_required(desativar_am), name='desativar_am'),
+    path('status_am/', login_required(status_am), name='status_am'),
+
+    path('am_agora/', login_required(am_agora), name='am_agora'),
     # path('ler_dados_salvar/',ler_dados_salvar),
 
 ]

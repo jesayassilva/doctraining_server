@@ -172,7 +172,7 @@ TIME_ZONE = 'America/Fortaleza'
 
 LOGIN_URL = "/login/"
 
-LOGIN_REDIRECT_URL = '/salas/todas/'
+LOGIN_REDIRECT_URL = '/doctraining/'
 
 USE_I18N = True
 

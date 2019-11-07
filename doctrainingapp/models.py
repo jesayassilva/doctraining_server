@@ -312,9 +312,9 @@ class Sala(models.Model):
     def __str__(self):
         return self.nome_sala
 
-    def save(self, force_insert=False, force_update=False):
-        self.nome_sala = self.nome_sala.upper()
-        super(Sala, self).save(force_insert, force_update)
+    # def save(self, force_insert=False, force_update=False):
+    #     self.nome_sala = self.nome_sala.upper()
+    #     super(Sala, self).save(force_insert, force_update)
 
 
 class Pergunta(models.Model):
@@ -328,9 +328,9 @@ class Pergunta(models.Model):
     def __str__(self):
         return self.pergunta
 
-    def save(self, force_insert=False, force_update=False):
-        self.pergunta = self.pergunta.upper()
-        super(Pergunta, self).save(force_insert, force_update)
+    # def save(self, force_insert=False, force_update=False):
+    #     self.pergunta = self.pergunta.upper()
+    #     super(Pergunta, self).save(force_insert, force_update)
 
 
 

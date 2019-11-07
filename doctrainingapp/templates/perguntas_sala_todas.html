@@ -29,6 +29,8 @@
 
 <a href="{% url 'doctrainingapp:nova_pergunta' sala.pk %}" class="ui button positive" > Nova Pergunta </a>
 
+<a href="{% url 'doctrainingapp:todas_salas' %}" class="ui brown button" >Voltar</a>
+
 <h2>Perguntas</h2>
 <p></p>
 
@@ -66,7 +68,7 @@
         <a class="ui right floated small labeled icon red button" href="{% url 'doctrainingapp:delete_pergunta' pergunta.pk %}">
           <i class="x icon"></i> Deletar
         </a>
-        <a class="ui right floated small primary labeled icon button" href="{% url 'doctrainingapp:editar_pergunta' pergunta.pk %}">
+        <a class="ui right floated small labeled icon button" href="{% url 'doctrainingapp:editar_pergunta' pergunta.pk %}">
           <i class="edit icon"></i> Editar
         </a>
       </th>

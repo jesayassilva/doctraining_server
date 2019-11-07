@@ -14,6 +14,8 @@ from django.db import models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.urls import reverse
+
+from background_task import background
 # import pyrebase
 
 #scikit-learn==0.21.3
@@ -26,12 +28,16 @@ WARNING=30
 ERROR=40
 
 
-redirecionar_sem_permissao = '/casos_clinicos/'
+redirecionar_sem_permissao = '/doctraining/'
 
 
 def index(request):
     usuario = request.user#usuario logado
     return render(request,'index.html',{'usuario':usuario})
+
+def doctraining(request):
+    usuario = request.user#usuario logado
+    return render(request,'doctraining.html',{'usuario':usuario})
 
 def api(request):
     usuario = request.user#usuario logado
@@ -457,11 +463,11 @@ class Deletar_Sala(DeleteView):
 def todas_salas(request):
     try:
         #todas as solicitações ordenadas pel data
-        salas = Sala.objects.all().order_by('nome_sala')
+        salas = Sala.objects.all().extra( select={'nome_sala_QS': 'lower(nome_sala)'}).order_by('nome_sala_QS')
         return render(request,'salas_todas.html',{'salas':salas})
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar salas. Tente novamente mais tarde.')#mensagem para o usuario
-        return redirect('/')
+        return redirect('/doctraining/')
 
 
 def nova_pergunta(request,pk_sala):
@@ -551,12 +557,13 @@ def todas_perguntas(request,pk_sala):
         return redirect('/salas/todas/')
 
     try:
-        perguntas = Pergunta.objects.filter(sala=sala).order_by('pergunta')
+        # perguntas = Pergunta.objects.filter(sala=sala).order_by('pergunta')
+        perguntas = Pergunta.objects.filter(sala=sala).extra( select={'pergunta_QS': 'lower(pergunta)'}).order_by('pergunta_QS')
         # return HttpResponse(perguntas)
         return render(request,'perguntas_sala_todas.html',{'sala':sala,'perguntas':perguntas})
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar a sala. Tente novamente mais tarde.'+ str(e))#mensagem para o usuario
-        return redirect('/')
+        return redirect('/doctraining/')
 
 
 ###################################################################### INICIO API WEB SERVICE ##############################################################################
@@ -782,13 +789,13 @@ class UserUpdate(UpdateView):
     # form_class = UserCreationForm
     #form_class = username
     fields = ['username','first_name','last_name','email']
-    success_url = '/'
+    success_url = '/doctraining/'
     template_name = 'update_generico.html'
 
     def get(self, request, *args, **kwargs):
         if (self.get_object().pk != self.request.user.pk):
             messages.add_message(request, ERROR, 'Você não tem Permissão para editar este usuário.')#mensagem para o usuario
-            return redirect('/salas/todas/')
+            return redirect('/doctraining/')
         # messages.add_message(request, WARNING, 'Atualizar Usuário.')#mensagem para o usuario
         return super(UserUpdate, self).get(request, *args, **kwargs)
 
@@ -797,14 +804,14 @@ class UserUpdate(UpdateView):
 
 class PerfilUpdate(UpdateView):
     model = Perfil
-    success_url = '/'
+    success_url = '/doctraining/'
     template_name = 'update_generico.html'
     fields = ['apelido','instituicao','idade']
 
     def get(self, request, *args, **kwargs):
         if (self.get_object().user.pk != self.request.user.pk):
             messages.add_message(request, ERROR, 'Você não tem Permissão para editar este perfil.')#mensagem para o usuario
-            return redirect('/salas/todas/')
+            return redirect('/doctraining/')
         messages.add_message(request, WARNING, 'Atualizar Perfil.')#mensagem para o usuario
         return super(PerfilUpdate, self).get(request, *args, **kwargs)
 
@@ -825,19 +832,12 @@ import time
 format = "%(asctime)s: %(message)s"
 logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
 
-# logging.info("Main    : Antes de Criar a Thread")
-#
-#
-# logging.info("Main    : Antes de executar o encadeamento")
-# x.start() #iniciar threading
-# logging.info("Main    : Aguarde o encadeamento terminar")
-# # x.join() #parar threading
-# logging.info("Main    : all done")
-
+stop_threads = False
 
 nome_class_DF_casos_clinicos = 'class'
 # def aprender(request):
 def aprender():
+    global stop_threads
     print('Inicio Função aprender')
     sintomas = Sintoma.objects.all().order_by('pk')
     casos_clinicos = Caso_Clinico.objects.exclude(doenca = None,doenca_classificada = False).order_by('pk')
@@ -851,7 +851,8 @@ def aprender():
     # casos_clinicos = Caso_Clinico.Sintoma.objects.all().order_by('pk')
 
 
-
+    if stop_threads:#se for para parar
+        return
     for caso_clinico in casos_clinicos:
         valor_linha = []
 
@@ -865,7 +866,8 @@ def aprender():
         df = df.append(df_auxiliar,ignore_index=True)
     print(df.head())
     ######### DATA SET MONTADO #############
-
+    if stop_threads:#se for para parar
+        return
     X = df.drop('class',axis=1)
     y = df['class']
     X_train, X_test, y_train, y_test = train_test_split(X, #train.drop('Survived',axis=1) remove a coluna e a retorna mas não altera na variavel
@@ -879,20 +881,16 @@ def aprender():
     scores = cross_val_score(logmodel, X, y, cv=5, scoring='f1_micro')
     print(scores)
     print(scores.mean())
-    # bagging = BaggingClassifier(base_estimator=logmodel, n_estimators=15, max_samples=1.0, max_features=1.0, bootstrap=True, bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=None, random_state=None, verbose=0)
-    # bagging.fit(X_train, y_train)
-    # bagging_pred = bagging.predict(X_test)
-    # print(confusion_matrix(y_test,bagging_pred))
-    # print(classification_report(y_test,bagging_pred))
-    # scores = cross_val_score(bagging, X, y, cv=5, scoring='f1_weighted')
-    # print(scores)
-    # print(scores.mean())
-    # '''
 
     lista_sintomas_sem_class =[]
+
+    if stop_threads:#se for para parar
+        return
     for sintoma in sintomas:#adicinar sintiomas desse caso clinico a lista
         lista_sintomas_sem_class.append(sintoma.nome_sintoma)
 
+    if stop_threads:
+        return
     for caso_clinico in casos_clinicos_sem_classificacao:
         valor_linha_classificar = []
 
@@ -919,37 +917,98 @@ def aprender():
     # '''
 
     print('Fim Função aprender')
-    # return HttpResponse('OK')
-    # return redirect('/')#voltar para tela inicial
 
 
-# logging.info("Thread starting")
-# def thread_function(thead_exe):
-#     print('Thread INICIANDO')
-#     aprender()
-#     if thead_exe == False:
-#         thead_exe.join()#encerrar
-#         print('Thread FIM - PAUSA')
-#         time.sleep(5)
-#         print('ACOBOU A PAUSA')
-#     threading_do_aprendizado_maquina = threading.Thread(target=thread_function)
 
 
-# threading_do_aprendizado_maquina = threading.Thread(target=thread_function)
-# threading_do_aprendizado_maquina.start()
-# print('Função')
+horario_inicio_am = 2
+horario_fim_am = 4
+def chamar_funcao_aprender():
+    while True:
+        global stop_threads
+        if stop_threads:
+            break#parar thread
+        if ( int(time.strftime('%H')) >= horario_inicio_am and int(time.strftime('%H')) < horario_fim_am ):
+            print('FUNÇÃO APRENDER')
+            aprender()
+            time.sleep(5)
+        else:
+            print("FORA DO HORARIO")
+            time.sleep(5)
 
 
-# threading_do_aprendizado_maquina = threading.Thread(target=thread_function)
-# threading_do_aprendizado_maquina.start()
+
+threading_do_aprendizado_maquina = threading.Thread(target=chamar_funcao_aprender)
+def ativar_am(request):#Rodar Thread
+    if not request.user.is_staff:#Se não for administrador
+        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
+        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+
+    global stop_threads
+    global threading_do_aprendizado_maquina
+    stop_threads = False
+    #se nao tiver ativo ativar
+    if not threading_do_aprendizado_maquina.is_alive():
+        threading_do_aprendizado_maquina = threading.Thread(target=chamar_funcao_aprender)
+        threading_do_aprendizado_maquina.start()#o normal
+    else:
+        print("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE ATIVA")
+        return HttpResponse("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE ATIVA")
+    # threading_do_aprendizado_maquina.run()
+    print("APRENDIZADO DE MÁQUINA ATIVA")
+    return HttpResponse("APRENDIZADO DE MÁQUINA ATIVO")
 
 
-# def thread_function(thead_exe):
-#     print('Thread INICIANDO')
-#     aprender()
-#     if thead_exe == False:
-#         thead_exe.join()#encerrar
-#         print('Thread FIM - PAUSA')
-#         time.sleep(5)
-#         print('ACOBOU A PAUSA')
-#     threading_do_aprendizado_maquina = threading.Thread(target=thread_function)
+def desativar_am(request):#Parar Thread
+    if not request.user.is_staff:#Se não for administrador
+        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
+        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+    try:
+        global stop_threads
+        global threading_do_aprendizado_maquina
+        # stop_threads = True
+        #se nao tiver ativo ativar
+        # if not threading_do_aprendizado_maquina.is_alive():
+        if not stop_threads:
+            stop_threads = True
+            threading_do_aprendizado_maquina.join()
+        else:
+            stop_threads = True
+            print("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE PARADA")
+            return HttpResponse("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE PARADA")
+    except Exception as e:
+        print('ERRO: Não foi possivel parar Thread')
+        return HttpResponse('ERRO: NÃO FOI POSSIVEL PARAR O APRENDIZADO DE MÁQUINA')
+    print('APRENDIZADO DE MÁQUINA PARADO')
+    return HttpResponse('APRENDIZADO DE MÁQUINA PARADO')
+
+def status_am(request):
+    if not request.user.is_staff:#Se não for administrador
+        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
+        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+    if threading_do_aprendizado_maquina.is_alive():
+        return HttpResponse('ATIVO')
+    else:
+        return HttpResponse('PARADO')
+
+
+
+
+def am_agora(request):
+    global threading_do_aprendizado_maquina
+    if not request.user.is_staff:#Se não for administrador
+        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
+        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+    if not threading_do_aprendizado_maquina.is_alive():
+        aprender()
+    else:
+        return HttpResponse("CLASSIFICAÇÃO EM USO PELO APRENDIZADO DE MÁQUINA")
+    return HttpResponse("CLASSIFICAÇÃO DO APRENDIZADO DE MÁQUINA CONCLUIDO")
+
+
+
+
+
+
+
+#
