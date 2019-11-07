@@ -16,6 +16,8 @@ from django.urls import reverse_lazy
 from django.urls import reverse
 # import pyrebase
 
+#scikit-learn==0.21.3
+
 # Create your views here.
 # DEBUG=10
 # INFO=20
@@ -405,14 +407,6 @@ def log_solicitacoes_alteracao_casos_clinicos(request):
 
 
 ################################################################### INICIO SALAS #################################################################################
-def todas_salas(request):
-    try:
-        #todas as solicitações ordenadas pel data
-        salas = Sala.objects.all().order_by('nome_sala')
-        return render(request,'salas_todas.html',{'salas':salas})
-    except Exception as e:
-        messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar salas. Tente novamente mais tarde.')#mensagem para o usuario
-        return redirect('/')
 
 class Nova_Sala(LoginRequiredMixin, CreateView):
     model = Sala
@@ -431,6 +425,8 @@ class Nova_Sala(LoginRequiredMixin, CreateView):
     def get(self, request, *args, **kwargs):
         messages.add_message(request, WARNING, 'Nova Sala Virtual .')#mensagem para o usuario
         return super(Nova_Sala, self).get(request, *args, **kwargs)
+
+
 
 class Editar_Sala(UpdateView):
     model = Sala
@@ -458,7 +454,14 @@ class Deletar_Sala(DeleteView):
         messages.add_message(request, WARNING, 'Todas perguntas nesta sala serão excluidas.')#mensagem para o usuario
         return super(Deletar_Sala, self).get(request, *args, **kwargs)
 
-
+def todas_salas(request):
+    try:
+        #todas as solicitações ordenadas pel data
+        salas = Sala.objects.all().order_by('nome_sala')
+        return render(request,'salas_todas.html',{'salas':salas})
+    except Exception as e:
+        messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar salas. Tente novamente mais tarde.')#mensagem para o usuario
+        return redirect('/')
 
 
 def nova_pergunta(request,pk_sala):
@@ -472,22 +475,27 @@ def nova_pergunta(request,pk_sala):
         return redirect('/salas/todas/')
 
     if  request.method == "POST":#se tiver sido eviado os dados no formulario
-        continuar = request.POST.get('post')
+        continuar = request.POST.get('post')#Qual botão foi presionado
         try:#tente
             pergunta = request.POST.get('pergunta')
             opcao_correta = request.POST.get('opcao_correta')
             opcao_incorreta_1 = request.POST.get('opcao_incorreta_1')
             opcao_incorreta_2 = request.POST.get('opcao_incorreta_2')
             opcao_incorreta_3 = request.POST.get('opcao_incorreta_3')
+            #se os dados forem muito pequenos
             if( len(pergunta) < 10 or len(opcao_correta) <1 or len(opcao_incorreta_1) <1 or len(opcao_incorreta_2) <1 or len(opcao_incorreta_3) <1):
                 messages.add_message(request, ERROR, 'Os dados são muito pequenos')#mensagem para o usuario
-                return redirect('/salas/'+str(pk_sala)+'/perguntas/nova/')
+                return render(request,'pergunta_na_sala_nova.html',{'sala':sala})
+            #se os dados forem muito grandes
+            if( len(pergunta) > 1500 or len(opcao_correta) > 600 or len(opcao_incorreta_1) >600 or len(opcao_incorreta_2) >600 or len(opcao_incorreta_3) > 600):
+                messages.add_message(request, ERROR, 'Os dados são muito grandes')#mensagem para o usuario
+                return render(request,'pergunta_na_sala_nova.html',{'sala':sala})
             Pergunta(sala=sala, pergunta=pergunta, opcao_correta=opcao_correta, opcao_incorreta_1=opcao_incorreta_1, opcao_incorreta_2=opcao_incorreta_2, opcao_incorreta_3=opcao_incorreta_3 ).save()
             messages.add_message(request, SUCCESS, 'Foi adicionada uma pergunta na sala '+ str(sala.nome_sala) )
-            if ( continuar == 'Salvar'):
+            if ( continuar == 'Salvar'):#Salvar apenas esse
                 return redirect('/salas/'+str(pk_sala)+'/perguntas/')
                 # return reverse("doctrainingapp:todas_perguntas", args=[pk_sala])
-            else:
+            else:#Continuar
                 return render(request,'pergunta_na_sala_nova.html',{'sala':sala})
         except Exception as e:
             messages.add_message(request, ERROR, 'Ocorreu um erro ao salvar pergunta. Tente novamente mais tarde.')#mensagem para o usuario
@@ -791,7 +799,7 @@ class PerfilUpdate(UpdateView):
     model = Perfil
     success_url = '/'
     template_name = 'update_generico.html'
-    fields = ['nome_completo','apelido','instituicao','idade']
+    fields = ['apelido','instituicao','idade']
 
     def get(self, request, *args, **kwargs):
         if (self.get_object().user.pk != self.request.user.pk):
@@ -799,3 +807,149 @@ class PerfilUpdate(UpdateView):
             return redirect('/salas/todas/')
         messages.add_message(request, WARNING, 'Atualizar Perfil.')#mensagem para o usuario
         return super(PerfilUpdate, self).get(request, *args, **kwargs)
+
+
+
+############################################# Machine Learning #################################
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import train_test_split#Importar divisão
+from sklearn.ensemble import BaggingClassifier
+from sklearn.metrics import classification_report, confusion_matrix # importar metodo de avaliação
+from sklearn.linear_model import LogisticRegression #Importar regressão logistica
+
+###### Threading
+import logging#Mostra logs neste caso de horario
+import threading
+import time
+
+format = "%(asctime)s: %(message)s"
+logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
+
+# logging.info("Main    : Antes de Criar a Thread")
+#
+#
+# logging.info("Main    : Antes de executar o encadeamento")
+# x.start() #iniciar threading
+# logging.info("Main    : Aguarde o encadeamento terminar")
+# # x.join() #parar threading
+# logging.info("Main    : all done")
+
+
+nome_class_DF_casos_clinicos = 'class'
+# def aprender(request):
+def aprender():
+    print('Inicio Função aprender')
+    sintomas = Sintoma.objects.all().order_by('pk')
+    casos_clinicos = Caso_Clinico.objects.exclude(doenca = None,doenca_classificada = False).order_by('pk')
+    casos_clinicos_sem_classificacao = Caso_Clinico.objects.filter(doenca_classificada = False).order_by('pk')
+
+    lista_sintomas = []
+    for sintoma in sintomas:#adicinar sintiomas desse caso clinico a lista
+        lista_sintomas.append(sintoma.nome_sintoma)
+    lista_sintomas.append(nome_class_DF_casos_clinicos)
+    df = pd.DataFrame(columns=lista_sintomas)
+    # casos_clinicos = Caso_Clinico.Sintoma.objects.all().order_by('pk')
+
+
+
+    for caso_clinico in casos_clinicos:
+        valor_linha = []
+
+        for sintoma in sintomas:
+            if sintoma in caso_clinico.sintomas.all():
+                valor_linha.append(1)
+            else:
+                valor_linha.append(0)
+        valor_linha.append(caso_clinico.doenca.nome_doenca)
+        df_auxiliar = pd.DataFrame([valor_linha], columns=lista_sintomas)
+        df = df.append(df_auxiliar,ignore_index=True)
+    print(df.head())
+    ######### DATA SET MONTADO #############
+
+    X = df.drop('class',axis=1)
+    y = df['class']
+    X_train, X_test, y_train, y_test = train_test_split(X, #train.drop('Survived',axis=1) remove a coluna e a retorna mas não altera na variavel
+                                                        y, test_size=0.20,
+                                                        random_state=254)#Dividir os dados em treino e teste
+    logmodel = LogisticRegression(C=10000)#contrutor
+    logmodel.fit(X_train,y_train)#treino
+    logmodel_predictions = logmodel.predict(X_test)#predizer dados de treinos
+    print(confusion_matrix(y_test,logmodel_predictions)) #Ver resultados
+    print(classification_report(y_test,logmodel_predictions)) #Ver resultados
+    scores = cross_val_score(logmodel, X, y, cv=5, scoring='f1_micro')
+    print(scores)
+    print(scores.mean())
+    # bagging = BaggingClassifier(base_estimator=logmodel, n_estimators=15, max_samples=1.0, max_features=1.0, bootstrap=True, bootstrap_features=False, oob_score=False, warm_start=False, n_jobs=None, random_state=None, verbose=0)
+    # bagging.fit(X_train, y_train)
+    # bagging_pred = bagging.predict(X_test)
+    # print(confusion_matrix(y_test,bagging_pred))
+    # print(classification_report(y_test,bagging_pred))
+    # scores = cross_val_score(bagging, X, y, cv=5, scoring='f1_weighted')
+    # print(scores)
+    # print(scores.mean())
+    # '''
+
+    lista_sintomas_sem_class =[]
+    for sintoma in sintomas:#adicinar sintiomas desse caso clinico a lista
+        lista_sintomas_sem_class.append(sintoma.nome_sintoma)
+
+    for caso_clinico in casos_clinicos_sem_classificacao:
+        valor_linha_classificar = []
+
+        for sintoma in sintomas:
+            if sintoma in caso_clinico.sintomas.all():
+                valor_linha_classificar.append(1)
+            else:
+                valor_linha_classificar.append(0)
+        df_classificar = pd.DataFrame([valor_linha_classificar], columns=lista_sintomas_sem_class)
+        #classificando novo dado
+        print(df_classificar)
+        print("Classificado como: ")
+        resultado = logmodel.predict(df_classificar)
+        print(resultado)
+
+        try:
+            nova_doenca = Doenca.objects.get(nome_doenca = resultado[0])#pegar doenca selecionada no formulario
+            caso_clinico.doenca = nova_doenca#adicinando doenca
+            caso_clinico.doenca_classificada = False#variavel indica que a doenca não foi classificada pelo usuario
+            caso_clinico.save()#salvando o caso clinico
+
+        except Exception as e:
+            print('ERRO: '+str(e))
+    # '''
+
+    print('Fim Função aprender')
+    # return HttpResponse('OK')
+    # return redirect('/')#voltar para tela inicial
+
+
+# logging.info("Thread starting")
+# def thread_function(thead_exe):
+#     print('Thread INICIANDO')
+#     aprender()
+#     if thead_exe == False:
+#         thead_exe.join()#encerrar
+#         print('Thread FIM - PAUSA')
+#         time.sleep(5)
+#         print('ACOBOU A PAUSA')
+#     threading_do_aprendizado_maquina = threading.Thread(target=thread_function)
+
+
+# threading_do_aprendizado_maquina = threading.Thread(target=thread_function)
+# threading_do_aprendizado_maquina.start()
+# print('Função')
+
+
+# threading_do_aprendizado_maquina = threading.Thread(target=thread_function)
+# threading_do_aprendizado_maquina.start()
+
+
+# def thread_function(thead_exe):
+#     print('Thread INICIANDO')
+#     aprender()
+#     if thead_exe == False:
+#         thead_exe.join()#encerrar
+#         print('Thread FIM - PAUSA')
+#         time.sleep(5)
+#         print('ACOBOU A PAUSA')
+#     threading_do_aprendizado_maquina = threading.Thread(target=thread_function)

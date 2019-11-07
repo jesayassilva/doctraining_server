@@ -66,14 +66,24 @@ urlpatterns = [
     path('api/salas/',todos_salas_api,name='todos_salas_api'),
 
 
-
-
-
+    # path('aprender/',aprender,name='aprender'),
     # path('ler_dados_salvar/',ler_dados_salvar),
 
-
-    # path('nova_pergunta_na_sala/',nova_pergunta_na_sala),
-
-
-
 ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

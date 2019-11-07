@@ -281,8 +281,7 @@ class Log(models.Model):
 
 class Perfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    nome_completo = models.CharField(max_length=100,null=True)
-    apelido = models.CharField(max_length=100,null=True)
+    apelido = models.CharField(max_length=100,blank=True,null=True)
     instituicao = models.CharField(max_length=100,null=True)
     # curso = models.CharField(max_length=100, blank=True,null=True)
     idade = models.PositiveIntegerField(null=True)
@@ -320,11 +319,11 @@ class Sala(models.Model):
 
 class Pergunta(models.Model):
     sala = models.ForeignKey(Sala, on_delete=models.CASCADE)
-    pergunta = models.TextField()
-    opcao_correta = models.CharField(max_length=100)
-    opcao_incorreta_1 = models.CharField(max_length=100)
-    opcao_incorreta_2 = models.CharField(max_length=100)
-    opcao_incorreta_3 = models.CharField(max_length=100)
+    pergunta = models.TextField(max_length=1200)
+    opcao_correta = models.CharField(max_length=600)
+    opcao_incorreta_1 = models.CharField(max_length=600)
+    opcao_incorreta_2 = models.CharField(max_length=600)
+    opcao_incorreta_3 = models.CharField(max_length=600)
     # email = models.EmailField(max_length=254,blank=True,null=True)
     def __str__(self):
         return self.pergunta
@@ -332,7 +331,6 @@ class Pergunta(models.Model):
     def save(self, force_insert=False, force_update=False):
         self.pergunta = self.pergunta.upper()
         super(Pergunta, self).save(force_insert, force_update)
-
 
 
 

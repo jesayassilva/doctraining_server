@@ -53,7 +53,7 @@
               <div>
                     <label class="ui labeled input" for="id_descricao">Pergunta:</label>
                     <!-- <input type="textarea" placeholder="Insira a pergunta"> -->
-                    <textarea name="pergunta" required rows="10" class="vLargeTextField" id="id_pergunta"></textarea>
+                    <textarea name="pergunta" maxlength="1200" required rows="10" class="vLargeTextField" id="id_pergunta"></textarea>
                 </div>
                 <!-- rows coluns -->
 
@@ -66,7 +66,7 @@
                 <div class="ui label green">
                   <i class="check icon"></i>
                 </div>
-                <input name="opcao_correta" type="text" required placeholder="Insira a resposta correta">
+                <input name="opcao_correta" maxlength="600" type="text" required placeholder="Insira a resposta correta">
               </div>
 
               <p></p>
@@ -75,7 +75,7 @@
                 <div class="ui label red">
                   <i class="x icon"></i>
                 </div>
-                <input name="opcao_incorreta_1" type="text" required placeholder="Insira a resposta incorreta">
+                <input name="opcao_incorreta_1" maxlength="600" type="text" required placeholder="Insira a resposta incorreta">
               </div>
 
               <p></p>
@@ -84,7 +84,7 @@
                 <div class="ui label red">
                   <i class="x icon"></i>
                 </div>
-                <input name="opcao_incorreta_2" type="text" required placeholder="Insira outra resposta incorreta">
+                <input name="opcao_incorreta_2" maxlength="600" type="text" required placeholder="Insira outra resposta incorreta">
               </div>
 
               <p></p>
@@ -93,7 +93,7 @@
                 <div class="ui label red">
                   <i class="x icon"></i>
                 </div>
-                <input name="opcao_incorreta_3" type="text" required placeholder="Insira outra resposta incorreta">
+                <input name="opcao_incorreta_3" maxlength="600" type="text" required placeholder="Insira outra resposta incorreta">
               </div>
 
               <p></p>

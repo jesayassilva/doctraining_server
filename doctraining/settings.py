@@ -39,10 +39,11 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
 '''
 
 # Mode de Produção
-# '''
+
 DEBUG = False
 ALLOWED_HOSTS = ['doctraining.herokuapp.com','https://doctraining.herokuapp.com']
 ADMINS = [('Jesaias Silva', 'jesayassilva@gmail.com'),('DocTraining', 'doctraining.ufersa@gmail.com')]
