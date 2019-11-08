@@ -15,6 +15,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.urls import reverse
 
+import requests
+
 # import pyrebase
 
 #scikit-learn==0.21.3
@@ -834,24 +836,33 @@ logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
 stop_threads = False
 
 nome_class_DF_casos_clinicos = 'class'
+taxa_aprendizado = ''
 # def aprender(request):
 def aprender():
-    global stop_threads
     print('Inicio Função aprender')
+    global stop_threads
+    global taxa_aprendizado
+    print("Obter dados...")
     sintomas = Sintoma.objects.all().order_by('pk')
     casos_clinicos = Caso_Clinico.objects.exclude(doenca = None,doenca_classificada = False).order_by('pk')
     casos_clinicos_sem_classificacao = Caso_Clinico.objects.filter(doenca_classificada = False).order_by('pk')
+    print("Obter dados: OK")
 
+    print("Lista Sintomas...")
     lista_sintomas = []
+    lista_sintomas_sem_class =[]
     for sintoma in sintomas:#adicinar sintiomas desse caso clinico a lista
         lista_sintomas.append(sintoma.nome_sintoma)
+        lista_sintomas_sem_class.append(sintoma.nome_sintoma)
     lista_sintomas.append(nome_class_DF_casos_clinicos)
     df = pd.DataFrame(columns=lista_sintomas)
     # casos_clinicos = Caso_Clinico.Sintoma.objects.all().order_by('pk')
-
+    print("Lista Sintomas: OK")
 
     if stop_threads:#se for para parar
         return
+
+    print("Data Frame...")
     for caso_clinico in casos_clinicos:
         valor_linha = []
 
@@ -863,10 +874,14 @@ def aprender():
         valor_linha.append(caso_clinico.doenca.nome_doenca)
         df_auxiliar = pd.DataFrame([valor_linha], columns=lista_sintomas)
         df = df.append(df_auxiliar,ignore_index=True)
-    print(df.head())
+    # print(df.head())
+    print("Data Frame: OK")
+
     ######### DATA SET MONTADO #############
     if stop_threads:#se for para parar
         return
+
+    print("Treino e Teste...")
     X = df.drop('class',axis=1)
     y = df['class']
     X_train, X_test, y_train, y_test = train_test_split(X, #train.drop('Survived',axis=1) remove a coluna e a retorna mas não altera na variavel
@@ -880,16 +895,12 @@ def aprender():
     scores = cross_val_score(logmodel, X, y, cv=5, scoring='f1_micro')
     print(scores)
     print(scores.mean())
-
-    lista_sintomas_sem_class =[]
-
-    if stop_threads:#se for para parar
-        return
-    for sintoma in sintomas:#adicinar sintiomas desse caso clinico a lista
-        lista_sintomas_sem_class.append(sintoma.nome_sintoma)
+    taxa_aprendizado = str(round(scores.mean()*100,2))
+    print("Treino e Teste: OK")
 
     if stop_threads:
         return
+    print("Classificação Dados...")
     for caso_clinico in casos_clinicos_sem_classificacao:
         valor_linha_classificar = []
 
@@ -914,26 +925,32 @@ def aprender():
         except Exception as e:
             print('ERRO: '+str(e))
     # '''
+    print("Classificação Dados: OK")
 
     print('Fim Função aprender')
 
 
 
 
-horario_inicio_am = 2
-horario_fim_am = 4
+horario_inicio_am = 15
+horario_fim_am = 15
+
 def chamar_funcao_aprender():
     while True:
         global stop_threads
         if stop_threads:
             break#parar thread
-        if ( int(time.strftime('%H')) >= horario_inicio_am and int(time.strftime('%H')) < horario_fim_am ):
-            print('FUNÇÃO APRENDER')
+        if ( int(time.strftime('%H')) >= horario_inicio_am and int(time.strftime('%H')) <= horario_fim_am ):
+            print('CHAMA FUNÇÃO APRENDER')
             aprender()
-            time.sleep(5)
         else:
-            print("FORA DO HORARIO")
-            time.sleep(5)
+            print("FORA DO HORARIO. Classificação: "+ str(horario_inicio_am) +' e '+ str(horario_fim_am) +':59 horas.')
+        # r = requests.get('http://127.0.0.1:8000/status_am/')
+        # r = requests.get('doctraining.herokuapp.com')
+        r = requests.get('https://doctraining.herokuapp.com')
+        print(r)
+        time.sleep(60)
+        #espera 60 segundos
 
 
 
@@ -950,12 +967,15 @@ def ativar_am(request):#Rodar Thread
     if not threading_do_aprendizado_maquina.is_alive():
         threading_do_aprendizado_maquina = threading.Thread(target=chamar_funcao_aprender)
         threading_do_aprendizado_maquina.start()#o normal
+        mensagem = 'Ativado.'+ ' Classificação entre '+ str(horario_inicio_am) +' e '+ str(horario_fim_am) +':59 horas.' + ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
     else:
-        print("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE ATIVA")
-        return HttpResponse("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE ATIVA")
+        mensagem ='Já encontra-se ativo.' + ' Classificação entre '+ str(horario_inicio_am) +' e '+ str(horario_fim_am) +':59 horas.' + ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
+        # print("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE ATIVA")
+        # return HttpResponse("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE ATIVA")
     # threading_do_aprendizado_maquina.run()
-    print("APRENDIZADO DE MÁQUINA ATIVA")
-    return HttpResponse("APRENDIZADO DE MÁQUINA ATIVO")
+    # print("APRENDIZADO DE MÁQUINA ATIVA")
+    # return HttpResponse("APRENDIZADO DE MÁQUINA ATIVO")
+    return render(request,'am.html',{'mensagem':mensagem})
 
 
 def desativar_am(request):#Parar Thread
@@ -971,38 +991,55 @@ def desativar_am(request):#Parar Thread
         if not stop_threads:
             stop_threads = True
             threading_do_aprendizado_maquina.join()
+            mensagem = 'Desativado'
         else:
             stop_threads = True
-            print("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE PARADA")
-            return HttpResponse("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE PARADA")
+            # print("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE PARADA")
+            # return HttpResponse("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE PARADA")
+            mensagem =  'Já encontra-se desativado'
     except Exception as e:
-        print('ERRO: Não foi possivel parar Thread')
-        return HttpResponse('ERRO: NÃO FOI POSSIVEL PARAR O APRENDIZADO DE MÁQUINA')
-    print('APRENDIZADO DE MÁQUINA PARADO')
-    return HttpResponse('APRENDIZADO DE MÁQUINA PARADO')
+        mensagem = 'Erro: Não foi possível parar o Aprendizado de Máquina ou já encontra-se desativado'
+        # print('ERRO: Não foi possivel parar Thread')
+        # return HttpResponse('ERRO: NÃO FOI POSSIVEL PARAR O APRENDIZADO DE MÁQUINA')
+    return render(request,'am.html',{'mensagem':mensagem})
+    # print('APRENDIZADO DE MÁQUINA PARADO')
+    # return HttpResponse('APRENDIZADO DE MÁQUINA PARADO')
 
 def status_am(request):
     if not request.user.is_staff:#Se não for administrador
         messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
         return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
     if threading_do_aprendizado_maquina.is_alive():
-        return HttpResponse('ATIVO')
+        # return HttpResponse('ATIVO')
+        mensagem = 'Ativo: Classificação entre '+ str(horario_inicio_am) +' e '+ str(horario_fim_am) +':59 horas.' + ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
     else:
-        return HttpResponse('PARADO')
-
-
+        # return HttpResponse('PARADO')
+        mensagem = 'Desativado'
+    return render(request,'am.html',{'mensagem':mensagem})
 
 
 def am_agora(request):
+    global stop_threads
     global threading_do_aprendizado_maquina
     if not request.user.is_staff:#Se não for administrador
         messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
         return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
     if not threading_do_aprendizado_maquina.is_alive():
+        stop_threads = False
         aprender()
+        stop_threads = True
+        # return HttpResponse("CLASSIFICAÇÃO DO APRENDIZADO DE MÁQUINA CONCLUIDO")
+        mensagem = 'Classificação do Aprendizado de Máquina concluído.'+ ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
+    elif not ( int(time.strftime('%H')) >= horario_inicio_am and int(time.strftime('%H')) <= horario_fim_am ):
+        print("Horario")
+        aprender()
+        mensagem = 'Classificação do Aprendizado de Máquina concluído.' + ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
     else:
-        return HttpResponse("CLASSIFICAÇÃO EM USO PELO APRENDIZADO DE MÁQUINA")
-    return HttpResponse("CLASSIFICAÇÃO DO APRENDIZADO DE MÁQUINA CONCLUIDO")
+        # return HttpResponse("CLASSIFICAÇÃO EM USO PELO APRENDIZADO DE MÁQUINA")
+        print("AM em uso")
+        mensagem = 'Classificação em uso pelo Aprendizado de Máquina.'+ ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
+    return render(request,'am.html',{'mensagem':mensagem})
+
 
 
 

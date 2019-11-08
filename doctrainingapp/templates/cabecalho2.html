@@ -14,12 +14,15 @@
  <link rel="apple-touch-icon" sizes="194x194" href="http://les.ufersa.edu.br/doctraining/web/images/logo2.png" type="image/png" />
 
 
-  <!-- <link rel="stylesheet" href="{%  static 'app/index.css' %}" /> -->
-
+  <!-- <link rel="stylesheet" href="{%  static 'app/index.css'
+  %}" /> -->
   <!--
-  <link rel="stylesheet" type="text/css" href="{%  static 'app/semantic/semantic.min.css' %}" />
-  <script src="{%  static 'app/js/jquery.js' %}"></script>
-  <script src="{%  static 'app/semantic/semantic.min.js' %}" ></script>
+  <link rel="stylesheet" type="text/css" href="{%  static 'app/semantic/semantic.min.css'
+  %}" />
+  <script src="{%  static 'app/js/jquery.js'
+  %}"></script>
+  <script src="{%  static 'app/semantic/semantic.min.js'
+  %}" ></script>
   -->
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.css"/>
@@ -28,8 +31,8 @@
 
 
 
-  <!-- <script src="{% static 'app/js/angular.min.js' %}"></script> da erro na pesquisa pois confunde o angular com python-->
-  <script src="#"></script>
+  <!-- <script src="{% static 'app/js/angular.min.js'
+  %}"></script> da erro na pesquisa pois confunde o angular com python-->
 
 
   <!-- app/js/ngStorage.js -->
@@ -67,6 +70,7 @@
         <a class="item" href="{% url 'doctrainingapp:casos_clinicos' %}">Casos Clínicos</a>
 
         <!-- se membro da aquipe ou adm, mesmo sem todos poderes no adm django -->
+
         {%if request.user.is_staff %}
                 <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Solicitações</a>
                 <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Histórico </a>
@@ -76,6 +80,23 @@
         {% endif %}
         <a class="item" href="{% url 'doctrainingapp:perfil_update' request.user.perfil.pk %}">Meu Perfil </a>
         <a class="item" href="{% url 'doctrainingapp:user_update' request.user.pk %}">Minhas Informações</a>
+
+
+        {%if request.user.is_superuser %}
+            <div class="ui simple dropdown item right">
+
+                      <i class="settings icon"></i>Aprendizado de Máquina<i class="dropdown"></i>
+
+              <div class="menu">
+                <a class="item" href="{% url 'doctrainingapp:status_am' %}">Status do AM</a>
+                <a class="item" href="{% url 'doctrainingapp:ativar_am' %}">Ativar AM</a>
+                <a class="item" href="{% url 'doctrainingapp:desativar_am' %}">Desativar AM </a>
+                <a class="item" href="{% url 'doctrainingapp:am_agora' %}">Rodar Classificação do AM</a>
+              </div>
+            </div>
+        {% endif %}
+
+
         <a class="item" href="{% url 'password_change' %}">Alterar Senha</a>
         <a href="{% url 'doctrainingapp:logout' %}" class="item">Sair</a>
     {% endif %}

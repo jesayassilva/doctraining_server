@@ -27,9 +27,24 @@
     {%if request.user.is_staff %}
             <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Solicitações</a>
             <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Histórico </a>
+
     {% else %}
             <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Minhas Solicitações</a>
             <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Meu Histórico </a>
+    {% endif %}
+
+    {%if request.user.is_superuser %}
+        <div class="ui simple dropdown item">
+
+                  <i class="settings icon"></i>Aprendizado de Máquina<i class="dropdown"></i>
+
+          <div class="menu">
+            <a class="item" href="{% url 'doctrainingapp:status_am' %}">Status do AM</a>
+            <a class="item" href="{% url 'doctrainingapp:ativar_am' %}">Ativar AM</a>
+            <a class="item" href="{% url 'doctrainingapp:desativar_am' %}">Desativar AM </a>
+            <a class="item" href="{% url 'doctrainingapp:am_agora' %}">Rodar Classificação AM</a>
+          </div>
+        </div>
     {% endif %}
 
 

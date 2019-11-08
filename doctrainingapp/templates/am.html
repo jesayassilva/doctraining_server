@@ -22,18 +22,11 @@
 {% endif %}
 
 
-
-
-
-
-
 <div class="ui vertical stripe quote segment">
   <div class="ui equal width stackable internally celled grid">
     <div class="center aligned row">
       <div class="column">
-        <h3 id="titulo"> Bem-Vindo {{usuario.username}}</h3>
-        <!-- <p id="texto"> </p> -->
-        <!-- <p>A partir de uma visão computacional, o problema está em criar uma Inteligência Artificial que retorne uma ou mais soluções no menor tempo possível, visto a grande quantidade de sintomas e doenças existentes.</p> -->
+        <h3 id="titulo"> {{mensagem}} </h3>
       </div>
     </div>
   </div>
@@ -85,4 +78,4 @@
 
 
 
-{%include 'rodape.html' %}
+{% include 'rodape.html' %}
