@@ -934,8 +934,8 @@ def aprender():
 
 
 
-horario_inicio_am = 15
-horario_fim_am = 15
+horario_inicio_am = 2
+horario_fim_am = 4
 
 def chamar_funcao_aprender():
     while True:
