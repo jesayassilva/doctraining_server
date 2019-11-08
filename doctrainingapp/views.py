@@ -673,6 +673,7 @@ def perguntas_de_uma_sala_api(request,pk_sala):
             perguntas = Pergunta.objects.filter(sala=sala).order_by('pergunta')
             for pergunta in perguntas:#todas as Linhas
                 linha_pergunta = {
+                'id':pergunta.pk,
                 'mainQuestion':pergunta.pergunta,
                 'rightOp': pergunta.opcao_correta,
                 'wrongOp01': pergunta.opcao_incorreta_1,
@@ -695,7 +696,8 @@ def todos_salas_api(request):
             for sala in salas:#todas as Linhas
                 linha_sala = {
                 'id':sala.pk,
-                'sala_nome': sala.nome_sala
+                'sala_nome': sala.nome_sala,
+                'quantidade_perguntas':sala.quantidade_perguntas()
                 }
                 json_lista_salas.append(linha_sala)
             return JsonResponse(json_lista_salas,safe=False)

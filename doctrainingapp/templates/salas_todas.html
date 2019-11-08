@@ -33,6 +33,7 @@
         <!-- Colunas da tabela -->
         <th>Sala</th>
         <th>Descrição</th>
+        <th>Quantidade Perguntas</th>
         <th>Criado por</th>
         <th>Data Abertura</th>
         <!-- colunas da tabela -->
@@ -45,14 +46,15 @@
     <tbody>
       {% for sala in salas  %}
             <tr>
-              <td> {{sala.nome_sala}} </td>
+              <td><b> {{sala.nome_sala}} </b></td>
               {% if sala.descricao  %}
-                    <td> <b>{{sala.descricao}}</b> </td>
+                    <td> {{sala.descricao_limitado}} </td>
               {% else %}
                     <td>  </td>
                {% endif %}
-              <td> <b>{{sala.responsavel_sala}}</b> </td>
-              <td> <b>{{sala.data_criacao}}</b> </td>
+              <td> {{sala.quantidade_perguntas}}</td>
+              <td> {{sala.responsavel_sala}} </td>
+              <td> {{sala.data_criacao}} </td>
               <td>
                   {% if request.user.pk == sala.responsavel_sala.pk %}
                       <a href="{% url 'doctrainingapp:todas_perguntas' sala.pk  %}" class="ui blue button" > Visualizar   <i class="folder open icon"></i> </a>

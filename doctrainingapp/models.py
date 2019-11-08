@@ -312,6 +312,11 @@ class Sala(models.Model):
     def __str__(self):
         return self.nome_sala
 
+    def quantidade_perguntas(self):#retorna nome da alteração
+        return Pergunta.objects.filter(sala__pk=self.pk).count()
+
+    def descricao_limitado(self):#retorna nome da alteração
+        return self.descricao[:40]
     # def save(self, force_insert=False, force_update=False):
     #     self.nome_sala = self.nome_sala.upper()
     #     super(Sala, self).save(force_insert, force_update)
@@ -327,6 +332,7 @@ class Pergunta(models.Model):
     # email = models.EmailField(max_length=254,blank=True,null=True)
     def __str__(self):
         return self.pergunta
+
 
     # def save(self, force_insert=False, force_update=False):
     #     self.pergunta = self.pergunta.upper()
