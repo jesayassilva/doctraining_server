@@ -244,8 +244,8 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             #Inicio ----------------------------------Salvar aqui nessa linha na tabela de log ------------------------------------------------
             log = Log()#cria objeto de log, linhas a seguir são de adicionar os dados
             log.data_solicitacao = solicitacao_alterar_caso_clinico.data_solicitacao#data e hora
-            log.solicitante = solicitacao_alterar_caso_clinico.solicitante_DEF()#string
-            log.id_user = solicitacao_alterar_caso_clinico.solicitante.pk#id para busca enquanto existir user que solicitou
+            log.solicitante = solicitacao_alterar_caso_clinico.solicitante #user
+            # log.id_user = solicitacao_alterar_caso_clinico.solicitante.pk#id para busca enquanto existir user que solicitou
             #Antigos
             log.doenca = solicitacao_alterar_caso_clinico.nome_doenca_antigo_DEF()#string
             log.sintomas = solicitacao_alterar_caso_clinico.sintomas_antigo_DEF()#string
@@ -256,7 +256,8 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             log.doenca_classificada = solicitacao_alterar_caso_clinico.doenca_classificada#boolena
             log.tipo_alteracao = solicitacao_alterar_caso_clinico.tipo_alteracao#inteiro -> 0-DELETE; 1-CREATE; ou (2)-UPDATE
             log.acao = solicitacao_alterar_caso_clinico.acao#inteiro -> 0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
-            log.avaliado_por = usuario.username#string
+            log.avaliador = usuario#user
+            # log.avaliado_por = usuario.username#string
             #Fim----------------------------------Salvar aqui na tabela de log  ------------------------------------------------
             # solicitacao_alterar_caso_clinico.salvar_log(usuario=usuario)
 
@@ -279,8 +280,8 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             #Inicio ----------------------------------Salvar aqui nessa linha na tabela de log ------------------------------------------------
             log = Log()#cria objeto de log, linhas a seguir são de adicionar os dados
             log.data_solicitacao = solicitacao_alterar_caso_clinico.data_solicitacao#data e hora
-            log.solicitante = solicitacao_alterar_caso_clinico.solicitante_DEF()#string
-            log.id_user = solicitacao_alterar_caso_clinico.solicitante.pk#id para busca enquanto existir user que solicitou
+            log.solicitante = solicitacao_alterar_caso_clinico.solicitante#user
+            # log.id_user = solicitacao_alterar_caso_clinico.solicitante.pk#id para busca enquanto existir user que solicitou
             #Antigos
             log.doenca = solicitacao_alterar_caso_clinico.nome_doenca_antigo_DEF()#string
             log.sintomas = solicitacao_alterar_caso_clinico.sintomas_antigo_DEF()#string
@@ -291,7 +292,7 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             log.doenca_classificada = solicitacao_alterar_caso_clinico.doenca_classificada#boolena
             log.tipo_alteracao = solicitacao_alterar_caso_clinico.tipo_alteracao#inteiro -> 0-DELETE; 1-CREATE; ou (2)-UPDATE
             log.acao = solicitacao_alterar_caso_clinico.acao#inteiro -> 0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
-            log.avaliado_por = usuario.username#string
+            log.avaliador = usuario#user
             #Fim----------------------------------Salvar aqui nessa linha na tabela de log ------------------------------------------------
             # solicitacao_alterar_caso_clinico.salvar_log(usuario=usuario)
 
@@ -309,8 +310,8 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             #Inicio ----------------------------------Salvar aqui nessa linha na tabela de log ------------------------------------------------
             log = Log()#cria objeto de log, linhas a seguir são de adicionar os dados
             log.data_solicitacao = solicitacao_alterar_caso_clinico.data_solicitacao#data e hora
-            log.solicitante = solicitacao_alterar_caso_clinico.solicitante_DEF()#string
-            log.id_user = solicitacao_alterar_caso_clinico.solicitante.pk#id para busca enquanto existir user que solicitou
+            log.solicitante = solicitacao_alterar_caso_clinico.solicitante#user
+            # log.id_user = solicitacao_alterar_caso_clinico.solicitante.pk#id para busca enquanto existir user que solicitou
             #Antigos
             log.doenca = solicitacao_alterar_caso_clinico.nome_doenca_antigo_DEF()#string
             log.sintomas = solicitacao_alterar_caso_clinico.sintomas_antigo_DEF()#string
@@ -321,7 +322,7 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             log.doenca_classificada = solicitacao_alterar_caso_clinico.doenca_classificada#boolena
             log.tipo_alteracao = solicitacao_alterar_caso_clinico.tipo_alteracao#inteiro -> 0-DELETE; 1-CREATE; ou (2)-UPDATE
             log.acao = solicitacao_alterar_caso_clinico.acao#inteiro -> 0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
-            log.avaliado_por = usuario.username#string
+            log.avaliador = usuario#user
 
             #Fim----------------------------------Salvar aqui na tabela de log ------------------------------------------------
             # solicitacao_alterar_caso_clinico.salvar_log(usuario=usuario)
@@ -338,6 +339,7 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             solicitacao_alterar_caso_clinico.delete()#deletando solicitação, pois seus dados já se encontram na tabela de log
         #mensagem para usuario
         messages.add_message(request, SUCCESS, 'Foi aceitada a alteração da amostra.')
+        # r = requests.get('http://127.0.0.1:8000/ativar_am')
         return redirect('/casos_clinicos/solicitacoes/')
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde. '+ str(e))#mensagem para o usuario
@@ -361,8 +363,8 @@ def rejeitar_solicitacao_alteracao_caso_clinico(request,pk):
         #Inicio ----------------------------------Salvar aqui nessa linha na tabela de log ------------------------------------------------
         log = Log()#cria objeto de log, linhas a seguir são de adicionar os dados
         log.data_solicitacao = solicitacao_alterar_caso_clinico.data_solicitacao#data e hora
-        log.solicitante = solicitacao_alterar_caso_clinico.solicitante_DEF()#string
-        log.id_user = solicitacao_alterar_caso_clinico.solicitante.pk#id para busca enquanto existir user que solicitou
+        log.solicitante = solicitacao_alterar_caso_clinico.solicitante#string
+        # log.id_user = solicitacao_alterar_caso_clinico.solicitante.pk#id para busca enquanto existir user que solicitou
         #Antigos
         log.doenca = solicitacao_alterar_caso_clinico.nome_doenca_antigo_DEF()#string
         log.sintomas = solicitacao_alterar_caso_clinico.sintomas_antigo_DEF()#string
@@ -373,7 +375,7 @@ def rejeitar_solicitacao_alteracao_caso_clinico(request,pk):
         log.doenca_classificada = solicitacao_alterar_caso_clinico.doenca_classificada#boolena
         log.tipo_alteracao = solicitacao_alterar_caso_clinico.tipo_alteracao#inteiro -> 0-DELETE; 1-CREATE; ou (2)-UPDATE
         log.acao = solicitacao_alterar_caso_clinico.acao#inteiro -> 0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
-        log.avaliado_por = usuario.username#string
+        log.avaliador = usuario#user
         #Fim----------------------------------Salvar aqui nessa linha na tabela de log ------------------------------------------------
         # solicitacao_alterar_caso_clinico.salvar_log(usuario=usuario)
 
@@ -401,7 +403,7 @@ def log_solicitacoes_alteracao_casos_clinicos(request):
     try:
         #todas as solicitações ordenadas pel data
         if not usuario.is_staff:#Se não for administrador
-            logs = Log.objects.filter(id_user=usuario.pk).order_by('-data_alteracao')
+            logs = Log.objects.filter(solicitante=usuario).order_by('-data_alteracao')
         else:#se for adm
             logs = Log.objects.filter().order_by('-data_alteracao')
         return render(request,'log_caso_clinico.html',{'logs':logs})
@@ -804,6 +806,22 @@ class UserUpdate(UpdateView):
 
 
 
+class UserCreate(CreateView):
+    model = User
+    form_class = UserCreationForm
+    success_url = '/doctraining/'
+    template_name = 'create_generico.html'
+
+    def get(self, request, *args, **kwargs):
+        if not self.request.user.is_staff:#Se não for administrador
+            messages.add_message(request, ERROR, 'Você não tem Permissão para adicionar usuários.')#mensagem para o usuario
+            return redirect('/doctraining/')
+        # messages.add_message(request, WARNING, 'Atualizar Usuário.')#mensagem para o usuario
+        return super(UserCreate, self).get(request, *args, **kwargs)
+
+
+
+
 
 class PerfilUpdate(UpdateView):
     model = Perfil
@@ -935,7 +953,7 @@ def aprender():
 
 
 horario_inicio_am = 2
-horario_fim_am = 4
+horario_fim_am = 3
 
 def chamar_funcao_aprender():
     while True:

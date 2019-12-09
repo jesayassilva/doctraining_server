@@ -223,7 +223,9 @@ class Solicitacao_Alterar_Sintoma_Ou_Doenca(models.Model):
 
 class Log(models.Model):
     data_solicitacao = models.DateTimeField()
-    solicitante = models.CharField(max_length=100,blank=False, null=False)
+    # solicitante = models.CharField(max_length=100,blank=False, null=False)
+    solicitante = models.ForeignKey(User, related_name = 'solicitante', on_delete=models.PROTECT)
+
     #Antigos
     doenca = models.CharField(max_length=100,blank=False, null=False)
     sintomas = models.TextField(blank=True)
@@ -236,11 +238,12 @@ class Log(models.Model):
     acao = models.PositiveIntegerField()#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
 
     data_alteracao = models.DateTimeField(default=datetime.now)
-    avaliado_por = models.CharField(max_length=100,blank=False, null=False)
-    id_user = models.PositiveIntegerField()#apenas id pois usuario pode ser apagado do banco, com isso vai ser usado apenas para buscar nos logs do proprio usuario
+    avaliador = models.ForeignKey(User, related_name = 'avaliador', on_delete=models.PROTECT)
+    # avaliado_por = models.CharField(max_length=100,blank=False, null=False)
+    # id_user = models.PositiveIntegerField()#apenas id quem solicitou pois usuario pode ser apagado do banco, com isso vai ser usado apenas para buscar nos logs do proprio usuario
 
     def __str__(self):
-        return '{ "Data Solicitação": "'+ str(self.data_solicitacao)+'", '+ '"Solicitante": "'+ self.solicitante +'", '+'"Doenca": "' + self.doenca +'", '+'"Sintomas": "'+ self.sintomas +'", '+'"Nova doenca": "'+ self.nova_doenca +'", '+'"Novos sintomas": "'+ self.novos_sintomas +'", '+'"Doenca classificada": "'+ str(self.doenca_classificada) +'", '+'"Tipo alteracao": "'+ str(self.tipo_alteracao_DEF()) +'", '+'"Acao": "'+ str(self.acaoDEF()) +'", '+'"Data alteracao": "'+ str(self.data_alteracao) +'", '+'"Avaliado por": "'+ str(self.avaliado_por) +'" }'
+        return '{ "Data Solicitação": "'+ str(self.data_solicitacao)+'", '+ '"Solicitante": "'+ self.solicitante.username +'", '+'"Doenca": "' + self.doenca +'", '+'"Sintomas": "'+ self.sintomas +'", '+'"Nova doenca": "'+ self.nova_doenca +'", '+'"Novos sintomas": "'+ self.novos_sintomas +'", '+'"Doenca classificada": "'+ str(self.doenca_classificada) +'", '+'"Tipo alteracao": "'+ str(self.tipo_alteracao_DEF()) +'", '+'"Acao": "'+ str(self.acaoDEF()) +'", '+'"Data alteracao": "'+ str(self.data_alteracao) +'", '+'"Avaliado por": "'+ str(self.avaliador.username) +'" }'
 
 
 
@@ -299,6 +302,11 @@ def create_user_perfil(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_perfil(sender, instance, **kwargs):
     instance.perfil.save()
+
+#usar isso para criar automaticamente um perfil
+@receiver(post_save, sender=User)
+def email_save_user(sender, instance, **kwargs):
+    print('enviando email')
 
 
 

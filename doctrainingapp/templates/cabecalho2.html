@@ -78,6 +78,11 @@
                 <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Minhas Solicitações</a>
                 <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Meu Histórico </a>
         {% endif %}
+
+        {%if request.user.is_staff %}
+              <a href="{% url 'doctrainingapp:user_create' %}" class="item">Novo Usuário </a>
+        {%endif%}
+        
         <a class="item" href="{% url 'doctrainingapp:perfil_update' request.user.perfil.pk %}">Meu Perfil </a>
         <a class="item" href="{% url 'doctrainingapp:user_update' request.user.pk %}">Minhas Informações</a>
 

@@ -16,6 +16,7 @@ urlpatterns = [
 
     path('doctraining/',login_required(doctraining),name='doctraining'),
 
+    path('user/novo/',login_required(UserCreate.as_view()),name='user_create'),
 
     # path('user/senha/<int:pk>/',login_required(SenhaAndUserUpdate.as_view()),name='senha_user_update'),
     path('user/perfil/editar/<int:pk>/',login_required(PerfilUpdate.as_view()),name='perfil_update'),

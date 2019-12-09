@@ -77,7 +77,7 @@
               <td> <b>{{log.novos_sintomas}}</b> </td>
               <td> <b class="ui {{log.cor_acao_DEF}} label">{{log.acaoDEF}}</b> </td>
               {%if request.user.is_staff %}
-                  <td> <b>{{log.avaliado_por}}</b> </td>
+                  <td> <b>{{log.avaliador}}</b> </td>
               {% endif %}
             </tr>
       {% endfor %}
