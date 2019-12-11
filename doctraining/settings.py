@@ -43,8 +43,8 @@ DATABASES = {
 '''
 
 # Mode de Produção
-# DEBUG = False
-DEBUG = True
+DEBUG = False
+# DEBUG = True
 ALLOWED_HOSTS = ['doctraining.herokuapp.com','https://doctraining.herokuapp.com']
 # ALLOWED_HOSTS = ['*']
 ADMINS = [('Jesaias Silva', 'jesayassilva@gmail.com'),('DocTraining', 'doctraining.ufersa@gmail.com')]
@@ -184,8 +184,8 @@ USE_TZ = True
 
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_PASSWORD = 'doc*suporte*2019'
 EMAIL_HOST_USER = 'doctraining.ufersa.contato@gmail.com'
+EMAIL_HOST_PASSWORD = 'doc*suporte*2019'
 EMAIL_PORT = 587
 # EMAIL_PORT = 465
 EMAIL_USE_TLS = True
