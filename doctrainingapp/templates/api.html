@@ -109,7 +109,7 @@ Teste
           <p>Para solicitar os nomes das doenças disponíveis nas amostras deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
           <a href="{% url 'doctrainingapp:nome_doencas_casos_clinicos_api' %}"> {% url 'doctrainingapp:nome_doencas_casos_clinicos_api' %}</a>
           <p></p>
-          <p>Se for bem-sucedida, essa chamada retornará uma lista com os nomes das Doenças disponíveis nas amostras.<br />
+          <p>Se for bem-sucedida, essa chamada retornará uma lista com os id's e nomes das Doenças disponíveis nas amostras.<br />
             A seguir um exemplo de resultado dessa requisição:
           </p>
 
@@ -151,7 +151,7 @@ Teste
             <p>Para solicitar todos os sintomas disponíveis nas amostras deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
             <a href="{% url 'doctrainingapp:nome_sintomas_casos_clinicos_api' %}">{% url 'doctrainingapp:nome_sintomas_casos_clinicos_api' %}</a>
             <p></p>
-            <p>Se for bem-sucedida, essa chamada retornará uma lista com todos os simtomas disponíveis nas amostras.<br />
+            <p>Se for bem-sucedida, essa chamada retornará uma lista com todos os id's e simtomas disponíveis nas amostras.<br />
               A seguir um exemplo de resultado dessa requisição:
             </p>
 
@@ -192,7 +192,7 @@ Teste
           <p>Para solicitar uma amostra aleatória de uma doença e seus sintomas deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
           <a href="{% url 'doctrainingapp:um_caso_clinico_doenca_sintomas_api' %}">{% url 'doctrainingapp:um_caso_clinico_doenca_sintomas_api' %}</a>
           <p></p>
-          <p>Se for bem-sucedida, essa chamada retornará o nome de uma Doença e uma lista de sintomas.<br />
+          <p>Se for bem-sucedida, essa chamada retornará id, nome da Doença e uma lista de sintomas.<br />
             A seguir um exemplo de resultado dessa requisição:
           </p>
 
@@ -220,7 +220,7 @@ Teste
           <a href="{% url 'doctrainingapp:todos_casos_clinicos_doencas_sintomas_api' %}">{% url 'doctrainingapp:todos_casos_clinicos_doencas_sintomas_api' %}</a>
            <a href="/api/casos_clinicos/todos/">/api/casos_clinicos/todos/</a>
           <p></p>
-          <p>Se for bem-sucedida, essa chamada retornará uma lista no formato de nome da Doença e lista de sintomas.<br />
+          <p>Se for bem-sucedida, essa chamada retornará uma lista no formato de id, nome da Doença e lista de sintomas.<br />
             Note que algumas doenças irão se repetir, mas com sintomas distintos.<br />
             A seguir um exemplo de resultado dessa requisição:
           </p>
@@ -285,57 +285,6 @@ Teste
 
         </div>
 
-<!-- {<br />
-    "sintomas": [<br />
-        "ardência nos olhos",<br />
-        "sensação algo nos olhos",<br />
-        "lacrimação",<br />
-        "secreção transparente nos olhos",<br />
-        "cíclio colados",<br />
-        "olhos vermelhos"<br />
-    ],<br />
-    "doenca": "CONJUNTIVITE"<br />
-} -->
-
-
-<!-- <div class="ui inverted olive  segment ">
-  <p>fdefsdfsdfsd</p>
-  <p>wtfwgdf</p>
-  fdefsdfsdfsdafsadf
-  ssaa
-  <div class="ui inverted olive divider"></div>
-  <p>fghf</p>
-  <h4 class="ui horizontal inverted olive divider">
-    Horizontal
-  </h4>
-</div> -->
-
-
-
-   <!-- <table class="ui single line table">
-
-      <thead>
-        <tr>
-        <th>Rota</th>
-        <th>Descrição</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr>
-          <td> <button class="ui blue button">Get</button>  /caso_clinico_sintomas/ </td>
-          <td>{"sintomas": LISTA_DE_DOENÇAS,
-        "doenca": NOME_DA_DOENÇA}</td>
-        </tr>
-
-        <tr>
-          <td> <button class="ui blue button">Get</button>  /caso_clinico/ </td>
-          <td>Retorna sintomas em formato booleano e a doença correspondente</td>
-        </tr>
-
-      </tbody>
-
-    </table> -->
 
 
 

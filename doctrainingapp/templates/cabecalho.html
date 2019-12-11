@@ -130,6 +130,18 @@
     })
   ;
   </script>
+
+
+<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				$(".scroll").click(function(event){
+					event.preventDefault();
+					$('html,body').animate({scrollTop:$(this.hash).offset().top},1000);
+				});
+			});
+</script>
+
+
 </head>
 <body>
 
@@ -138,8 +150,8 @@
 <div class="ui large top fixed hidden menu">
   <div class="ui container">
     <a class="active item" href="{% url 'doctrainingapp:index' %}">DocTraining</a>
-    <a class="item">Características</a>
-    <a class="item">Quem Somos</a>
+    <a class="item" href="#caracteristica" class='scroll' >Características</a>
+    <a class="item" href="#quem_somos" class='scroll'>Quem Somos</a>
     <a class="item" target="_blank" href="http://les.ufersa.edu.br/ntes/">NTES</a>
     <a class="item">Contato</a>
 
@@ -159,8 +171,8 @@
 <!-- Menu ao lado quando tela se ajudar -->
 <div class="ui vertical inverted sidebar menu">
   <a class="active item" href="{% url 'doctrainingapp:index' %}">DocTraining</a>
-  <a class="item">Características</a>
-  <a class="item">Quem Somos</a>
+  <a class="item" href="#caracteristica" class='scroll'>Características</a>
+  <a class="item" href="#quem_somos" class='scroll'>Quem Somos</a>
   <a class="item" target="_blank" href="http://les.ufersa.edu.br/ntes/">NTES</a>
   <a class="item">Contato</a>
   <!-- <a class="item">Login</a>
@@ -179,8 +191,8 @@
           <i class="sidebar icon"></i>
         </a>
         <a class="active item" href="{% url 'doctrainingapp:index' %}">DocTraining</a>
-        <a class="item">Características</a>
-        <a class="item">Quem Somos</a>
+        <a class="item" href="#caracteristica" class='scroll'>Características</a>
+        <a class="item" href="#quem_somos" class='scroll'>Quem Somos</a>
         <a class="item" target="_blank" href="http://les.ufersa.edu.br/ntes/">NTES</a>
         <a class="item">Contato</a>
         <div class="right item">
