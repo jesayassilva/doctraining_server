@@ -1080,7 +1080,7 @@ def aprender():
 
     if stop_threads:#se for para parar
         return
-
+ 
     print("Data Frame...")
     for caso_clinico in casos_clinicos:
         valor_linha = []
@@ -1151,29 +1151,24 @@ def aprender():
 
 
 
-# horario_inicio_am = 2
-# horario_fim_am = 3
-horario_inicio_am = 11
-horario_fim_am = 11
+horario_tarde = 12
+horario_inicio_am = 2
+horario_fim_am = 3
+tempo_espera_segundos = 5
 def chamar_funcao_aprender():
     while True:
         global stop_threads
         if stop_threads:
             break#parar thread
-        if ( int(time.strftime('%H')) >= horario_inicio_am and int(time.strftime('%H')) <= horario_fim_am ):
+        if ( int(time.strftime('%H')) >= horario_inicio_am and int(time.strftime('%H')) <= horario_fim_am ) or ( int(time.strftime('%H')) == horario_tarde and int(time.strftime('%M')) <= 29 ):
             print('CHAMA FUNÇÃO APRENDER')
             aprender()
+            time.sleep(300)#5 min de espera após classificações
         else:
-            print("FORA DO HORARIO. Classificação: "+ str(horario_inicio_am) +' e '+ str(horario_fim_am) +':59 horas.')
-        # r = requests.get('http://127.0.0.1:8000/status_am/')
-        # r = requests.get('doctraining.herokuapp.com')
+            print("FORA DO HORARIO. Classificação: "+ str(horario_inicio_am) +' - '+ str(horario_fim_am) +':59 Horas e ' + str(horario_tarde) +' - '+ str(horario_tarde) + ':30 Horas')
         r = requests.get('https://doctraining.herokuapp.com')
         print(r)
-        # time.sleep(60)
-        time.sleep(5)
-        #espera 60 segundos
-
-
+        time.sleep(tempo_espera_segundos)
 
 threading_do_aprendizado_maquina = threading.Thread(target=chamar_funcao_aprender)
 def ativar_am(request):#Rodar Thread
@@ -1217,7 +1212,7 @@ def status_am(request):
         return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
     if threading_do_aprendizado_maquina.is_alive():
         # return HttpResponse('ATIVO')
-        mensagem = 'Ativo: Classificação entre '+ str(horario_inicio_am) +' e '+ str(horario_fim_am) +':59 horas.' + ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
+        mensagem = 'Ativo: Classificação: '+ str(horario_inicio_am) +' - '+ str(horario_fim_am) +':59 Horas e ' + str(horario_tarde) +' - '+ str(horario_tarde) + ':30 Horas. Taxa de Aprendizado: ' + taxa_aprendizado+"%"
     else:
         # return HttpResponse('PARADO')
         mensagem = 'Desativado'
@@ -1236,7 +1231,7 @@ def am_agora(request):
         stop_threads = True
         # return HttpResponse("CLASSIFICAÇÃO DO APRENDIZADO DE MÁQUINA CONCLUIDO")
         mensagem = 'Classificação do Aprendizado de Máquina concluído.'+ ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
-    elif not ( int(time.strftime('%H')) >= horario_inicio_am and int(time.strftime('%H')) <= horario_fim_am ):
+    elif not( ( int(time.strftime('%H')) >= horario_inicio_am and int(time.strftime('%H')) <= horario_fim_am ) and ( int(time.strftime('%H')) == horario_tarde and int(time.strftime('%M')) <= 29 ) ):
         print("Horario")
         aprender()
         mensagem = 'Classificação do Aprendizado de Máquina concluído.' + ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
@@ -1256,9 +1251,9 @@ def tentar_ativar_am():
     if not threading_do_aprendizado_maquina.is_alive():
         threading_do_aprendizado_maquina = threading.Thread(target=chamar_funcao_aprender)
         threading_do_aprendizado_maquina.start()#o normal
-        mensagem = 'Ativado.'+ ' Classificação entre '+ str(horario_inicio_am) +' e '+ str(horario_fim_am) +':59 horas.' + ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
+        mensagem = 'Ativado. Classificação: '+ str(horario_inicio_am) +' - '+ str(horario_fim_am) +':59 Horas e ' + str(horario_tarde) +' - '+ str(horario_tarde) + ':30 Horas. Taxa de Aprendizado: ' + taxa_aprendizado+"%"
     else:
-        mensagem ='Já encontra-se ativo.' + ' Classificação entre '+ str(horario_inicio_am) +' e '+ str(horario_fim_am) +':59 horas.' + ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
+        mensagem ='Já encontra-se ativo. Classificação: '+ str(horario_inicio_am) +' - '+ str(horario_fim_am) +':59 Horas e ' + str(horario_tarde) +' - '+ str(horario_tarde) + ':30 Horas' + ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
         # print("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE ATIVA")
         # return HttpResponse("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE ATIVA")
     # threading_do_aprendizado_maquina.run()

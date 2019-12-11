@@ -79,12 +79,12 @@
                 <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Meu Histórico </a>
         {% endif %}
 
-        {%if request.user.is_staff %}
+        <!-- {%if request.user.is_staff %}
               <a href="{% url 'doctrainingapp:user_create' %}" class="item">Novo Usuário </a>
         {%endif%}
-        
+
         <a class="item" href="{% url 'doctrainingapp:perfil_update' request.user.perfil.pk %}">Meu Perfil </a>
-        <a class="item" href="{% url 'doctrainingapp:user_update' request.user.pk %}">Minhas Informações</a>
+        <a class="item" href="{% url 'doctrainingapp:user_update' request.user.pk %}">Minhas Informações</a> -->
 
 
         {%if request.user.is_superuser %}
@@ -95,14 +95,15 @@
               <div class="menu">
                 <a class="item" href="{% url 'doctrainingapp:status_am' %}">Status do AM</a>
                 <a class="item" href="{% url 'doctrainingapp:ativar_am' %}">Ativar AM</a>
-                <a class="item" href="{% url 'doctrainingapp:desativar_am' %}">Desativar AM </a>
+                <!-- <a class="item" href="{% url 'doctrainingapp:desativar_am'
+                %}">Desativar AM </a> -->
                 <a class="item" href="{% url 'doctrainingapp:am_agora' %}">Rodar Classificação do AM</a>
               </div>
             </div>
         {% endif %}
 
 
-        <a class="item" href="{% url 'password_change' %}">Alterar Senha</a>
+        <!-- <a class="item" href="{% url 'password_change' %}">Alterar Senha</a> -->
         <a href="{% url 'doctrainingapp:logout' %}" class="item">Sair</a>
     {% endif %}
 

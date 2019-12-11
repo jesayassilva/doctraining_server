@@ -18,12 +18,8 @@ urlpatterns = [
 
     path('user/novo/',login_required(UserCreate.as_view()),name='user_create'),
 
-    # path('user/senha/<int:pk>/',login_required(SenhaAndUserUpdate.as_view()),name='senha_user_update'),
     path('user/perfil/editar/<int:pk>/',login_required(PerfilUpdate.as_view()),name='perfil_update'),
     path('user/<int:pk>/',login_required(UserUpdate.as_view()),name='user_update'),
-
-
-
 
 
     #WEB Solicitações Editar, deletar e novo
@@ -71,7 +67,7 @@ urlpatterns = [
 
 
     #WEB SERVICE
-    path('api/',api,name='api'),
+    path('api/',login_required(api),name='api'),
     path('api/casos_clinicos/nome_doencas/',nome_doencas_casos_clinicos_api,name='nome_doencas_casos_clinicos_api'),
     path('api/casos_clinicos/nome_sintomas/',nome_sintomas_casos_clinicos_api,name='nome_sintomas_casos_clinicos_api'),
     path('api/casos_clinicos/todos/',todos_casos_clinicos_doencas_sintomas_api,name='todos_casos_clinicos_doencas_sintomas_api'),
@@ -80,12 +76,12 @@ urlpatterns = [
     path('api/salas/',todos_salas_api,name='todos_salas_api'),
 
 
+    #APRENDIZADO DE MÁQUINA controle das threads
     path('ativar_am/', login_required(ativar_am), name='ativar_am'),
-    path('desativar_am/', login_required(desativar_am), name='desativar_am'),
+    # path('desativar_am/', login_required(desativar_am), name='desativar_am'),
     path('status_am/', login_required(status_am), name='status_am'),
-
     path('am_agora/', login_required(am_agora), name='am_agora'),
-    path('ler_dados_salvar/',ler_dados_salvar),
+    # path('ler_dados_salvar/',ler_dados_salvar),
 
 ]
 
