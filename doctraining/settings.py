@@ -182,11 +182,12 @@ USE_L10N = True
 USE_TZ = True
 
 
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_PASSWORD = 'doc*suporte*2019'
 EMAIL_HOST_USER = 'doctraining.ufersa.contato@gmail.com'
 EMAIL_PORT = 587
+# EMAIL_PORT = 465
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
