@@ -43,7 +43,8 @@ DATABASES = {
 '''
 
 # Mode de Produção
-DEBUG = False
+# DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['doctraining.herokuapp.com','https://doctraining.herokuapp.com']
 # ALLOWED_HOSTS = ['*']
 ADMINS = [('Jesaias Silva', 'jesayassilva@gmail.com'),('DocTraining', 'doctraining.ufersa@gmail.com')]
