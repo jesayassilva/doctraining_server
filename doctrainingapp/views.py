@@ -37,6 +37,7 @@ def index(request):
     return render(request,'index.html',{'usuario':usuario})
 
 def doctraining(request):
+    print( tentar_ativar_am() )
     usuario = request.user#usuario logado
     return render(request,'doctraining.html',{'usuario':usuario})
 
@@ -197,19 +198,6 @@ def solicitar_novo_sintoma(request):
             return render(request,'sintoma.html',{'ver_remover':ver_remover,'nome_sintoma':nome_sintoma,'sintoma':sintoma,'usuario':usuario})
         except Exception as e:
             return HttpResponse('Erro: '+ str(e))
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 #Solicitar edicão de caso clinico
@@ -547,6 +535,7 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             #Fim-------------------Executar-------------------Salvar aqui na tabela de log ----------------------------------------------------------
             solicitacao_alterar_caso_clinico.delete()#deletando solicitação, pois seus dados já se encontram na tabela de log
         #mensagem para usuario
+        print( tentar_ativar_am() )
         messages.add_message(request, SUCCESS, 'Foi aceitada a alteração da amostra.')
         return redirect('/casos_clinicos/solicitacoes/')
     except Exception as e:
@@ -834,6 +823,7 @@ def nome_sintomas_casos_clinicos_api(request):
 #API
 def todos_casos_clinicos_doencas_sintomas_api(request):
     if request.method == 'GET':#Mostra todos os objetos
+        print( tentar_ativar_am() )
         try:
             json_lista_casos_clinicos = []
             casos_clinicos = Caso_Clinico.objects.exclude(doenca = None).order_by('doenca__nome_doenca')
@@ -877,6 +867,7 @@ def um_caso_clinico_doenca_sintomas_api(request):
 
 def perguntas_de_uma_sala_api(request,pk_sala):
     if request.method == 'GET':#Mostra todos os objetos
+        print( tentar_ativar_am() )
         try:
             json_lista_perguntas_de_uma_sala = []
             sala = Sala.objects.get(pk = pk_sala)
@@ -1160,9 +1151,10 @@ def aprender():
 
 
 
-horario_inicio_am = 2
-horario_fim_am = 3
-
+# horario_inicio_am = 2
+# horario_fim_am = 3
+horario_inicio_am = 11
+horario_fim_am = 11
 def chamar_funcao_aprender():
     while True:
         global stop_threads
@@ -1177,7 +1169,8 @@ def chamar_funcao_aprender():
         # r = requests.get('doctraining.herokuapp.com')
         r = requests.get('https://doctraining.herokuapp.com')
         print(r)
-        time.sleep(60)
+        # time.sleep(60)
+        time.sleep(5)
         #espera 60 segundos
 
 
@@ -1187,22 +1180,7 @@ def ativar_am(request):#Rodar Thread
     if not request.user.is_staff:#Se não for administrador
         messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
         return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
-
-    global stop_threads
-    global threading_do_aprendizado_maquina
-    stop_threads = False
-    #se nao tiver ativo ativar
-    if not threading_do_aprendizado_maquina.is_alive():
-        threading_do_aprendizado_maquina = threading.Thread(target=chamar_funcao_aprender)
-        threading_do_aprendizado_maquina.start()#o normal
-        mensagem = 'Ativado.'+ ' Classificação entre '+ str(horario_inicio_am) +' e '+ str(horario_fim_am) +':59 horas.' + ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
-    else:
-        mensagem ='Já encontra-se ativo.' + ' Classificação entre '+ str(horario_inicio_am) +' e '+ str(horario_fim_am) +':59 horas.' + ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
-        # print("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE ATIVA")
-        # return HttpResponse("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE ATIVA")
-    # threading_do_aprendizado_maquina.run()
-    # print("APRENDIZADO DE MÁQUINA ATIVA")
-    # return HttpResponse("APRENDIZADO DE MÁQUINA ATIVO")
+    mensagem = tentar_ativar_am()
     return render(request,'am.html',{'mensagem':mensagem})
 
 
@@ -1270,8 +1248,23 @@ def am_agora(request):
 
 
 
-
-
+def tentar_ativar_am():
+    global stop_threads
+    global threading_do_aprendizado_maquina
+    stop_threads = False
+    #se nao tiver ativo ativar
+    if not threading_do_aprendizado_maquina.is_alive():
+        threading_do_aprendizado_maquina = threading.Thread(target=chamar_funcao_aprender)
+        threading_do_aprendizado_maquina.start()#o normal
+        mensagem = 'Ativado.'+ ' Classificação entre '+ str(horario_inicio_am) +' e '+ str(horario_fim_am) +':59 horas.' + ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
+    else:
+        mensagem ='Já encontra-se ativo.' + ' Classificação entre '+ str(horario_inicio_am) +' e '+ str(horario_fim_am) +':59 horas.' + ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
+        # print("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE ATIVA")
+        # return HttpResponse("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE ATIVA")
+    # threading_do_aprendizado_maquina.run()
+    # print("APRENDIZADO DE MÁQUINA ATIVA")
+    # return HttpResponse("APRENDIZADO DE MÁQUINA ATIVO")
+    return mensagem
 
 
 

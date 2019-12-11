@@ -165,9 +165,12 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
         if self.tipo_alteracao == 1:#se for novo não tem doenca antiga
             return '-'
         elif self.caso_clinico_a_modificar.doenca == None:#se doenca for nula retorna Classificação Automática[]
-            return 'Classificação Automática[]'
+            return 'Classificação Automática []'
         else:# se tiver doenca retorna o nome
-            return self.caso_clinico_a_modificar.doenca
+            if self.caso_clinico_a_modificar.doenca_classificada:
+                return self.caso_clinico_a_modificar.doenca
+            else:
+                return 'Classificação Automática ['+ str(self.caso_clinico_a_modificar.doenca)+']'
 
     def sintomas_antigo_DEF(self):
         if self.nome_sintoma_a_modificar or self.nome_novo_sintoma_modificado or self.nome_doenca_a_modificar or self.nome_nova_doenca_modificada:
@@ -199,7 +202,7 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
         if self.tipo_alteracao == 0:#se for deletar então não tem doenca nova
             return '-'
         elif self.nova_doenca == None:#se doenca for nula retorna Classificação Automática[]
-            return 'Classificação Automática[]'
+            return 'Classificação Automática []'
         else:# se tiver doenca retorna o nome
             return self.nova_doenca
 
