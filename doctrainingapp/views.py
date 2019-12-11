@@ -61,6 +61,157 @@ def casos_clinicos(request):
     except Exception as e:
          return HttpResponse('Erro: '+ str(e))
 
+def doenca(request, pk):#editar nome doenca
+    usuario = request.user#usuario logado
+    ver_remover = True
+    if  request.method == "POST":#se tiver sido eviado os dados no formulario
+        doenca = Doenca.objects.get(pk=pk)
+        nome_doenca =  doenca.nome_doenca
+        solicitacao_alterar_doenca = Solicitacao_Alterar_Caso_Clinico()#novo objeto
+        solicitacao_alterar_doenca.nome_doenca_a_modificar = doenca
+        if len(request.POST.get("nome_doenca")) <= 2:# se nome digitado for curto
+            messages.add_message(request, ERROR, 'Nome da doença é muito curto.')#mensagem para o usuario
+            return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario})
+        solicitacao_alterar_doenca.nome_nova_doenca_modificada = request.POST.get("nome_doenca")
+        solicitacao_alterar_doenca.solicitante = usuario
+        solicitacao_alterar_doenca.tipo_alteracao = 2#0-DELETE; 1-CREATE; ou (2)-UPDATE
+        solicitacao_alterar_doenca.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+        solicitacao_alterar_doenca.save()
+        messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para editar nome de doença.')#mensagem para o usuario
+        return redirect('/casos_clinicos/')
+    else:
+        try:
+            doenca = Doenca.objects.get(pk=pk)
+            nome_doenca =  doenca.nome_doenca
+            return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario})
+        except Exception as e:
+             return HttpResponse('Erro: '+ str(e))
+
+
+def solicitar_deletar_doenca(request, pk):
+    usuario = request.user#usuario logado
+    try:
+        doenca = Doenca.objects.get(pk=pk)
+        solicitacao_alterar_doenca = Solicitacao_Alterar_Caso_Clinico()#novo objeto
+        solicitacao_alterar_doenca.nome_doenca_a_modificar = doenca
+        solicitacao_alterar_doenca.solicitante = usuario
+        solicitacao_alterar_doenca.tipo_alteracao = 0#0-DELETE; 1-CREATE; ou (2)-UPDATE
+        solicitacao_alterar_doenca.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+        solicitacao_alterar_doenca.save()
+        messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para deletar doença.')#mensagem para o usuario
+        return redirect('/casos_clinicos/')
+    except Exception as e:
+         return HttpResponse('Erro: '+ str(e))
+
+
+def solicitar_nova_doenca(request):
+    usuario = request.user#usuario logado
+    ver_remover = False
+    nome_doenca =  ""
+    if  request.method == "POST":#se tiver sido eviado os dados no formulario
+        solicitacao_alterar_doenca = Solicitacao_Alterar_Caso_Clinico()#novo objeto
+        if len(request.POST.get("nome_doenca")) <= 2:# se nome digitado for curto
+            messages.add_message(request, ERROR, 'Nome da doença é muito curto.')#mensagem para o usuario
+            return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario})
+        solicitacao_alterar_doenca.nome_nova_doenca_modificada = request.POST.get("nome_doenca")
+        solicitacao_alterar_doenca.solicitante = usuario
+        solicitacao_alterar_doenca.tipo_alteracao = 1#0-DELETE; 1-CREATE; ou (2)-UPDATE
+        solicitacao_alterar_doenca.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+        solicitacao_alterar_doenca.save()
+        messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para novo nome de doença.')#mensagem para o usuario
+        return redirect('/casos_clinicos/')
+    else:
+        try:
+            return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario})
+        except Exception as e:
+             return HttpResponse('Erro: '+ str(e))
+
+
+
+
+
+
+##### sintomas
+def sintoma(request, pk):
+    usuario = request.user#usuario logado
+    ver_remover = True
+    if  request.method == "POST":#se tiver sido eviado os dados no formulario
+        sintoma = Sintoma.objects.get(pk=pk)
+        solicitacao_alterar_sintoma = Solicitacao_Alterar_Caso_Clinico()#novo objeto
+        solicitacao_alterar_sintoma.nome_sintoma_a_modificar = sintoma
+        if len(request.POST.get("nome_sintoma")) <= 2:# se nome digitado for curto
+            messages.add_message(request, ERROR, 'Nome da doença é muito curto.')#mensagem para o usuario
+            nome_sintoma =  sintoma.nome_sintoma
+            return render(request,'sintoma.html',{'nome_sintoma':nome_sintoma,'sintoma':sintoma,'usuario':usuario})
+        solicitacao_alterar_sintoma.nome_novo_sintoma_modificado = request.POST.get("nome_sintoma")
+        solicitacao_alterar_sintoma.solicitante = usuario
+        solicitacao_alterar_sintoma.tipo_alteracao = 2#0-DELETE; 1-CREATE; ou (2)-UPDATE
+        solicitacao_alterar_sintoma.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+        solicitacao_alterar_sintoma.save()
+        messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para editar nome de sintoma.')#mensagem para o usuario
+        return redirect('/casos_clinicos/')
+    else:
+        try:
+            sintoma = Sintoma.objects.get(pk=pk)
+            nome_sintoma =  sintoma.nome_sintoma
+            return render(request,'sintoma.html',{'ver_remover':ver_remover,'nome_sintoma':nome_sintoma,'sintoma':sintoma,'usuario':usuario})
+        except Exception as e:
+            return HttpResponse('Erro: '+ str(e))
+
+
+def solicitar_deletar_sintoma(request, pk):
+    usuario = request.user#usuario logado
+    try:
+        sintoma = Sintoma.objects.get(pk=pk)
+        solicitacao_alterar_sintoma = Solicitacao_Alterar_Caso_Clinico()#novo objeto
+        solicitacao_alterar_sintoma.nome_sintoma_a_modificar = sintoma
+        solicitacao_alterar_sintoma.solicitante = usuario
+        solicitacao_alterar_sintoma.tipo_alteracao = 0#0-DELETE; 1-CREATE; ou (2)-UPDATE
+        solicitacao_alterar_sintoma.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+        solicitacao_alterar_sintoma.save()
+        messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para deletar sintoma.')#mensagem para o usuario
+        return redirect('/casos_clinicos/')
+    except Exception as e:
+        return HttpResponse('Erro: '+ str(e))
+
+
+def solicitar_novo_sintoma(request):
+    usuario = request.user#usuario logado
+    ver_remover = False
+    if  request.method == "POST":#se tiver sido eviado os dados no formulario
+        solicitacao_alterar_sintoma = Solicitacao_Alterar_Caso_Clinico()#novo objeto
+        if len(request.POST.get("nome_sintoma")) <= 2:# se nome digitado for curto
+            messages.add_message(request, ERROR, 'Nome da doença é muito curto.')#mensagem para o usuario
+            nome_sintoma =  ""
+            return render(request,'sintoma.html',{'ver_remover':ver_remover, 'nome_sintoma':nome_sintoma, 'sintoma':sintoma,'usuario':usuario})
+        solicitacao_alterar_sintoma.nome_novo_sintoma_modificado = request.POST.get("nome_sintoma")
+        solicitacao_alterar_sintoma.solicitante = usuario
+        solicitacao_alterar_sintoma.tipo_alteracao = 1#0-DELETE; 1-CREATE; ou (2)-UPDATE
+        solicitacao_alterar_sintoma.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+        solicitacao_alterar_sintoma.save()
+        messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para novo nome de sintoma.')#mensagem para o usuario
+        return redirect('/casos_clinicos/')
+    else:
+        try:
+            nome_sintoma =  ""
+            return render(request,'sintoma.html',{'ver_remover':ver_remover,'nome_sintoma':nome_sintoma,'sintoma':sintoma,'usuario':usuario})
+        except Exception as e:
+            return HttpResponse('Erro: '+ str(e))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #Solicitar edicão de caso clinico
 def solicitar_editar_caso_clinico(request,pk):
     usuario = request.user
@@ -231,15 +382,28 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
     if not request.user.is_staff:#Se não for administrador
         messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
         return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
-
     usuario = request.user#usuario logado, se tiver
     try:
         #Solicitação de alteração em casos clinicos
         solicitacao_alterar_caso_clinico = Solicitacao_Alterar_Caso_Clinico.objects.get(pk=pk)
-        #se Deletar amostra
-        if solicitacao_alterar_caso_clinico.tipo_alteracao == 0:#Deletar caso clinico
-            caso_clinico = Caso_Clinico.objects.get(pk = solicitacao_alterar_caso_clinico.caso_clinico_a_modificar.pk)#pegando caso clinico relacionado
-            solicitacao_alterar_caso_clinico.acao =1#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+        #se Deletar
+        if solicitacao_alterar_caso_clinico.tipo_alteracao == 0:#Deletar
+            # if self.nome_sintoma_a_modificar or self.nome_novo_sintoma_modificado or self.nome_doenca_a_modificar or self.nome_nova_doenca_modificada:
+            item_deletar_caso_clinico_doenca_ou_sintoma = None
+            if solicitacao_alterar_caso_clinico.nome_doenca_a_modificar:#Se for para deletar uma doença
+                editar_casos_clinicos = Caso_Clinico.objects.filter(doenca = solicitacao_alterar_caso_clinico.nome_doenca_a_modificar)#pegando casos clinicos relacionados com aquela doença
+                for editar_caso_clinico in editar_casos_clinicos:#retirando a doença relacionada aqueles casos clinos e colocando como sem classificação.
+                    editar_caso_clinico.doenca = None
+                    editar_caso_clinico.doenca_classificada = False
+                    editar_caso_clinico.save()
+                item_deletar_caso_clinico_doenca_ou_sintoma = Doenca.objects.get(pk=solicitacao_alterar_caso_clinico.nome_doenca_a_modificar.pk )
+                solicitacao_alterar_caso_clinico.acao =1#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+            elif solicitacao_alterar_caso_clinico.nome_sintoma_a_modificar:#Se for para deletar um sintoma
+                item_deletar_caso_clinico_doenca_ou_sintoma = Sintoma.objects.get(pk=solicitacao_alterar_caso_clinico.nome_sintoma_a_modificar.pk )
+                solicitacao_alterar_caso_clinico.acao =1#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+            else:#Se for para deletar um caso clinico
+                item_deletar_caso_clinico_doenca_ou_sintoma = Caso_Clinico.objects.get(pk = solicitacao_alterar_caso_clinico.caso_clinico_a_modificar.pk)#pegando caso clinico relacionado
+                solicitacao_alterar_caso_clinico.acao =1#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
 
             #Inicio ----------------------------------Salvar aqui nessa linha na tabela de log ------------------------------------------------
             log = Log()#cria objeto de log, linhas a seguir são de adicionar os dados
@@ -265,17 +429,34 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             log.save()
             #Fim-------------------Executar-------------------Salvar aqui na tabela de log ----------------------------------------------------------
 
-
             solicitacao_alterar_caso_clinico.delete()#deletando solicitação, pois seus dados já se encontram na tabela de log
-            caso_clinico.delete()#deletando caso clinico, pois pois pedido foi aceito (execultando pedido)
-        # se Nova amostra
-        elif solicitacao_alterar_caso_clinico.tipo_alteracao == 1:#Novo caso clinico
-            solicitacao_alterar_caso_clinico.acao =1#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
-            caso_clinico = Caso_Clinico()#Novo objeto de caso clinico
-            caso_clinico.doenca = solicitacao_alterar_caso_clinico.nova_doenca#adicinando doenca
-            caso_clinico.doenca_classificada = solicitacao_alterar_caso_clinico.doenca_classificada#adicionando se doença é classificada ou não
-            caso_clinico.save()#salvando o caso clinico
-            caso_clinico.sintomas.set(solicitacao_alterar_caso_clinico.novos_sintomas.all())#Adicionando os sintomas após objeto ser salvo pelo metodo get()
+            item_deletar_caso_clinico_doenca_ou_sintoma.delete()#deletando caso clinico, pois pois pedido foi aceito (execultando pedido)
+        # se Novo
+        elif solicitacao_alterar_caso_clinico.tipo_alteracao == 1:#Novo
+            # if self.nome_sintoma_a_modificar or self.nome_novo_sintoma_modificado or self.nome_doenca_a_modificar or self.nome_nova_doenca_modificada:
+            if solicitacao_alterar_caso_clinico.nome_nova_doenca_modificada:#Se for para adicionar uma doença
+                if not (Doenca.objects.filter(nome_doenca=solicitacao_alterar_caso_clinico.nome_nova_doenca_modificada )):#se já existir uma doença com esse nome
+                    doenca = Doenca()
+                    doenca.nome_doenca = solicitacao_alterar_caso_clinico.nome_nova_doenca_modificada
+                    doenca.save()
+                    solicitacao_alterar_caso_clinico.acao =1#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+                else:
+                    return HttpResponse("Já existe uma doença com esse nome")
+            elif solicitacao_alterar_caso_clinico.nome_novo_sintoma_modificado:#Se for para deletar um sintoma
+                if not (Sintoma.objects.filter(nome_sintoma=solicitacao_alterar_caso_clinico.nome_novo_sintoma_modificado )):#se já existir uma sintoma com esse nome
+                    sintoma = Sintoma()
+                    sintoma.nome_sintoma = solicitacao_alterar_caso_clinico.nome_novo_sintoma_modificado
+                    sintoma.save()
+                    solicitacao_alterar_caso_clinico.acao =1#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+                else:
+                    return HttpResponse("Já existe um sintoma com esse nome")
+            else:#Se for para deletar um caso clinico
+                solicitacao_alterar_caso_clinico.acao =1#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+                caso_clinico = Caso_Clinico()#Novo objeto de caso clinico
+                caso_clinico.doenca = solicitacao_alterar_caso_clinico.nova_doenca#adicinando doenca
+                caso_clinico.doenca_classificada = solicitacao_alterar_caso_clinico.doenca_classificada#adicionando se doença é classificada ou não
+                caso_clinico.save()#salvando o caso clinico
+                caso_clinico.sintomas.set(solicitacao_alterar_caso_clinico.novos_sintomas.all())#Adicionando os sintomas após objeto ser salvo pelo metodo get()
 
             #Inicio ----------------------------------Salvar aqui nessa linha na tabela de log ------------------------------------------------
             log = Log()#cria objeto de log, linhas a seguir são de adicionar os dados
@@ -301,11 +482,21 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             #Fim-------------------Executar-------------------Salvar aqui na tabela de log ----------------------------------------------------------
 
             solicitacao_alterar_caso_clinico.delete()#deletando solicitação, pois seus dados já se encontram na tabela de log
-        #se Editar amostra
-        else:#Editar caso clinico
-            caso_clinico = Caso_Clinico.objects.get(pk = solicitacao_alterar_caso_clinico.caso_clinico_a_modificar.pk)#caso clinico que será modificado
-            solicitacao_alterar_caso_clinico.acao =1#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+        #se Editar
+        else:#Editar
+            # if self.nome_sintoma_a_modificar or self.nome_novo_sintoma_modificado or self.nome_doenca_a_modificar or self.nome_nova_doenca_modificada:
+            item_editar_caso_clinico_doenca_ou_sintoma = None
+            #Se for para editar uma doença
+            if solicitacao_alterar_caso_clinico.nome_doenca_a_modificar and solicitacao_alterar_caso_clinico.nome_nova_doenca_modificada:#Se for para deletar uma doença
+                item_editar_caso_clinico_doenca_ou_sintoma = Doenca.objects.get(pk=solicitacao_alterar_caso_clinico.nome_doenca_a_modificar.pk )
+            #Se for para editar um sintoma
+            elif solicitacao_alterar_caso_clinico.nome_sintoma_a_modificar and solicitacao_alterar_caso_clinico.nome_novo_sintoma_modificado:
+                item_editar_caso_clinico_doenca_ou_sintoma = Sintoma.objects.get(pk=solicitacao_alterar_caso_clinico.nome_sintoma_a_modificar.pk )
+            #Se for para editar um caso clinico
+            else:
+                item_editar_caso_clinico_doenca_ou_sintoma = Caso_Clinico.objects.get(pk = solicitacao_alterar_caso_clinico.caso_clinico_a_modificar.pk)#caso clinico que será modificado
 
+            solicitacao_alterar_caso_clinico.acao =1#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
             #Não podem ser adicionados no final, pois os dados do caso clinico serão alretados, então não teremos mmais acesso aos valores antogos dele para jogar na tabela de log
             #Inicio ----------------------------------Salvar aqui nessa linha na tabela de log ------------------------------------------------
             log = Log()#cria objeto de log, linhas a seguir são de adicionar os dados
@@ -327,11 +518,29 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             #Fim----------------------------------Salvar aqui na tabela de log ------------------------------------------------
             # solicitacao_alterar_caso_clinico.salvar_log(usuario=usuario)
 
-            #solicitacao_alterar_caso_clinico.salvar_log(usuario=usuario)
-            caso_clinico.doenca = solicitacao_alterar_caso_clinico.nova_doenca#adicinando doenca
-            caso_clinico.doenca_classificada = solicitacao_alterar_caso_clinico.doenca_classificada#adicionando se doença é classificada ou não
-            caso_clinico.save()#salvando o caso clinico
-            caso_clinico.sintomas.set(solicitacao_alterar_caso_clinico.novos_sintomas.all())#Adicionando os sintomas após objeto ser salvo pelo metodo get()
+            #Se for para deletar uma doença
+            if solicitacao_alterar_caso_clinico.nome_doenca_a_modificar and solicitacao_alterar_caso_clinico.nome_nova_doenca_modificada:
+                if not (Doenca.objects.filter(nome_doenca=solicitacao_alterar_caso_clinico.nome_nova_doenca_modificada )):#Se não existir doenca com esse nome
+                    item_editar_caso_clinico_doenca_ou_sintoma.nome_doenca = solicitacao_alterar_caso_clinico.nome_nova_doenca_modificada
+                    item_editar_caso_clinico_doenca_ou_sintoma.save()
+                    solicitacao_alterar_caso_clinico.acao =1#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+                else:
+                    return HttpResponse("Já existe uma doença com esse nome")
+            #Se for para deletar um sintoma
+            elif solicitacao_alterar_caso_clinico.nome_sintoma_a_modificar and solicitacao_alterar_caso_clinico.nome_novo_sintoma_modificado:
+                if not (Sintoma.objects.filter(nome_sintoma=solicitacao_alterar_caso_clinico.nome_novo_sintoma_modificado )):#Se não existir sintoma com esse nome
+                    item_editar_caso_clinico_doenca_ou_sintoma.nome_sintoma = solicitacao_alterar_caso_clinico.nome_novo_sintoma_modificado
+                    item_editar_caso_clinico_doenca_ou_sintoma.save()
+                    solicitacao_alterar_caso_clinico.acao =1#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+                else:
+                    return HttpResponse("Já existe um sintoma com esse nome")
+            #Se for para deletar um casp clinico
+            else:
+                #solicitacao_alterar_caso_clinico.salvar_log(usuario=usuario)
+                item_editar_caso_clinico_doenca_ou_sintoma.doenca = solicitacao_alterar_caso_clinico.nova_doenca#adicinando doenca
+                item_editar_caso_clinico_doenca_ou_sintoma.doenca_classificada = solicitacao_alterar_caso_clinico.doenca_classificada#adicionando se doença é classificada ou não
+                item_editar_caso_clinico_doenca_ou_sintoma.save()#salvando o caso clinico
+                item_editar_caso_clinico_doenca_ou_sintoma.sintomas.set(solicitacao_alterar_caso_clinico.novos_sintomas.all())#Adicionando os sintomas após objeto ser salvo pelo metodo get()
 
             #Inicio --------------Executar-------------------Salvar aqui nessa linha na tabela de log ------------------------------------------------
             log.save()
@@ -339,7 +548,6 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             solicitacao_alterar_caso_clinico.delete()#deletando solicitação, pois seus dados já se encontram na tabela de log
         #mensagem para usuario
         messages.add_message(request, SUCCESS, 'Foi aceitada a alteração da amostra.')
-        # r = requests.get('http://127.0.0.1:8000/ativar_am')
         return redirect('/casos_clinicos/solicitacoes/')
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde. '+ str(e))#mensagem para o usuario

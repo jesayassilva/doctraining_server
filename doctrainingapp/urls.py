@@ -44,6 +44,17 @@ urlpatterns = [
 
     path('casos_clinicos/solicitacoes/log/',login_required(log_solicitacoes_alteracao_casos_clinicos),name='log_solicitacoes_alteracao_casos_clinicos'),
 
+    #Doenca
+    path('doenca/<int:pk>/',login_required(doenca),name='doenca'),
+    path('doenca/solicitacoes/delete/<int:pk>/',login_required(solicitar_deletar_doenca),name='solicitar_deletar_doenca'),
+    path('doenca/nova/',login_required(solicitar_nova_doenca),name='solicitar_nova_doenca'),
+
+    #Sintoma
+    path('sintoma/<int:pk>/',login_required(sintoma),name='sintoma'),
+    path('sintoma/solicitacoes/delete/<int:pk>/',login_required(solicitar_deletar_sintoma),name='solicitar_deletar_sintoma'),
+    path('sintoma/novo/',login_required(solicitar_novo_sintoma),name='solicitar_novo_sintoma'),
+
+
     #SALAS
     path('salas/todas/',login_required(todas_salas),name='todas_salas'),
     path('salas/nova/',login_required(Nova_Sala.as_view()),name='nova_sala'),
@@ -74,7 +85,7 @@ urlpatterns = [
     path('status_am/', login_required(status_am), name='status_am'),
 
     path('am_agora/', login_required(am_agora), name='am_agora'),
-    # path('ler_dados_salvar/',ler_dados_salvar),
+    path('ler_dados_salvar/',ler_dados_salvar),
 
 ]
 

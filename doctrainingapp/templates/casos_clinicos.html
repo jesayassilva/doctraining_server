@@ -41,6 +41,8 @@ function confirmExclusao(id) {
 
 
 <a href="{% url 'doctrainingapp:solicitar_novo_caso_clinico'%}" class="ui button positive" > Nova Amostra </a>
+<a href="{% url 'doctrainingapp:solicitar_nova_doenca'%}" class="ui button olive" > Nova Doença </a>
+<a href="{% url 'doctrainingapp:solicitar_novo_sintoma'%}" class="ui button olive" > Novo Sintoma </a>
 
 <p></p>
 <div style="overflow: auto; width: 100%; height: 500px; border:solid 1px; position: relative;">
@@ -64,13 +66,22 @@ function confirmExclusao(id) {
             <tr>
               <td> <b>{{caso_clinico.pk}}</b> </td>
               {% if caso_clinico.doenca_classificada %}
-                    <td> <b>{{caso_clinico.doenca.nome_doenca}}</b> </td>
+                    {% if caso_clinico.doenca %}
+                          <td> <b> <a href="{% url 'doctrainingapp:doenca' caso_clinico.doenca.pk  %}" > <font color="black"> {{caso_clinico.doenca.nome_doenca}} </font> </a> </b> </td>
+                    {% else %}
+                          <td> <b>{{caso_clinico.doenca.nome_doenca}}</b> </td>
+                    {%endif%}
               {% else %}
-                    <td> <b>Classificação Automática [{{caso_clinico.doenca.nome_doenca}}]</b> </td>
+                    {% if caso_clinico.doenca %}
+                          <td> <b> <a href="{% url 'doctrainingapp:doenca' caso_clinico.doenca.pk  %}" > <font color="black"> Classificação Automática [{{caso_clinico.doenca.nome_doenca}}] </font> </a> </b> </td>
+                    {% else %}
+                              <td> <b>Classificação Automática [{{caso_clinico.doenca.nome_doenca}}]</b> </td>
+                    {%endif%}
               {%endif%}
               <td>
                     {% for sintoma in caso_clinico.sintomas.all  %}
-                          {{sintoma}},
+                              <a href="{% url 'doctrainingapp:sintoma' sintoma.pk  %}" > <font color="black"> {{sintoma}} </font> </a>,
+                          <!-- {{sintoma}}, -->
                     {% endfor %}
               </td>
 

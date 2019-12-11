@@ -1,0 +1,81 @@
+{% include 'cabecalho2.html' %}
+
+<script language="Javascript">
+function confirmExclusao(id) {
+   if (confirm("Tem certeza que deseja solicitar a exclusão desse sintoma? Isso não vai apagar as amostras relacionadas a esta doença!")) {
+     location.href="/sintoma/solicitacoes/delete/"+id;
+
+   }
+}
+
+</script>
+
+
+<h1>
+  Casos Clínicos Sintoma {{nome_sintoma}}
+</h1>
+
+{% if messages %}
+    <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {% if message.tags == 'success' %}
+                        <font color="green">{{ message }}</font>
+                    {% elif message.tags == 'error' %}
+                        <font color="red">{{ message }}</font>
+                    {% else %}
+                        <!-- warning -->
+                        <font color="blue">{{ message }}</font>
+                    {% endif %}
+                </li>
+            {% endfor %}
+    </ul>
+{% endif %}
+
+
+<p></p>
+<h3>Sintoma</h3>
+<p></p>
+<!-- <div style="overflow: auto; border:solid 1px;""> -->
+<!-- <div style="overflow: auto; width: 1340px"> -->
+
+
+<form class="ui form" action="" method="post">{% csrf_token %}
+
+
+    <div>
+          <label class="ui labeled input" for="id_sintoma">Sintoma:</label>
+          <input name="nome_sintoma" maxlength="100" type="text" required value="{{nome_sintoma}}">
+    </div>
+
+
+
+
+      <p></p>
+
+      <input type="submit" name="post" value="Salvar" class="ui button green" />
+      {% if ver_remover %}
+          <a class="ui red button" type="submit" onclick="confirmExclusao({{sintoma.pk}})"  > Remover </a>
+      {% endif %}
+
+
+
+
+</form>
+
+
+
+
+
+
+
+</div>
+
+</div>
+<!-- Cabecalho -->
+
+<div>
+
+
+
+{% include 'rodape.html' %}

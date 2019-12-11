@@ -31,12 +31,12 @@ class Sintoma(models.Model):
         self.nome_sintoma = self.nome_sintoma.upper()
         super(Sintoma, self).save(force_insert, force_update)
 
-    def delete(self,force_insert=False, force_update=False):
-        # sort instance collections
-        if Caso_Clinico.objects.filter(pk = self.pk):
-            raise ValidationError("Sintoma está ligado a doenças")
-        else:
-            super(Sintoma, self).delete(force_insert, force_update)
+    # def delete(self,force_insert=False, force_update=False):
+    #     # sort instance collections
+    #     if Caso_Clinico.objects.filter(pk = self.pk):
+    #         raise ValidationError("Sintoma está ligado a doenças")
+    #     else:
+    #         super(Sintoma, self).delete(force_insert, force_update)
 
 
 
@@ -69,24 +69,57 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
     # caso_clinico_a_modificar = models.ForeignKey(Caso_Clinico, on_delete=models.PROTECT, blank=True, null=True)
     nova_doenca = models.ForeignKey(Doenca, on_delete=models.CASCADE, blank=True, null=True)
     novos_sintomas = models.ManyToManyField(Sintoma, blank=False)
+
     doenca_classificada = models.BooleanField(default = True)
     solicitante = models.ForeignKey(User, on_delete=models.CASCADE)
     tipo_alteracao = models.PositiveIntegerField()#0-DELETE; 1-CREATE; ou (2)-UPDATE
     acao = models.PositiveIntegerField(default= 2)#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
     data_solicitacao = models.DateTimeField(default=datetime.now)
 
+    #Nome Sintomas
+    # sintoma_a_modificar = models.ForeignKey(Sintoma, on_delete=models.PROTECT, blank=True, null=True)
+    # novo_sintoma = models.CharField(max_length=100,blank=True, null=True)
+    nome_sintoma_a_modificar = models.ForeignKey(Sintoma, on_delete=models.PROTECT, related_name = 'nome_sintoma_a_modificar', blank=True, null=True)
+    nome_novo_sintoma_modificado = models.CharField(max_length=100,blank=True, null=True)
+    #OU Nome Doença
+    nome_doenca_a_modificar = models.ForeignKey(Doenca, on_delete=models.PROTECT, related_name = 'nome_doenca_a_modificar', blank=True, null=True)
+    nome_nova_doenca_modificada = models.CharField(max_length=100,blank=True, null=True)
+    # doenca_a_modificar = models.ForeignKey(Doenca, on_delete=models.PROTECT, blank=True, null=True)
+    # nova_doenca = models.CharField(max_length=100,blank=True, null=True)
+
+    # solicitante = models.ForeignKey(User, on_delete=models.CASCADE)
+    # tipo_alteracao = models.PositiveIntegerField()#0-DELETE; 1-CREATE; ou (2)-UPDATE
+    # acao = models.PositiveIntegerField(default= 2)#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
+
     def __str__(self):
         lista_sintomas = []
         for item in self.novos_sintomas.all():
             lista_sintomas.append(item.nome_sintoma)
-        if self.tipo_alteracao == 2:#Se editar
+        #Sintoma
+        if (self.nome_sintoma_a_modificar) or (self.nome_novo_sintoma_modificado):
+            if (self.tipo_alteracao == 0):
+                return 'REMOVER SINTOMA: '+str(self.nome_sintoma_a_modificar.nome_sintoma)
+            elif (self.tipo_alteracao == 1):
+                return 'NOVO SINTOMA: '+str(self.nome_novo_sintoma_modificado)
+            else:#(self.tipo_alteracao == 2:
+                return 'EDITAR SINTOMA: '+str(self.nome_sintoma_a_modificar.nome_sintoma)+ ' PARA: '+str(self.nome_novo_sintoma_modificado)
+        #Doença
+        elif (self.nome_doenca_a_modificar) or (self.nome_nova_doenca_modificada):
+            if (self.tipo_alteracao == 0):
+                return 'REMOVER DOENÇA: '+str(self.nome_doenca_a_modificar.nome_doenca)
+            elif (self.tipo_alteracao == 1):
+                return 'NOVO DOENÇA: '+str(self.nome_nova_doenca_modificada)
+            else:#(self.tipo_alteracao == 2:
+                return 'EDITAR DOENÇA: '+str(self.nome_doenca_a_modificar.nome_doenca)+ ' PARA: '+str(self.nome_nova_doenca_modificada)
+        #Caso Clinico
+        elif self.tipo_alteracao == 2:#Se editar Caso Clinico
             if self.doenca_classificada:
                 return 'ALTERAR DE '+str(self.caso_clinico_a_modificar) +' PARA Doença: ' + str(self.nova_doenca)+', Sintomas:'+str(lista_sintomas)
             else:
                 return 'ALTERAR DE '+str(self.caso_clinico_a_modificar) +' PARA Doença: Classificação Automática [' + str(self.nova_doenca)+'], Sintomas:'+str(lista_sintomas)
-        elif self.tipo_alteracao == 0:#se deletar
+        elif self.tipo_alteracao == 0:#se deletar Caso Clinico
             return 'DELETAR: '+str(self.caso_clinico_a_modificar)
-        else:#se for novo
+        else:#se for novo Caso Clinico
             if self.doenca_classificada:
                 return 'NOVO: Doença: ' + str(self.nova_doenca)+', Sintomas:'+str(lista_sintomas)
             else:
@@ -122,6 +155,12 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
             return 'yellow'
 
     def nome_doenca_antigo_DEF(self):#retorna nome da doenca antigo formatado, ou nome
+        if self.nome_sintoma_a_modificar or self.nome_novo_sintoma_modificado or self.nome_doenca_a_modificar or self.nome_nova_doenca_modificada:
+            if self.nome_doenca_a_modificar != None: #se for no nome da doença (não modificar ordem)
+                return self.nome_doenca_a_modificar
+            else:
+                return '-'
+        #caso clinico
         #0-DELETE; 1-CREATE; ou (2)-UPDATE
         if self.tipo_alteracao == 1:#se for novo não tem doenca antiga
             return '-'
@@ -131,6 +170,12 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
             return self.caso_clinico_a_modificar.doenca
 
     def sintomas_antigo_DEF(self):
+        if self.nome_sintoma_a_modificar or self.nome_novo_sintoma_modificado or self.nome_doenca_a_modificar or self.nome_nova_doenca_modificada:
+            if self.nome_sintoma_a_modificar != None: #se for no nome da doença (não modificar ordem)
+                return self.nome_sintoma_a_modificar
+            else:
+                return '-'
+        #caso clinico
         #0-DELETE; 1-CREATE; ou (2)-UPDATE
         if self.tipo_alteracao == 1:#se for novo caso clinico não tem sintomas
             return '-'
@@ -144,6 +189,12 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
             return lista_sintomas
 
     def nome_doenca_novo_DEF(self):
+        if self.nome_sintoma_a_modificar or self.nome_novo_sintoma_modificado or self.nome_doenca_a_modificar or self.nome_nova_doenca_modificada:
+            if self.nome_nova_doenca_modificada != None: #se for no nome da doença (não modificar ordem)
+                return self.nome_nova_doenca_modificada
+            else:
+                return '-'
+        #caso clinico
         #0-DELETE; 1-CREATE; ou (2)-UPDATE
         if self.tipo_alteracao == 0:#se for deletar então não tem doenca nova
             return '-'
@@ -153,6 +204,12 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
             return self.nova_doenca
 
     def sintomas_novos_DEF(self):
+        if self.nome_sintoma_a_modificar or self.nome_novo_sintoma_modificado or self.nome_doenca_a_modificar or self.nome_nova_doenca_modificada:
+            if self.nome_novo_sintoma_modificado != None: #se for no nome da doença (não modificar ordem)
+                return self.nome_novo_sintoma_modificado
+            else:
+                return '-'
+        #caso clinico
         #0-DELETE; 1-CREATE; ou (2)-UPDATE
         if self.tipo_alteracao == 0:#se for deletar caso clinico então não tem sintomas
             return '-'
@@ -164,61 +221,6 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
                 else:# se não for o ultimo
                     lista_sintomas = lista_sintomas + item.nome_sintoma+', '#adicionar com virgula
             return lista_sintomas
-
-
-    # def salvar_log(self,usuario):
-    #     #----------------------------------Salvar aqui nessa linha na tabela de log------------------------------------------------
-    #     log = Log()
-    #     log.data_solicitacao = self.data_solicitacao
-    #     log.solicitante = self.solicitante_DEF()
-    #     #Antigos
-    #     log.doenca = self.nome_doenca_antigo_DEF()
-    #     log.sintomas = self.sintomas_antigo_DEF()
-    #     #Novos
-    #     log.nova_doenca = self.nome_doenca_novo_DEF()
-    #     log.novos_sintomas = self.sintomas_novos_DEF()
-    #
-    #     log.doenca_classificada = self.doenca_classificada
-    #     log.tipo_alteracao = self.tipo_alteracao#0-DELETE; 1-CREATE; ou (2)-UPDATE
-    #     log.acao = self.acao#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
-    #     log.avaliado_por = usuario.username
-    #     log.save()
-
-#alterar apenas o campo doença ou o campo sintoma
-class Solicitacao_Alterar_Sintoma_Ou_Doenca(models.Model):
-    sintoma_a_modificar = models.ForeignKey(Sintoma, on_delete=models.PROTECT, blank=True, null=True)
-    nova_sintoma = models.CharField(max_length=100,blank=True, null=True)
-    #OU
-    doenca_a_modificar = models.ForeignKey(Doenca, on_delete=models.PROTECT, blank=True, null=True)
-    nova_doenca = models.CharField(max_length=100,blank=True, null=True)
-
-    solicitante = models.ForeignKey(User, on_delete=models.CASCADE)
-    tipo_alteracao = models.PositiveIntegerField()#0-DELETE; 1-CREATE; ou (2)-UPDATE
-    acao = models.PositiveIntegerField(default= 2)#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
-
-    def __str__(self):
-        if (self.sintoma_a_modificar) or (self.nova_sintoma):
-            if (self.tipo_alteracao == 0):
-                return 'REMOVER SINTOMA: '+str(self.sintoma_a_modificar.nome_sintoma)
-            elif (self.tipo_alteracao == 1):
-                return 'NOVO SINTOMA: '+str(self.nova_sintoma)
-            else:#(self.tipo_alteracao == 2:
-                return 'EDITAR SINTOMA: '+str(self.sintoma_a_modificar.nome_sintoma)+ ' PARA: '+str(self.nova_sintoma)
-        else:
-            if (self.tipo_alteracao == 0):
-                return 'REMOVER DOENÇA: '+str(self.doenca_a_modificar.nome_doenca)
-            elif (self.tipo_alteracao == 1):
-                return 'NOVO DOENÇA: '+str(self.nova_doenca)
-            else:#(self.tipo_alteracao == 2:
-                return 'EDITAR DOENÇA: '+str(self.doenca_a_modificar.nome_doenca)+ ' PARA: '+str(self.nova_doenca)
-
-    def save(self, force_insert=False, force_update=False):
-        if (self.nova_sintoma):
-            self.nova_sintoma = self.nova_sintoma.upper()
-        if (self.nova_doenca):
-            self.nova_doenca = self.nova_doenca.upper()
-        super(Solicitacao_Alterar_Sintoma_Ou_Doenca, self).save(force_insert, force_update)
-
 
 
 class Log(models.Model):
