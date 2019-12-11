@@ -30,7 +30,7 @@ SECRET_KEY = 'i96expt%3unxb1jb826onbqdl^@ke3+0s7mojx--=^lc92@+d!'
 # DEBUG = config('DEBUG', default=False, cast=bool)
 
 #Modo de teste
-'''
+# '''
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 DATABASES = {
@@ -58,7 +58,7 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-# '''
+'''
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -182,14 +182,23 @@ USE_L10N = True
 USE_TZ = True
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_PASSWORD = 'doc*suporte*2019'
 EMAIL_HOST_USER = 'doctraining.ufersa.contato@gmail.com'
-# EMAIL_PORT = 587
-EMAIL_PORT = 465
+EMAIL_PORT = 587
+# EMAIL_PORT = 465
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+# EMAIL_HOST_USER = 'jcps.suporte@gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 
 # Static files (CSS, JavaScript, Images)
