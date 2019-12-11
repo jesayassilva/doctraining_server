@@ -30,7 +30,7 @@ SECRET_KEY = 'i96expt%3unxb1jb826onbqdl^@ke3+0s7mojx--=^lc92@+d!'
 # DEBUG = config('DEBUG', default=False, cast=bool)
 
 #Modo de teste
-# '''
+'''
 DEBUG = True
 ALLOWED_HOSTS = ['*']
 DATABASES = {
@@ -58,7 +58,7 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-'''
+# '''
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
