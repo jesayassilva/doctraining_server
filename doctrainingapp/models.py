@@ -16,9 +16,9 @@ class Doenca(models.Model):
     def __str__(self):
         return str(self.nome_doenca)
     #funcao que faz com que os campos sejam Maiusculo automaticamente
-    def save(self, force_insert=False, force_update=False):
-        self.nome_doenca = self.nome_doenca.upper()
-        super(Doenca, self).save(force_insert, force_update)
+    # def save(self, force_insert=False, force_update=False):
+    #     self.nome_doenca = self.nome_doenca.upper()
+    #     super(Doenca, self).save(force_insert, force_update)
 
 
 class Sintoma(models.Model):
@@ -27,9 +27,9 @@ class Sintoma(models.Model):
     def __str__(self):
         return str(self.nome_sintoma)
     #funcao que faz com que os campos sejam Maiusculo automaticamente
-    def save(self, force_insert=False, force_update=False):
-        self.nome_sintoma = self.nome_sintoma.upper()
-        super(Sintoma, self).save(force_insert, force_update)
+    # def save(self, force_insert=False, force_update=False):
+    #     self.nome_sintoma = self.nome_sintoma.upper()
+    #     super(Sintoma, self).save(force_insert, force_update)
 
     # def delete(self,force_insert=False, force_update=False):
     #     # sort instance collections

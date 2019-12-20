@@ -33,6 +33,7 @@ SECRET_KEY = 'i96expt%3unxb1jb826onbqdl^@ke3+0s7mojx--=^lc92@+d!'
 '''
 DEBUG = True
 ALLOWED_HOSTS = ['*']
+ADMINS = [('Jesaias Silva', 'jesayassilva@gmail.com'),('DocTraining', 'doctraining.ufersa@gmail.com')]
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
