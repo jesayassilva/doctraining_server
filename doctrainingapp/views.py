@@ -19,6 +19,8 @@ from django.core.mail import send_mail #Para mandar email
 
 import requests
 
+# from django.core.urlresolvers import resolve
+
 # import pyrebase
 
 #scikit-learn==0.21.3
@@ -39,8 +41,12 @@ def index(request):
     return render(request,'index.html',{'usuario':usuario})
 
 def doctraining(request):
-    print( tentar_ativar_am() )
     usuario = request.user#usuario logado
+    try:
+        print( tentar_ativar_am() )
+    except Exception as e:
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
+        return redirect('/')
     return render(request,'doctraining.html',{'usuario':usuario})
 
 def api(request):
@@ -62,7 +68,7 @@ def casos_clinicos(request):
         casos_clinicos = Caso_Clinico.objects.filter().order_by('doenca__nome_doenca')#todos os casos clinicos
         return render(request,'casos_clinicos.html',{'casos_clinicos':casos_clinicos,'usuario':usuario})
     except Exception as e:
-        mandar_email_error(str(e))
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
         return redirect('/doctraining/')
 
@@ -90,7 +96,7 @@ def doenca(request, pk):#editar nome doenca
             nome_doenca =  doenca.nome_doenca
             return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario})
         except Exception as e:
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
             return redirect('/doctraining/')
 
@@ -108,7 +114,7 @@ def solicitar_deletar_doenca(request, pk):
         messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para deletar doença.')#mensagem para o usuario
         return redirect('/casos_clinicos/')
     except Exception as e:
-        mandar_email_error(str(e))
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
         return redirect('/doctraining/')
 
@@ -133,7 +139,7 @@ def solicitar_nova_doenca(request):
         try:
             return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario})
         except Exception as e:
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
             return redirect('/doctraining/')
 
@@ -167,7 +173,7 @@ def sintoma(request, pk):
             nome_sintoma =  sintoma.nome_sintoma
             return render(request,'sintoma.html',{'ver_remover':ver_remover,'nome_sintoma':nome_sintoma,'sintoma':sintoma,'usuario':usuario})
         except Exception as e:
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
             return redirect('/doctraining/')
 
@@ -185,7 +191,7 @@ def solicitar_deletar_sintoma(request, pk):
         messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para deletar sintoma.')#mensagem para o usuario
         return redirect('/casos_clinicos/')
     except Exception as e:
-        mandar_email_error(str(e))
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
         return redirect('/doctraining/')
 
@@ -211,7 +217,7 @@ def solicitar_novo_sintoma(request):
             nome_sintoma =  ""
             return render(request,'sintoma.html',{'ver_remover':ver_remover,'nome_sintoma':nome_sintoma,'sintoma':sintoma,'usuario':usuario})
         except Exception as e:
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
             return redirect('/doctraining/')
 
@@ -258,11 +264,11 @@ def solicitar_editar_caso_clinico(request,pk):
                 messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação de edição de amostra.')#mensagem para o usuario
             except Exception as e:#se não salvar pelo menos apagar a solicitação mal formada
                 solicitacao_alterar_caso_clinico.delete()
-                mandar_email_error(str(e))
+                mandar_email_error(str(e),usuario,request.resolver_match.url_name)
                 messages.add_message(request, ERROR, 'Ocorreu um erro ao adicionar sintomas. Tente novamente mais tarde.')#mensagem para o usuario
             return redirect('/casos_clinicos/')
         except Exception as e:
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
             return redirect('/casos_clinicos/')
             # return HttpResponse('Erro: '+ str(e))
@@ -277,7 +283,7 @@ def solicitar_editar_caso_clinico(request,pk):
             # self.child.instance = self.instance.get(id=item['id']) # Blog.objects.filter(pk__in=[1, 4, 7])
             return render(request,'solicitar_editar_caso_clinico.html',{'caso_clinico':caso_clinico,'doencas':doencas,'sintomas':sintomas,'lista_sintomas':lista_sintomas, 'usuario':usuario})
         except Exception as e:
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
             return redirect('/casos_clinicos/')
 
@@ -299,14 +305,14 @@ def solicitar_deletar_caso_clinico(request,pk):
             solicitacao_alterar_caso_clinico.novos_sintomas.set(caso_clinico.sintomas.all())
             messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação de exclusão de amostra.')#mensagem para o usuario
         except Exception as e:#se não salvar pelo menos apagar a solicitação mal formada
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro ao adicionar sintomas da exclusão. Tente novamente mais tarde.')#mensagem para o usuario
             solicitacao_alterar_caso_clinico.delete()
         return redirect('/casos_clinicos/')
         # a4.publications.set([p3])
         # return HttpResponse(str(lista_sintomas_novo))
     except Exception as e:
-        mandar_email_error(str(e))
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
         return redirect('/casos_clinicos/')
 
@@ -350,14 +356,14 @@ def solicitar_novo_caso_clinico(request):
                 messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação de nova de amostra.')
             except Exception as e:#se não salvar pelo menos apagar a solicitação mal formada
                 solicitacao_alterar_caso_clinico.delete()
-                mandar_email_error(str(e))
+                mandar_email_error(str(e),usuario,request.resolver_match.url_name)
                 messages.add_message(request, ERROR, 'Ocorreu um erro ao adicionar sintomas. Tente novamente mais tarde.')
             return redirect('/casos_clinicos/')
             # a4.publications.set([p3])
             # return HttpResponse(str(lista_sintomas_novo))
         except Exception as e:
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             return redirect('/casos_clinicos/')
     else:
         try:
@@ -366,7 +372,7 @@ def solicitar_novo_caso_clinico(request):
             return render(request,'solicitar_novo_caso_clinico.html',{'doencas':doencas,'sintomas':sintomas, 'usuario':usuario})
         except Exception as e:
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             return redirect('/casos_clinicos/')
             # return HttpResponse('Erro: '+ str(e))
 
@@ -387,7 +393,7 @@ def solicitacoes_alteracao_casos_clinicos(request):
         return render(request,'solicitacao_alterar_caso_clinico.html',{'solicitacao_alterar_caso_clinico':solicitacao_alterar_caso_clinico,'usuario':usuario})
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-        mandar_email_error(str(e))
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         return redirect('/casos_clinicos/solicitacoes/')
 
 #Aceitar uma solicitação de alteração de caso clinico (Novo, Editar ou Deletar)
@@ -565,7 +571,7 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
         return redirect('/casos_clinicos/solicitacoes/')
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde. '+ str(e))#mensagem para o usuario
-        mandar_email_error(str(e))
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         return redirect('/casos_clinicos/solicitacoes/')
 
 
@@ -611,7 +617,7 @@ def rejeitar_solicitacao_alteracao_caso_clinico(request,pk):
         return redirect('/casos_clinicos/solicitacoes/')
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-        mandar_email_error(str(e))
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         return redirect('/casos_clinicos/solicitacoes/')
 
 
@@ -633,7 +639,7 @@ def log_solicitacoes_alteracao_casos_clinicos(request):
         return render(request,'log_caso_clinico.html',{'logs':logs})
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-        mandar_email_error(str(e))
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         return redirect('/casos_clinicos/solicitacoes/')
 
 #LoginRequiredMixin significa que o usuario precisar estar logado pra acesssar a pagina
@@ -689,17 +695,19 @@ class Deletar_Sala(DeleteView):
         return super(Deletar_Sala, self).get(request, *args, **kwargs)
 
 def todas_salas(request):
+    usuario = request.user
     try:
         #todas as solicitações ordenadas pel data
         salas = Sala.objects.all().extra( select={'nome_sala_QS': 'lower(nome_sala)'}).order_by('nome_sala_QS')
         return render(request,'salas_todas.html',{'salas':salas})
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar salas. Tente novamente mais tarde.')#mensagem para o usuario
-        mandar_email_error(str(e))
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         return redirect('/doctraining/')
 
 
 def nova_pergunta(request,pk_sala):
+    usuario = request.user
     try:
         sala = Sala.objects.get(pk=pk_sala)
         if(sala.responsavel_sala.pk != request.user.pk):
@@ -707,7 +715,7 @@ def nova_pergunta(request,pk_sala):
             return redirect('/salas/todas/')
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar perguntas. Tente novamente mais tarde.')#mensagem para o usuario
-        mandar_email_error(str(e))
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         return redirect('/salas/todas/')
 
     if  request.method == "POST":#se tiver sido eviado os dados no formulario
@@ -735,7 +743,7 @@ def nova_pergunta(request,pk_sala):
                 return render(request,'pergunta_na_sala_nova.html',{'sala':sala})
         except Exception as e:
             messages.add_message(request, ERROR, 'Ocorreu um erro ao salvar pergunta. Tente novamente mais tarde.')#mensagem para o usuario
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             return redirect('/salas/todas/')
     else:#Abrir tela
         return render(request,'pergunta_na_sala_nova.html',{'sala':sala})
@@ -778,6 +786,7 @@ class Deletar_Pergunta(DeleteView):
         return reverse_lazy("doctrainingapp:todas_perguntas", args=(self.get_object().sala.pk, ))
 
 def todas_perguntas(request,pk_sala):
+    usuario = request.user
     try:
         sala = Sala.objects.get(pk=pk_sala)
         if(sala.responsavel_sala.pk != request.user.pk):
@@ -785,7 +794,7 @@ def todas_perguntas(request,pk_sala):
             return redirect('/salas/todas/')
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar perguntas. Tente novamente mais tarde.')#mensagem para o usuario
-        mandar_email_error(str(e))
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         return redirect('/salas/todas/')
 
     try:
@@ -795,13 +804,16 @@ def todas_perguntas(request,pk_sala):
         return render(request,'perguntas_sala_todas.html',{'sala':sala,'perguntas':perguntas})
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar a sala. Tente novamente mais tarde.')#mensagem para o usuario
-        mandar_email_error(str(e))
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         return redirect('/doctraining/')
+
+
 
 
 ###################################################################### INICIO API WEB SERVICE ##############################################################################
 #API
 def nome_doencas_casos_clinicos_api(request):
+    usuario = request.user
     if request.method == 'GET':#Mostra todos os objetos
         try:
             json_lista_doencas = []
@@ -814,12 +826,13 @@ def nome_doencas_casos_clinicos_api(request):
                 json_lista_doencas.append(linha_doenca)
             return JsonResponse(json_lista_doencas,safe=False)
         except Exception as e:
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             return JsonResponse({"Erro":str(e)}, status = 400)
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 400)
 
 #API
 def nome_sintomas_casos_clinicos_api(request):
+    usuario = request.user
     if request.method == 'GET':#Mostra todos os objetos
         try:
             json_lista_sintomas = []
@@ -833,12 +846,13 @@ def nome_sintomas_casos_clinicos_api(request):
 
             return JsonResponse(json_lista_sintomas,safe=False)
         except Exception as e:
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             return JsonResponse({"Erro":str(e)}, status = 400)
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 400)
 
 #API
 def nome_sintomas_casos_clinicos_api(request):
+    usuario = request.user
     if request.method == 'GET':#Mostra todos os objetos
         try:
             json_lista_sintomas = []
@@ -852,12 +866,13 @@ def nome_sintomas_casos_clinicos_api(request):
 
             return JsonResponse(json_lista_sintomas,safe=False)
         except Exception as e:
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             return JsonResponse({"Erro":str(e)}, status = 400)
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 400)
 
 #API
 def todos_casos_clinicos_doencas_sintomas_api(request):
+    usuario = request.user
     if request.method == 'GET':#Mostra todos os objetos
         print( tentar_ativar_am() )
         try:
@@ -875,12 +890,13 @@ def todos_casos_clinicos_doencas_sintomas_api(request):
                 json_lista_casos_clinicos.append(linha_caso_clinico)
             return JsonResponse(json_lista_casos_clinicos,safe=False)
         except Exception as e:
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             return JsonResponse({"Erro":str(e)}, status = 400)
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 400)
 
 #API
 def um_caso_clinico_doenca_sintomas_api(request):
+    usuario = request.user
     if request.method == 'GET':#Mostra todos os objetos
         try:
             caso_clinico = random.choice(Caso_Clinico.objects.exclude(doenca = None).order_by('doenca__nome_doenca'))
@@ -896,13 +912,14 @@ def um_caso_clinico_doenca_sintomas_api(request):
 
             return JsonResponse(json_caso_clinico,safe=False)
         except Exception as e:
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             return JsonResponse({"Erro":str(e)}, status = 400)
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 400)
 
 
 
 def perguntas_de_uma_sala_api(request,pk_sala):
+    usuario = request.user
     if request.method == 'GET':#Mostra todos os objetos
         print( tentar_ativar_am() )
         try:
@@ -921,13 +938,14 @@ def perguntas_de_uma_sala_api(request,pk_sala):
                 json_lista_perguntas_de_uma_sala.append(linha_pergunta)
             return JsonResponse(json_lista_perguntas_de_uma_sala,safe=False)
         except Exception as e:
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             return JsonResponse({"Erro":str(e)}, status = 406)
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
 
 
 
 def todos_salas_api(request):
+    usuario = request.user
     if request.method == 'GET':#Mostra todos os objetos
         try:
             json_lista_salas = []
@@ -941,7 +959,7 @@ def todos_salas_api(request):
                 json_lista_salas.append(linha_sala)
             return JsonResponse(json_lista_salas,safe=False)
         except Exception as e:
-            mandar_email_error(str(e))
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             return JsonResponse({"Erro":str(e)}, status = 406)
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
 
@@ -1311,12 +1329,12 @@ def tentar_ativar_am():
 #
 
 
-def mandar_email_error( msg_erro):
+def mandar_email_error( msg_erro,usuario='Desconhecido',url_erro='Desconhecida'):
     send_mail(
     'Erro em Execução',#Titulo da msg
-    'Caro Jesaías, \nHouve um erro tratado em execução do programa DocTraining \n\n '+msg_erro+' \n\nAtt \nDocTraining \ndoctraining.herokuapp.com',#Mensagem
+    'Olá Jesaías Silva, \nHouve um erro ocultado durante a execução do DocTraining.\n\nUsuário Logado:\n'+str(usuario)+'\n\nURL:\n'+str(url_erro)+ '\n\nErro: \n'+msg_erro+'\n\nAtt \nDocTraining \ndoctraining.herokuapp.com',#Mensagem
     'doctraining.ufersa.contato@gmail.com',
     ['jesayassilva@gmail.com','doctraining.ufersa@gmail.com'],
     fail_silently=False,
     )
-    print('Email Enviado de Erro eviado')
+    print('Email de Erro enviado')

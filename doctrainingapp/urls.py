@@ -81,7 +81,7 @@ urlpatterns = [
     # path('desativar_am/', login_required(desativar_am), name='desativar_am'),
     path('status_am/', login_required(status_am), name='status_am'),
     path('am_agora/', login_required(am_agora), name='am_agora'),
-    path('ler_dados_salvar/',ler_dados_salvar),
+    # path('ler_dados_salvar/',ler_dados_salvar),
 
 ]
 
