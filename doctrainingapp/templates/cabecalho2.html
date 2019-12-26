@@ -24,25 +24,34 @@
   <script src="{%  static 'app/semantic/semantic.min.js'
   %}" ></script>
   -->
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
 
 
 
-<!-- para tabela pesquisa -->
-<!-- <script src="https://code.jquery.com/jquery-3.3.1.js"></script> -->
-<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.20/js/dataTables.semanticui.min.js"></script>
-<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.js"></script> -->
 
-<script>
+<!-- para tabela pesquisa -->
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<!-- Problema no botão de menu no celular -->
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css"/>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.semanticui.min.js"></script>
+<!-- <script>
   $(document).ready(function() {
       $('#example').DataTable();
   } );
+</script> -->
+<script>
+$.noConflict();//Resolver conflito de usar dois jQuery
+jQuery( document ).ready(function( $ ) {
+    $('#example').DataTable();
+});// Code that uses other library's $ can follow here.
 </script>
 <!-- para tabela pesquisa-->
+
+
+
 
 
   <!-- <script src="{% static 'app/js/angular.min.js'
