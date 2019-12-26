@@ -5,14 +5,15 @@
 {%if request.user.is_authenticated %}
     <a class="item" href="{% url 'doctrainingapp:todas_salas' %}">Salas</a>
 
-    <div class="ui simple dropdown item">
+    <a class="item" href="{% url 'doctrainingapp:casos_clinicos' %}">Amostras de Doenças</a><!-- colocar link -->
+    <!-- <div class="ui simple dropdown item">
       Amostras de Doenças <i class="dropdown "></i>
       <div class="menu">
-        <a class="item" href="{% url 'doctrainingapp:casos_clinicos' %}">Casos Clínicos</a><!-- colocar link -->
+        <a class="item" href="{% url 'doctrainingapp:casos_clinicos' %}">Casos Clínicos</a>
         <a class="item" href="#">Diabetes</a>
         <a class="item" href="#">Doença cardíaca</a>
       </div>
-    </div>
+    </div> -->
 
 
     <!-- <div class="ui simple dropdown item">
