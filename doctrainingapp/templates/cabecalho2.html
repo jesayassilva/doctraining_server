@@ -46,7 +46,12 @@
 $.noConflict();//Resolver conflito de usar dois jQuery
 jQuery( document ).ready(function( $ ) {
     $('#example').DataTable();
+    // setTimeout(2000);
+    $( ".loader" ).addClass("disabled").removeClass("active");
+    $( ".dimmer" ).removeClass("dimmer");
 });// Code that uses other library's $ can follow here.
+
+
 </script>
 <!-- para tabela pesquisa-->
 
@@ -97,6 +102,7 @@ jQuery( document ).ready(function( $ ) {
         {%if request.user.is_staff %}
                 <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Solicitações</a>
                 <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Histórico </a>
+                <a href="{% url 'doctrainingapp:usuarios' %}" class="item">Usuários </a>
         {% else %}
                 <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Minhas Solicitações</a>
                 <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Meu Histórico </a>

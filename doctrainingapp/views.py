@@ -53,6 +53,54 @@ def api(request):
     usuario = request.user#usuario logado
     return render(request,'api.html',{'usuario':usuario})
 
+def usuarios(request):
+    usuario = request.user#usuario logado
+    if not usuario.is_staff:#Se não for administrador
+        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
+        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+    try:
+        users = User.objects.all().order_by("username")
+        return render(request,'usuarios.html',{'usuarios':users})
+    except Exception as e:
+        messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
+        return redirect('/')
+
+def usuario_ativar(request,pk):
+    usuario = request.user#usuario logado
+    if not usuario.is_staff:#Se não for administrador
+        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
+        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+    try:
+        user = User.objects.get(pk=pk)
+        user.is_active = True
+        user.save()
+        messages.add_message(request, SUCCESS, 'Usuário '+user.username+' Ativado com Sucesso.')#mensagem para o usuario
+        return redirect('/usuarios/')
+    except Exception as e:
+        messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
+        return redirect('/usuarios/')
+
+def usuario_desativar(request,pk):
+    usuario = request.user#usuario logado
+    if not usuario.is_staff:#Se não for administrador
+        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
+        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+    try:
+        user = User.objects.get(pk=pk)
+        if user.is_superuser:
+            messages.add_message(request, ERROR, 'Você não tem Permissão para desativar um Super Usuário.')#mensagem para o usuario
+            return redirect('/usuarios/')
+        user.is_active = False
+        user.save()
+        messages.add_message(request, SUCCESS, 'O Usuário '+user.username+' foi Desativado.')#mensagem para o usuario
+        return redirect('/usuarios/')
+    except Exception as e:
+        messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
+        return redirect('/usuarios/')
+
 def sair(request):
     usuario = request.user#usuario logado
     #codigo para se deslogar
@@ -1077,7 +1125,7 @@ class UserCreate(CreateView):
         if not self.request.user.is_staff:#Se não for administrador
             messages.add_message(request, ERROR, 'Você não tem Permissão para adicionar usuários.')#mensagem para o usuario
             return redirect('/doctraining/')
-        # messages.add_message(request, WARNING, 'Atualizar Usuário.')#mensagem para o usuario
+        messages.add_message(request, WARNING, 'Novo Usuário do Tipo Professor/Profissional.')#mensagem para o usuario
         return super(UserCreate, self).get(request, *args, **kwargs)
 
 

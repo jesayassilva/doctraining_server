@@ -16,7 +16,13 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# SESSION_COOKIE_AGE = 86400 # 24 horas * 60 minutos * 60 segundos
+SESSION_COOKIE_AGE = 3600 # 24 horas * 60 minutos * 60 segundos Tempo para expirar a sessão
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = False#Fechar o navegador e sessão expirar
 
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True#Fechar o navegador e sessão expirar
+
+SESSION_SAVE_EVERY_REQUEST = True#Renova a sessão a cada iteração
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 

@@ -17,9 +17,13 @@ urlpatterns = [
     path('doctraining/',login_required(doctraining),name='doctraining'),
 
     path('user/novo/',login_required(UserCreate.as_view()),name='user_create'),
-
     path('user/perfil/editar/<int:pk>/',login_required(PerfilUpdate.as_view()),name='perfil_update'),
     path('user/<int:pk>/',login_required(UserUpdate.as_view()),name='user_update'),
+    path('usuarios/',login_required(usuarios),name='usuarios'),
+    path('user/ativar/<int:pk>/',login_required(usuario_ativar),name='user_ativar'),
+    path('user/desativar/<int:pk>/',login_required(usuario_desativar),name='user_desativar'),
+
+
 
 
     #WEB Solicitações Editar, deletar e novo

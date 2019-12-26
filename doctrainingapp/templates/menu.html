@@ -27,6 +27,7 @@
     {%if request.user.is_staff %}
             <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Solicitações</a>
             <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Histórico </a>
+            <a href="{% url 'doctrainingapp:usuarios' %}" class="item">Usuários </a>
     {% else %}
             <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Minhas Solicitações</a>
             <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Meu Histórico </a>
@@ -59,9 +60,9 @@
               <i class="user md icon"></i> {{request.user.username}} <i class="dropdown"></i>
 
       <div class="menu">
-        {%if request.user.is_staff %}
+        <!-- {%if request.user.is_staff %}
               <a href="{% url 'doctrainingapp:user_create' %}" class="item">Novo Usuário </a>
-        {%endif%}
+        {%endif%} -->
         <a class="item" href="{% url 'doctrainingapp:perfil_update' request.user.perfil.pk %}">Meu Perfil </a>
         <a class="item" href="{% url 'doctrainingapp:user_update' request.user.pk %}">Minhas Informações</a>
         <a class="item" href="{% url 'password_change' %}">Alterar Senha</a>

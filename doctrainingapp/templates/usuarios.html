@@ -2,17 +2,21 @@
 
 
 <script language="Javascript">
-function confirmExclusao(id) {
-   if (confirm("Tem certeza que deseja solicitar a exclusão desse dado?")) {
-     location.href="/casos_clinicos/solicitar/delete/"+id;
-
+function confirmDesativar(id) {
+   if (confirm("Tem certeza que deseja desativar o login desse usuário?")) {
+     location.href="/user/desativar/"+id;
+   }
+}
+function confirmAtivar(id) {
+   if (confirm("Tem certeza que deseja ativar o login desse usuário?")) {
+     location.href="/user/ativar/"+id;
    }
 }
 </script>
 
 
 <h1>
-  Casos Clínicos
+  Usuários
 </h1>
 
 {% if messages %}
@@ -34,21 +38,13 @@ function confirmExclusao(id) {
 
 
 <p></p>
-<h3>Amostras de Doenças</h3>
-<p></p>
-<!-- <div style="overflow: auto; border:solid 1px;""> -->
-<!-- <div style="overflow: auto; width: 1340px"> -->
 
-<a href="{% url 'doctrainingapp:solicitar_novo_caso_clinico'%}" class="ui button positive" > Nova Amostra </a>
-<a href="{% url 'doctrainingapp:solicitar_nova_doenca'%}" class="ui button olive" > Nova Doença </a>
-<a href="{% url 'doctrainingapp:solicitar_novo_sintoma'%}" class="ui button olive" > Novo Sintoma </a>
+<a href="{% url 'doctrainingapp:user_create'%}" class="ui button positive" > Novo Usuário </a>
 
 
 
 <p></p>
 
-<!-- <div style="overflow: auto; width: 100%; height: 500px; border:solid 1px; position: relative;"> -->
-<!-- <div style="overflow: auto; width: 100%; height: 500px; position: relative;"> -->
 <div class="dimmable">
   <div class="ui active inverted dimmer">
     <div class="ui active centered inline loader"></div>
@@ -58,11 +54,14 @@ function confirmExclusao(id) {
     <thead>
       <tr>
         <!-- Colunas da tabela -->
-        <th>Id</th>
-        <th>Doença</th>
-        <th>Sintomas</th>
-        <th> </th>
-        <th></th>
+        <!-- <th>Id</th> -->
+        <th>Usuário</th>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Último Login</th>
+        <th>Tipo</th>
+        <th>Situação</th>
+        <th>Ativar/Desativar</th>
         <!-- colunas da tabela -->
       </tr>
     </thead>
@@ -71,42 +70,55 @@ function confirmExclusao(id) {
 
     <tbody>
       <!-- <tr><td>Dados</td></tr> -->
-      {% for caso_clinico in casos_clinicos  %}
-            <tr>
-              <td> <b>{{caso_clinico.pk}}</b> </td>
-              {% if caso_clinico.doenca_classificada %}
-                    {% if caso_clinico.doenca %}
-                          <td> <b> <a href="{% url 'doctrainingapp:doenca' caso_clinico.doenca.pk  %}" > <font color="black"> {{caso_clinico.doenca.nome_doenca}} </font> </a> </b> </td>
+      {% for usuario in usuarios  %}
+      {% if usuario.is_active %}
+                  <tr>
+            {% else %}
+                  <tr class="error">
+      {%endif%}
+              <td> <b>{{usuario.username}}</b> </td>
+              <td> <b>{{usuario.get_full_name}}</b> </td>
+              <td> <b>{{usuario.email}}</b> </td>
+              <td> <b>{{usuario.last_login}}</b></td>
+              {% if usuario.is_staff %}
+                          {% if usuario.is_superuser %}
+                                <td> <b class="ui green label">Super Admin</b> </td>
+                          {% else %}
+                                <td> <b class="ui green label">Administrator</b> </td>
+                          {%endif%}
                     {% else %}
-                          <td> <b>{{caso_clinico.doenca.nome_doenca}}</b> </td>
-                    {%endif%}
-              {% else %}
-                    {% if caso_clinico.doenca %}
-                          <td> <b> <a href="{% url 'doctrainingapp:doenca' caso_clinico.doenca.pk  %}" > <font color="black"> Classificação Automática [{{caso_clinico.doenca.nome_doenca}}] </font> </a> </b> </td>
-                    {% else %}
-                              <td> <b>Classificação Automática [{{caso_clinico.doenca.nome_doenca}}]</b> </td>
-                    {%endif%}
+                          <td> <b class="ui blue label">Professor</b> </td>
               {%endif%}
-              <td>
-                    {% for sintoma in caso_clinico.sintomas.all  %}
-                              <a href="{% url 'doctrainingapp:sintoma' sintoma.pk  %}" > <font color="black"> {{sintoma}} </font> </a>,
-                          <!-- {{sintoma}}, -->
-                    {% endfor %}
-              </td>
 
-              <td> <a href="{% url 'doctrainingapp:solicitar_editar_caso_clinico' caso_clinico.pk  %}" class="ui button" > Editar </a> </td>
-              <td> <a class="ui red button" type="submit" onclick="confirmExclusao({{caso_clinico.pk}})"  > Remover </a> </td>
+              {% if usuario.is_active %}
+                          <td> <b>Ativado</b> </td>
+                    {% else %}
+                          <td> <b >Desativado</b> </td>
+              {%endif%}
+
+              {% if usuario.is_active %}
+                          {% if usuario.is_superuser %}
+                                      <td></td>
+                          {% else %}
+                                      <td> <a class="ui red button" type="submit" onclick="confirmDesativar({{usuario.pk}})">Desativar</a> </td>
+                          {%endif%}
+                    {% else %}
+                          <td> <a class="ui olive button" type="submit" onclick="confirmAtivar({{usuario.pk}})">Ativar</a> </td>
+              {%endif%}
+
+
+
             </tr>
       {% endfor %}
     </tbody>
-    <tfoot>
+    <!-- <tfoot>
       <tr>
         <th>Id</th>
         <th>Doença</th>
         <th>Sintomas</th>
         <th colspan="2"> Opções</th>
       </tr>
-    </tfoot>
+    </tfoot> -->
   </table>
 
 </div>
