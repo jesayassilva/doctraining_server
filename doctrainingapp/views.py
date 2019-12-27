@@ -18,7 +18,8 @@ from django.urls import reverse
 from django.core.mail import send_mail #Para mandar email
 
 import requests
-
+# from django.conf import settings
+from decouple import config
 # from django.core.urlresolvers import resolve
 
 # import pyrebase
@@ -38,7 +39,7 @@ redirecionar_sem_permissao = '/doctraining/'
 
 def index(request):
     usuario = request.user#usuario logado
-    return render(request,'index.html',{'usuario':usuario})
+    return render(request,'index.html',{'usuario':usuario,'link':config('LINK')})
 
 def doctraining(request):
     usuario = request.user#usuario logado
@@ -1379,10 +1380,11 @@ def tentar_ativar_am():
 
 def mandar_email_error( msg_erro,usuario='Desconhecido',url_erro='Desconhecida'):
     send_mail(
-    'Erro em Execução',#Titulo da msg
+    'Erro em Execução Doctraining',#Titulo da msg
     'Olá Jesaías Silva, \nHouve um erro ocultado durante a execução do DocTraining.\n\nUsuário Logado:\n'+str(usuario)+'\n\nURL:\n'+str(url_erro)+ '\n\nErro: \n'+msg_erro+'\n\nAtt \nDocTraining \ndoctraining.herokuapp.com',#Mensagem
     'doctraining.ufersa.contato@gmail.com',
     ['jesayassilva@gmail.com','doctraining.ufersa@gmail.com'],
+    # settings.ADMINS,
     fail_silently=False,
     )
     print('Email de Erro enviado')

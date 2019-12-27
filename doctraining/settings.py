@@ -11,26 +11,21 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-
+from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SESSION_COOKIE_AGE = 86400 # 24 horas * 60 minutos * 60 segundos
-SESSION_COOKIE_AGE = 3600 # 24 horas * 60 minutos * 60 segundos Tempo para expirar a sessão
+SESSION_COOKIE_AGE = 3600 # 1 hora após sessão para expirar
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = False#Fechar o navegador e sessão expirar
-
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True#Fechar o navegador e sessão expirar
-
 SESSION_SAVE_EVERY_REQUEST = True#Renova a sessão a cada iteração
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = config('SECRET_KEY')
-
-
-SECRET_KEY = 'i96expt%3unxb1jb826onbqdl^@ke3+0s7mojx--=^lc92@+d!'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = config('DEBUG', default=False, cast=bool)
@@ -60,7 +55,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'd7j8iei44b6dm6',
         'USER': 'hxrxxeccyjhvky',
-        'PASSWORD': 'd19b0eb8138f99c5ed12eef3ed1740dff036df5a16eafd8f678e8563be8eb2ea',
+        'PASSWORD': config('PASSWORD'),
         'HOST': 'ec2-174-129-253-101.compute-1.amazonaws.com',
         'PORT': '5432',
     }
@@ -112,45 +107,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'doctraining.wsgi.application'
 
-
-
-
-
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.p',
-#         'HOST':'10.5.0.187',
-#         'PASSWORD':'z800lesi514',
-#         'USER':'root',
-#         'NAME':'doctrainingmobile',
-#         'PORT':'3306',
-#         'OPTIONS': {
-#           'autocommit': True,
-#         },
-#
-#     }
-# }
-
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE':'mysql.connector.django',
-#         # 'ENGINE': 'django.db.backends.mysql',
-#         'HOST':'doctraining2.mysql.uhserver.com',
-#         'PASSWORD':'docles2019*',
-#         'USER':'mod_inteligente',
-#         'NAME':'doctraining2',
-#         'PORT':'3306',
-#         'OPTIONS': {
-#                   'autocommit': True,
-#                 },
-#     }
-# }
 
 
 # Password validation
@@ -192,19 +151,11 @@ USE_TZ = True
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'doctraining.ufersa.contato@gmail.com'
-EMAIL_HOST_PASSWORD = 'doc*suporte*2019'
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 # EMAIL_PORT = 465
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-# EMAIL_HOST_USER = 'jcps.suporte@gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 

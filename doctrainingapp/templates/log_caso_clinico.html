@@ -34,12 +34,13 @@
 <div class="dimmable">
     <div class="ui active inverted dimmer">
       <div class="ui active centered inline loader"></div>
+      Carregando
     </div>
 <table id="example" class="ui celled table" style="width:100%">
     <thead>
       <tr>
         <!-- Colunas da tabela -->
-        <th>Data Avaliação</th> <!-- ação -->
+        <!-- <th>Data Atualização</th>  -->
         <th>Solicitante</th>
         <th>Data Solicitação</th>
         <th>Tipo</th>
@@ -47,7 +48,7 @@
         <th>Sintoma(s)</th>
         <th>Nova Doença</th>
         <th>Novo(s) Sintoma(s)</th>
-
+        <th>Data Atualização</th>
         <th>Ação</th>
         {%if request.user.is_staff %}
             <th>Avaliado por</th>
@@ -55,34 +56,21 @@
         <!-- colunas da tabela -->
       </tr>
     </thead>
-
-  <!--  Opções em cima da tabela-->
-
     <tbody>
-      <!-- <tr><td>Dados</td></tr> -->
-
-      <!-- {% for solicitacao,x in dados_zipado  %}
-            <tr>
-              <td> <b>{{solicitacao.pk}}</b> </td>
-              <td> <b>{{solicitacao}}</b> </td>
-              <td> <b> {{x}}</b> </td>
-              <td> <a href="{% url 'doctrainingapp:solicitar_editar_caso_clinico' solicitacao.pk  %}" class="ui button" > Editar </a> </td>
-              <td> <a class="ui red button" type="submit" onclick="confirmExclusao({{solicitacao.pk}})"  > Remover Amostra </a> </td>
-            </tr>
-      {% endfor %} -->
       {% for log in logs  %}
             <tr>
+              <!-- <td> <b>{{log.data_alteracao}}</b> </td> -->
+              <td> {{log.solicitante}} </td>
+              <td> {{log.data_solicitacao}} </td>
+              <td> <b class="ui {{log.cor_DEF}} label">{{log.tipo_alteracao_DEF}} </b> </td>
+              <td> {{log.doenca}}  </td>
+              <td> {{log.sintomas}} </td>
+              <td> {{log.nova_doenca}} </td>
+              <td> {{log.novos_sintomas}} </td>
               <td> <b>{{log.data_alteracao}}</b> </td>
-              <td> <b>{{log.solicitante}}</b> </td>
-              <td> <b>{{log.data_solicitacao}}</b> </td>
-              <td> <b class="ui {{log.cor_DEF}} label">{{log.tipo_alteracao_DEF}}</b> </td>
-              <td> <b>{{log.doenca}} </b> </td>
-              <td> <b>{{log.sintomas}}</b> </td>
-              <td> <b>{{log.nova_doenca}}</b> </td>
-              <td> <b>{{log.novos_sintomas}}</b> </td>
-              <td> <b class="ui {{log.cor_acao_DEF}} label">{{log.acaoDEF}}</b> </td>
+              <td> <b class="ui {{log.cor_acao_DEF}} label">{{log.acaoDEF}} </b> </td>
               {%if request.user.is_staff %}
-                  <td> <b>{{log.avaliador}}</b> </td>
+                  <td>{{log.avaliador}} </td>
               {% endif %}
             </tr>
       {% endfor %}

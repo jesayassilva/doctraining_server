@@ -52,6 +52,7 @@ function recusarAlteracao(id) {
 <div class="dimmable">
     <div class="ui active inverted dimmer">
       <div class="ui active centered inline loader"></div>
+      Carregando
     </div>
 <table id="example" class="ui celled table" style="width:100%">
     <thead>
@@ -65,7 +66,8 @@ function recusarAlteracao(id) {
         <th>Nova Doença</th>
         <th>Novo(s) Sintoma(s)</th>
         {%if request.user.is_staff %}
-          <th colspan="2"> Opções</th>
+          <th></th>
+          <th></th>
         {% endif %}
         <!-- colunas da tabela -->
       </tr>
