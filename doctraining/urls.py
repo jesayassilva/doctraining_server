@@ -28,6 +28,7 @@ urlpatterns = [
     path('contas/resetar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/confirmar_recuperacao.html'), name='password_reset_confirm'),
     path('contas/resetar/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/confirmar_recuperacao_completo.html'), name='password_reset_complete'),
 
+    path('', include('hide_herokuapp.urls')),
     path('', include('doctrainingapp.urls',namespace='doctrainingapp'))
 ]
 

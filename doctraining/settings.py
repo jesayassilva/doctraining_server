@@ -74,7 +74,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'doctrainingapp.apps.DoctrainingappConfig'
+    'doctrainingapp.apps.DoctrainingappConfig',
+    'hide_herokuapp'
 ]
 
 MIDDLEWARE = [
@@ -86,6 +87,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+MIDDLEWARE_CLASSES = (
+    'hide_herokuapp.middleware.HideHerokuappFromRobotsMiddleware'
+)
 
 ROOT_URLCONF = 'doctraining.urls'
 
