@@ -1,9 +1,15 @@
 {% include 'cabecalho2.html' %}
 
+
+
+
 <h1>
   Casos Clínicos
 </h1>
 
+<script>
+
+</script>
 
 <p></p>
 <h3>Solicitar cadastro de amostra de doença</h3>
@@ -58,12 +64,7 @@
     <p></p>
     <p>Sintomas:</p>
     <div class="ui segment">
-
-      <div class="field">
-          <div><input placeholder="Buscar Sintoma" id="botao_filtro_sintomas"/></div>
-      </div>
-
-      <div id="busca_sintomas" class="ui four column very relaxed grid">
+      <div class="ui four column very relaxed grid">
         {% for sintoma in sintomas  %}
 
                   <div class="column">

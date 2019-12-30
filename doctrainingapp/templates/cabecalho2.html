@@ -71,7 +71,23 @@ jQuery( document ).ready(function( $ ) {
     $( ".loader" ).addClass("disabled").removeClass("active");
     $( ".dimmer" ).removeClass("dimmer").html("");//remove o carregando simbolo, habilita clicar e remova a palavra carregando
     // $('#texto_addF').html(messages[index]);
+    $('#botao_filtro_sintomas').keyup(function() {
+        var nomeFiltro = $(this).val().toLowerCase();
+        console.log(nomeFiltro);
+        // alert(nomeFiltro);
+        $('#busca_sintomas').find('div').each(function() {
+            var conteudoCelula = $(this).find('label').text();
+            console.log(conteudoCelula);
+            // alert(conteudoCelula);
+            var corresponde = conteudoCelula.toLowerCase().indexOf(nomeFiltro) >= 0;
+            $(this).css('display', corresponde ? '' : 'none');
+        });
+    });
+
+
 });// Code that uses other library's $ can follow here.
+
+
 
 
 </script>

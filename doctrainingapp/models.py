@@ -139,12 +139,21 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
         return self.solicitante.username
 
     def tipo_alteracao_DEF(self):#retorna nome da alteração
+        o_que_modeficar =''
+        if (self.nome_sintoma_a_modificar) or (self.nome_novo_sintoma_modificado):
+            o_que_modeficar = " Sintoma"
+            #Doença
+        elif (self.nome_doenca_a_modificar) or (self.nome_nova_doenca_modificada):
+            o_que_modeficar = " Doença"
+        else:
+            o_que_modeficar = " Amostra"
+
         if self.tipo_alteracao == 0:#0-DELETE; 1-CREATE; ou (2)-UPDATE
-            return 'Deletar'
+            return 'Deletar' + o_que_modeficar
         elif self.tipo_alteracao == 1:#0-DELETE; 1-CREATE; ou (2)-UPDATE
-            return 'Novo'
+            return 'Nova(o)'+ o_que_modeficar
         else:#0-DELETE; 1-CREATE; ou (2)-UPDATE
-            return 'Editar'
+            return 'Editar'+ o_que_modeficar
 
     def cor_DEF(self):#Cor usada na pagina de solicitações dos adm
         if self.tipo_alteracao == 0:#0-DELETE; 1-CREATE; ou (2)-UPDATE

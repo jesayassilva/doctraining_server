@@ -66,7 +66,12 @@
     <p></p>
     <p>Sintomas:</p>
     <div class="ui segment">
-      <div class="ui four column very relaxed grid">
+
+      <div class="field">
+          <div><input placeholder="Buscar Sintoma" id="botao_filtro_sintomas"/></div>
+      </div>
+
+      <div id="busca_sintomas" class="ui four column very relaxed grid">
         {% for sintoma in sintomas  %}
 
                       {% if sintoma.pk in lista_sintomas %}
