@@ -86,6 +86,8 @@ urlpatterns = [
     path('status_am/', login_required(status_am), name='status_am'),
     path('am_agora/', login_required(am_agora), name='am_agora'),
     # path('ler_dados_salvar/',ler_dados_salvar),
+    # path('gerar_csv/',gerar_csv),
+
 
 ]
 

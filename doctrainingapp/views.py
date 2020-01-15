@@ -487,6 +487,7 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
 
             log.doenca_classificada = solicitacao_alterar_caso_clinico.doenca_classificada#boolena
             log.tipo_alteracao = solicitacao_alterar_caso_clinico.tipo_alteracao#inteiro -> 0-DELETE; 1-CREATE; ou (2)-UPDATE
+            log.aux_tipo_alteracao = solicitacao_alterar_caso_clinico.tipo_alteracao_DEF()
             log.acao = solicitacao_alterar_caso_clinico.acao#inteiro -> 0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
             log.avaliador = usuario#user
             # log.avaliado_por = usuario.username#string
@@ -540,6 +541,7 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
 
             log.doenca_classificada = solicitacao_alterar_caso_clinico.doenca_classificada#boolena
             log.tipo_alteracao = solicitacao_alterar_caso_clinico.tipo_alteracao#inteiro -> 0-DELETE; 1-CREATE; ou (2)-UPDATE
+            log.aux_tipo_alteracao = solicitacao_alterar_caso_clinico.tipo_alteracao_DEF()
             log.acao = solicitacao_alterar_caso_clinico.acao#inteiro -> 0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
             log.avaliador = usuario#user
             #Fim----------------------------------Salvar aqui nessa linha na tabela de log ------------------------------------------------
@@ -580,6 +582,7 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
 
             log.doenca_classificada = solicitacao_alterar_caso_clinico.doenca_classificada#boolena
             log.tipo_alteracao = solicitacao_alterar_caso_clinico.tipo_alteracao#inteiro -> 0-DELETE; 1-CREATE; ou (2)-UPDATE
+            log.aux_tipo_alteracao = solicitacao_alterar_caso_clinico.tipo_alteracao_DEF()
             log.acao = solicitacao_alterar_caso_clinico.acao#inteiro -> 0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
             log.avaliador = usuario#user
 
@@ -619,7 +622,7 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
         messages.add_message(request, SUCCESS, 'Foi aceitada a alteração da amostra.')
         return redirect('/casos_clinicos/solicitacoes/')
     except Exception as e:
-        messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde. '+ str(e))#mensagem para o usuario
+        messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde. ')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         return redirect('/casos_clinicos/solicitacoes/')
 
@@ -652,6 +655,7 @@ def rejeitar_solicitacao_alteracao_caso_clinico(request,pk):
 
         log.doenca_classificada = solicitacao_alterar_caso_clinico.doenca_classificada#boolena
         log.tipo_alteracao = solicitacao_alterar_caso_clinico.tipo_alteracao#inteiro -> 0-DELETE; 1-CREATE; ou (2)-UPDATE
+        log.aux_tipo_alteracao = solicitacao_alterar_caso_clinico.tipo_alteracao_DEF()
         log.acao = solicitacao_alterar_caso_clinico.acao#inteiro -> 0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
         log.avaliador = usuario#user
         #Fim----------------------------------Salvar aqui nessa linha na tabela de log ------------------------------------------------
@@ -1021,6 +1025,7 @@ def todos_salas_api(request):
 classe_casos_clinicos = 'class'
 def ler_dados_salvar(request):
     df = pd.read_csv('casos_clinicos.csv') #lendo os dados
+    # df = pd.read_csv('backup_casos_clinicos.csv') #lendo os dados do backup
     print(' -------- Data Frame --------')
     print(df)
 
@@ -1388,3 +1393,53 @@ def mandar_email_error( msg_erro,usuario='Desconhecido',url_erro='Desconhecida')
     fail_silently=False,
     )
     print('Email de Erro enviado')
+
+def gerar_csv(request):
+    print('Inicio gerar csv')
+    print("Obter dados...")
+    sintomas = Sintoma.objects.all().order_by('pk')
+    casos_clinicos = Caso_Clinico.objects.exclude(doenca = None,doenca_classificada = False).order_by('pk')
+    casos_clinicos_sem_classificacao = Caso_Clinico.objects.filter(doenca_classificada = False).order_by('pk')
+    print("Obter dados: OK")
+
+    print("Lista Sintomas...")
+    lista_sintomas = []
+    lista_sintomas_sem_class =[]
+    for sintoma in sintomas:#adicinar sintiomas desse caso clinico a lista
+        lista_sintomas.append(sintoma.nome_sintoma)
+        lista_sintomas_sem_class.append(sintoma.nome_sintoma)
+    lista_sintomas.append(nome_class_DF_casos_clinicos)
+    df = pd.DataFrame(columns=lista_sintomas)
+    # casos_clinicos = Caso_Clinico.Sintoma.objects.all().order_by('pk')
+    print("Lista Sintomas: OK")
+
+    print("Data Frame...")
+    salvos = 0
+    for caso_clinico in casos_clinicos:
+        valor_linha = []
+
+        for sintoma in sintomas:
+            if sintoma in caso_clinico.sintomas.all():
+                valor_linha.append(1)
+            else:
+                valor_linha.append(0)
+        valor_linha.append(caso_clinico.doenca.nome_doenca)
+        df_auxiliar = pd.DataFrame([valor_linha], columns=lista_sintomas)
+        df = df.append(df_auxiliar,ignore_index=True)
+        salvos = salvos+1
+        print(str(salvos)+' Salvo')
+    # print(df.head())
+    print("Data Frame: OK")
+
+    print("Savando CSV...")
+    df.to_csv('backup_casos_clinicos.csv',index=False) #Salvando dataframe em csv e usando
+    print("Savando CSV: OK")
+    return HttpResponse("CSV gerado com sucesso")
+
+
+
+
+
+
+
+#

@@ -195,7 +195,7 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
             lista_sintomas = ''#lista de sintomas string
             for item in self.caso_clinico_a_modificar.sintomas.all():#enquanto tiver sintoma em sintomas
                 if item == self.caso_clinico_a_modificar.sintomas.last():#se o sintoma for o ultimo
-                    lista_sintomas = lista_sintomas + item.nome_sintoma+'.'#adicinar com ponto final
+                    lista_sintomas = lista_sintomas + item.nome_sintoma+'. '#adicinar com ponto final
                 else:# se não for o ultimo
                     lista_sintomas = lista_sintomas + item.nome_sintoma+', '#adicionar com virgula
             return lista_sintomas
@@ -229,7 +229,7 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
             lista_sintomas = ''#lista de sintomas string
             for item in self.novos_sintomas.all():#enquanto tiver sintoma em sintomas
                 if item == self.novos_sintomas.last():#se o sintoma for o ultimo
-                    lista_sintomas = lista_sintomas + item.nome_sintoma+'.'#adicinar com ponto final
+                    lista_sintomas = lista_sintomas + item.nome_sintoma+'. '#adicinar com ponto final
                 else:# se não for o ultimo
                     lista_sintomas = lista_sintomas + item.nome_sintoma+', '#adicionar com virgula
             return lista_sintomas
@@ -249,6 +249,7 @@ class Log(models.Model):
 
     doenca_classificada = models.BooleanField(default = False)
     tipo_alteracao = models.PositiveIntegerField()#0-DELETE; 1-CREATE; ou (2)-UPDATE
+    aux_tipo_alteracao = models.CharField(max_length=100,blank=False, null=False)
     acao = models.PositiveIntegerField()#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
 
     data_alteracao = models.DateTimeField(default=datetime.now)
