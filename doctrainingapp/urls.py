@@ -85,8 +85,10 @@ urlpatterns = [
     # path('desativar_am/', login_required(desativar_am), name='desativar_am'),
     path('status_am/', login_required(status_am), name='status_am'),
     path('am_agora/', login_required(am_agora), name='am_agora'),
-    # path('ler_dados_salvar/',ler_dados_salvar),
-    # path('gerar_csv/',gerar_csv),
+    
+    #BACKUP E RESTAURAR BACKUP
+    # path('ler_dados_salvar/',login_required(ler_dados_salvar)),#Caso o backup sejá restaurado é interessante apagar todos os dados da tabela caso clinico,doenca e sintomas pois serão novamente salvos e pode haver duplicação de caso clinico
+    path('gerar_csv/',login_required(gerar_csv)),
 
 
 ]

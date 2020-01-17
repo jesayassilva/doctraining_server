@@ -1024,7 +1024,8 @@ def todos_salas_api(request):
 ###################################################################### INICIO SALVAR DADOS DO CSV NO BANCO ##############################################################################
 classe_casos_clinicos = 'class'
 def ler_dados_salvar(request):
-    df = pd.read_csv('casos_clinicos.csv') #lendo os dados
+    df = pd.read_csv('backup_casos_clinicos.csv') #lendo os dados
+    # df = pd.read_csv('backup.csv') #lendo os dados
     # df = pd.read_csv('backup_casos_clinicos.csv') #lendo os dados do backup
     print(' -------- Data Frame --------')
     print(df)
@@ -1055,6 +1056,7 @@ def ler_dados_salvar(request):
                 print(item.replace("_", " "))
 
     print(' -------- Salvando Casos Clínicos --------')
+    salvos = 0
     for linha in df.values:#todas as Linhas do DataFrame
         lista_sintomas_caso_clinico = []
         doenca_caso_clinico = None
@@ -1074,6 +1076,8 @@ def ler_dados_salvar(request):
         caso_clinico.save()#salvando o caso clinico
         caso_clinico.sintomas.set(lista_sintomas_caso_clinico)#Adicionando os sintomas após objeto ser salvo pelo metodo get()
         print(caso_clinico)
+        salvos = salvos+1
+        print(str(salvos)+' Caso Clinico Salvo')
 
 
 
@@ -1153,7 +1157,7 @@ class PerfilUpdate(UpdateView):
 
 
 
-############################################# Machine Learning #################################
+############################################# Machine Learning #############################################################
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import train_test_split#Importar divisão
 from sklearn.ensemble import BaggingClassifier
@@ -1174,97 +1178,106 @@ nome_class_DF_casos_clinicos = 'class'
 taxa_aprendizado = ''
 # def aprender(request):
 def aprender():
-    print('Inicio Função aprender')
-    global stop_threads
-    global taxa_aprendizado
-    print("Obter dados...")
-    sintomas = Sintoma.objects.all().order_by('pk')
-    casos_clinicos = Caso_Clinico.objects.exclude(doenca = None,doenca_classificada = False).order_by('pk')
-    casos_clinicos_sem_classificacao = Caso_Clinico.objects.filter(doenca_classificada = False).order_by('pk')
-    print("Obter dados: OK")
+    try:
+        print('Inicio Função aprender')
+        global stop_threads
+        global taxa_aprendizado
+        print("Obter dados...")
+        sintomas = Sintoma.objects.all().order_by('pk')
+        casos_clinicos = Caso_Clinico.objects.exclude(doenca = None,doenca_classificada = False).order_by('pk')
+        casos_clinicos_sem_classificacao = Caso_Clinico.objects.filter(doenca_classificada = False).order_by('pk')
+        print("Obter dados: OK")
 
-    print("Lista Sintomas...")
-    lista_sintomas = []
-    lista_sintomas_sem_class =[]
-    for sintoma in sintomas:#adicinar sintiomas desse caso clinico a lista
-        lista_sintomas.append(sintoma.nome_sintoma)
-        lista_sintomas_sem_class.append(sintoma.nome_sintoma)
-    lista_sintomas.append(nome_class_DF_casos_clinicos)
-    df = pd.DataFrame(columns=lista_sintomas)
-    # casos_clinicos = Caso_Clinico.Sintoma.objects.all().order_by('pk')
-    print("Lista Sintomas: OK")
+        print("Lista Sintomas...")
+        lista_sintomas = []
+        lista_sintomas_sem_class =[]
+        for sintoma in sintomas:#adicinar sintiomas desse caso clinico a lista
+            lista_sintomas.append(sintoma.nome_sintoma)
+            lista_sintomas_sem_class.append(sintoma.nome_sintoma)
+        lista_sintomas.append(nome_class_DF_casos_clinicos)
+        df = pd.DataFrame(columns=lista_sintomas)
+        # casos_clinicos = Caso_Clinico.Sintoma.objects.all().order_by('pk')
+        print("Lista Sintomas: OK")
 
-    if stop_threads:#se for para parar
-        return
+        if stop_threads:#se for para parar
+            return
 
-    print("Data Frame...")
-    for caso_clinico in casos_clinicos:
-        valor_linha = []
+        print("Data Frame...")
+        gerados = 0
+        for caso_clinico in casos_clinicos:
+            valor_linha = []
 
-        for sintoma in sintomas:
-            if sintoma in caso_clinico.sintomas.all():
-                valor_linha.append(1)
-            else:
-                valor_linha.append(0)
-        valor_linha.append(caso_clinico.doenca.nome_doenca)
-        df_auxiliar = pd.DataFrame([valor_linha], columns=lista_sintomas)
-        df = df.append(df_auxiliar,ignore_index=True)
-    # print(df.head())
-    print("Data Frame: OK")
+            for sintoma in sintomas:
+                if sintoma in caso_clinico.sintomas.all():
+                    valor_linha.append(1)
+                else:
+                    valor_linha.append(0)
+            valor_linha.append(caso_clinico.doenca.nome_doenca)
+            df_auxiliar = pd.DataFrame([valor_linha], columns=lista_sintomas)
+            df = df.append(df_auxiliar,ignore_index=True)
+            gerados = gerados+1
+            print(str(gerados)+' Linhas geradas do Data Frame')
+        # print(df.head())
+        print("Data Frame: OK")
 
-    ######### DATA SET MONTADO #############
-    if stop_threads:#se for para parar
-        return
+        ######### DATA SET MONTADO #############
+        if stop_threads:#se for para parar
+            return
 
-    print("Treino e Teste...")
-    X = df.drop('class',axis=1)
-    y = df['class']
-    X_train, X_test, y_train, y_test = train_test_split(X, #train.drop('Survived',axis=1) remove a coluna e a retorna mas não altera na variavel
-                                                        y, test_size=0.20,
-                                                        random_state=254)#Dividir os dados em treino e teste
-    logmodel = LogisticRegression(C=10000)#contrutor
-    logmodel.fit(X_train,y_train)#treino
-    logmodel_predictions = logmodel.predict(X_test)#predizer dados de treinos
-    print(confusion_matrix(y_test,logmodel_predictions)) #Ver resultados
-    print(classification_report(y_test,logmodel_predictions)) #Ver resultados
-    scores = cross_val_score(logmodel, X, y, cv=5, scoring='f1_micro')
-    print(scores)
-    print(scores.mean())
-    taxa_aprendizado = str(round(scores.mean()*100,2))
-    print("Treino e Teste: OK")
+        print("Treino e Teste...")
+        X = df.drop('class',axis=1)
+        y = df['class']
+        X_train, X_test, y_train, y_test = train_test_split(X, #train.drop('Survived',axis=1) remove a coluna e a retorna mas não altera na variavel
+                                                            y, test_size=0.20,
+                                                            random_state=254)#Dividir os dados em treino e teste
+        logmodel = LogisticRegression(C=10000)#contrutor
+        logmodel.fit(X_train,y_train)#treino
+        logmodel_predictions = logmodel.predict(X_test)#predizer dados de treinos
+        print(confusion_matrix(y_test,logmodel_predictions)) #Ver resultados
+        print(classification_report(y_test,logmodel_predictions)) #Ver resultados
+        scores = cross_val_score(logmodel, X, y, cv=5, scoring='f1_micro')
+        print(scores)
+        print(scores.mean())
+        taxa_aprendizado = str(round(scores.mean()*100,2))
+        print("Treino e Teste: OK")
 
-    if stop_threads:
-        return
-    print("Classificação Dados...")
-    for caso_clinico in casos_clinicos_sem_classificacao:
-        valor_linha_classificar = []
+        if stop_threads:
+            return
+        print("Classificação Dados...")
+        classificados = 0
+        for caso_clinico in casos_clinicos_sem_classificacao:
+            valor_linha_classificar = []
 
-        for sintoma in sintomas:
-            if sintoma in caso_clinico.sintomas.all():
-                valor_linha_classificar.append(1)
-            else:
-                valor_linha_classificar.append(0)
-        df_classificar = pd.DataFrame([valor_linha_classificar], columns=lista_sintomas_sem_class)
-        #classificando novo dado
-        print(df_classificar)
-        print("Classificado como: ")
-        resultado = logmodel.predict(df_classificar)
-        print(resultado)
+            for sintoma in sintomas:
+                if sintoma in caso_clinico.sintomas.all():
+                    valor_linha_classificar.append(1)
+                else:
+                    valor_linha_classificar.append(0)
+            df_classificar = pd.DataFrame([valor_linha_classificar], columns=lista_sintomas_sem_class)
+            #classificando novo dado
+            print(df_classificar)
+            print("Classificado como: ")
+            resultado = logmodel.predict(df_classificar)
+            print(resultado)
 
-        try:
-            nova_doenca = Doenca.objects.get(nome_doenca = resultado[0])#pegar doenca selecionada no formulario
-            caso_clinico.doenca = nova_doenca#adicinando doenca
-            caso_clinico.doenca_classificada = False#variavel indica que a doenca não foi classificada pelo usuario
-            caso_clinico.save()#salvando o caso clinico
+            try:
+                nova_doenca = Doenca.objects.get(nome_doenca = resultado[0])#pegar doenca selecionada no formulario
+                caso_clinico.doenca = nova_doenca#adicinando doenca
+                caso_clinico.doenca_classificada = False#variavel indica que a doenca não foi classificada pelo usuario
+                caso_clinico.save()#salvando o caso clinico
 
-        except Exception as e:
-            mandar_email_error('Erro ao classificar dados no Aprendizado de Máquina '+str(e))
-            print('ERRO: '+str(e))
-    # '''
-    print("Classificação Dados: OK")
+            except Exception as e:
+                mandar_email_error('Erro ao classificar dados no Aprendizado de Máquina '+str(e))
+                print('ERRO: '+str(e))
 
-    print('Fim Função aprender')
+            classificados = classificados+1
+            print(str(classificados)+' Exemplos Classificados')
+        # '''
+        print("Classificação Dados: OK")
 
+        print('Fim Função aprender')
+    except Exception as e:
+        mandar_email_error(msg_erro=str(e), url_erro="Thread AM")
 
 
 
@@ -1380,7 +1393,74 @@ def tentar_ativar_am():
 
 
 
+
+
 #
+import io
+from ftplib import *
+def gerar_csv(request):
+    threading_do_bck_casos_clinicos = threading.Thread(target=bck_casos_clinicos)
+    threading_do_bck_casos_clinicos.start()#o normal
+    messages.add_message(request, SUCCESS, 'Gerando CSV de Backup...')#mensagem para o usuario
+    return redirect('/doctraining/')
+
+
+def bck_casos_clinicos():
+    try:
+        print('Inicio gerar csv')
+        print("Obter dados...")
+        sintomas = Sintoma.objects.all().order_by('pk')
+        casos_clinicos = Caso_Clinico.objects.exclude(doenca = None,doenca_classificada = False).order_by('pk')
+        casos_clinicos_sem_classificacao = Caso_Clinico.objects.filter(doenca_classificada = False).order_by('pk')
+        print("Obter dados: OK")
+
+        print("Lista Sintomas...")
+        lista_sintomas = []
+        lista_sintomas_sem_class =[]
+        for sintoma in sintomas:#adicinar sintiomas desse caso clinico a lista
+            lista_sintomas.append(sintoma.nome_sintoma)
+            lista_sintomas_sem_class.append(sintoma.nome_sintoma)
+        lista_sintomas.append(nome_class_DF_casos_clinicos)
+        df = pd.DataFrame(columns=lista_sintomas)
+        # casos_clinicos = Caso_Clinico.Sintoma.objects.all().order_by('pk')
+        print("Lista Sintomas: OK")
+
+        print("Data Frame...")
+        gerados = 0
+        for caso_clinico in casos_clinicos:
+            valor_linha = []
+
+            for sintoma in sintomas:
+                if sintoma in caso_clinico.sintomas.all():
+                    valor_linha.append(1)
+                else:
+                    valor_linha.append(0)
+            valor_linha.append(caso_clinico.doenca.nome_doenca)
+            df_auxiliar = pd.DataFrame([valor_linha], columns=lista_sintomas)
+            df = df.append(df_auxiliar,ignore_index=True)
+            gerados = gerados+1
+            print(str(gerados)+' Linhas geradas do Data Frame')
+        # print(df.head())
+        print("Data Frame: OK")
+
+        print("Savando CSV...")
+        #FTP
+        ftp = FTP()
+        ftp.connect('files.000webhost.com', 21)
+        ftp.login('jesaias','09011996')
+        ftp.cwd ('/public_html/doctraining/')
+        buffer = io.StringIO()
+        df.to_csv(buffer,index=False)
+        text = buffer.getvalue()
+        bio = io.BytesIO(str.encode(text))
+        ftp.storbinary('STOR backup_casos_clinicos.csv', bio)
+        ftp.close()
+        #FTP
+
+        # df.to_csv('backup_casos_clinicos.csv',index=False) #Salvando dataframe em csv e usando
+        print("Savando CSV: OK")
+    except Exception as e:
+        mandar_email_error(msg_erro=str(e), url_erro="BCK Casos Clinicos")
 
 
 def mandar_email_error( msg_erro,usuario='Desconhecido',url_erro='Desconhecida'):
@@ -1393,51 +1473,6 @@ def mandar_email_error( msg_erro,usuario='Desconhecido',url_erro='Desconhecida')
     fail_silently=False,
     )
     print('Email de Erro enviado')
-
-def gerar_csv(request):
-    print('Inicio gerar csv')
-    print("Obter dados...")
-    sintomas = Sintoma.objects.all().order_by('pk')
-    casos_clinicos = Caso_Clinico.objects.exclude(doenca = None,doenca_classificada = False).order_by('pk')
-    casos_clinicos_sem_classificacao = Caso_Clinico.objects.filter(doenca_classificada = False).order_by('pk')
-    print("Obter dados: OK")
-
-    print("Lista Sintomas...")
-    lista_sintomas = []
-    lista_sintomas_sem_class =[]
-    for sintoma in sintomas:#adicinar sintiomas desse caso clinico a lista
-        lista_sintomas.append(sintoma.nome_sintoma)
-        lista_sintomas_sem_class.append(sintoma.nome_sintoma)
-    lista_sintomas.append(nome_class_DF_casos_clinicos)
-    df = pd.DataFrame(columns=lista_sintomas)
-    # casos_clinicos = Caso_Clinico.Sintoma.objects.all().order_by('pk')
-    print("Lista Sintomas: OK")
-
-    print("Data Frame...")
-    salvos = 0
-    for caso_clinico in casos_clinicos:
-        valor_linha = []
-
-        for sintoma in sintomas:
-            if sintoma in caso_clinico.sintomas.all():
-                valor_linha.append(1)
-            else:
-                valor_linha.append(0)
-        valor_linha.append(caso_clinico.doenca.nome_doenca)
-        df_auxiliar = pd.DataFrame([valor_linha], columns=lista_sintomas)
-        df = df.append(df_auxiliar,ignore_index=True)
-        salvos = salvos+1
-        print(str(salvos)+' Salvo')
-    # print(df.head())
-    print("Data Frame: OK")
-
-    print("Savando CSV...")
-    df.to_csv('backup_casos_clinicos.csv',index=False) #Salvando dataframe em csv e usando
-    print("Savando CSV: OK")
-    return HttpResponse("CSV gerado com sucesso")
-
-
-
 
 
 
