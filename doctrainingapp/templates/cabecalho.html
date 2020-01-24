@@ -10,7 +10,8 @@
 
   <!-- Site Properties -->
   <title>DocTraining</title>
-  <link rel="shortcut icon" href="http://les.ufersa.edu.br/doctraining/web/images/logo2.png">
+  <!-- <link rel="shortcut icon" href="http://les.ufersa.edu.br/doctraining/web/images/logo2.png"> -->
+  <link rel="shortcut icon" href="https://jesaias.000webhostapp.com/doctraining/imagens/logo_doctraining.jpeg">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -19,6 +20,10 @@
 
   <style type="text/css">
 
+  .ui.secondary.inverted.pointing.menu {
+      border-width: 0px;
+      /* border-color: rgba(34,36,38,.15); */
+  }
 
     .hidden.menu {
       display: none;
@@ -150,7 +155,7 @@
 
 <!-- Following Menu -->
 <!-- Menu ao baixar a barra de rolagem  -->
-<div class="ui large top fixed hidden menu">
+<div class="ui large top teal fixed hidden menu">
   <div class="ui container">
     <a class="active item" href="{% url 'doctrainingapp:index' %}">DocTraining</a>
     <a class="item" href="#caracteristica" class='scroll' >Características</a>
@@ -172,7 +177,7 @@
 
 <!-- Sidebar Menu -->
 <!-- Menu ao lado quando tela se ajudar -->
-<div class="ui vertical inverted sidebar menu">
+<div class="ui vertical teal inverted sidebar menu">
   <a class="active item" href="{% url 'doctrainingapp:index' %}">DocTraining</a>
   <a class="item" href="#caracteristica" class='scroll'>Características</a>
   <a class="item" href="#quem_somos" class='scroll'>Quem Somos</a>
@@ -186,7 +191,7 @@
 <!-- Page Contents -->
 <div class="pusher">
 
-  <div class="ui inverted vertical masthead center aligned segment" background-image="https://www.globalframe.com.br/gf_base/empresas/MIGA/imagens/8B22D61C33E0BDC4856FA0F187D962CE1F29_medico.png">
+  <div class="ui inverted vertical teal masthead center aligned segment" background-image="https://www.globalframe.com.br/gf_base/empresas/MIGA/imagens/8B22D61C33E0BDC4856FA0F187D962CE1F29_medico.png">
 
     <div class="ui container">
       <div class="ui large secondary inverted pointing menu">

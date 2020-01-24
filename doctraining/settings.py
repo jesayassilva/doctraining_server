@@ -88,9 +88,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 MIDDLEWARE_CLASSES = (
     'hide_herokuapp.middleware.HideHerokuappFromRobotsMiddleware'
 )
+
+
+
 
 ROOT_URLCONF = 'doctraining.urls'
 
