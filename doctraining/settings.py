@@ -17,7 +17,7 @@ from decouple import config
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SESSION_COOKIE_AGE = 86400 # 24 horas * 60 minutos * 60 segundos
-SESSION_COOKIE_AGE = 3600 # 1 hora após sessão para expirar
+SESSION_COOKIE_AGE = 3*24*3600 # 1 hora após sessão para expirar
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = False#Fechar o navegador e sessão expirar
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True#Fechar o navegador e sessão expirar
 SESSION_SAVE_EVERY_REQUEST = True#Renova a sessão a cada iteração
@@ -45,8 +45,10 @@ DATABASES = {
 '''
 
 # Mode de Produção
-DEBUG = False
+# DEBUG = False
+
 # DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = ['doctraining.herokuapp.com','https://doctraining.herokuapp.com']
 # ALLOWED_HOSTS = ['*']
 ADMINS = [('Jesaias Silva', 'jesayassilva@gmail.com'),('DocTraining', 'doctraining.ufersa@gmail.com')]
