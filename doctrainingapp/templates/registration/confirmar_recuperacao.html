@@ -7,7 +7,9 @@
 {% if validlink %}
 
 Por favor, informe sua nova senha duas vezes para que possamos
-</br>verificar se você a digitou corretamente.<a href="/"> Voltar para o login</a>
+</br>verificar se você a digitou corretamente.
+<br>
+<a href="{% url 'doctrainingapp:login' %}">Voltar para o login</a>
 
 <form method="post" class="ui form"  style="margin-top: 2em">{% csrf_token %}
     <div class="required field" style="max-width: 250px;margin: 0 auto;margin-top: 1em;margin-bottom: 1em;">

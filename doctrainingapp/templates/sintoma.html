@@ -2,7 +2,7 @@
 
 <script language="Javascript">
 function confirmExclusao(id) {
-   if (confirm("Tem certeza que deseja solicitar a exclusão desse sintoma? Isso não vai apagar as amostras relacionadas a esta doença!")) {
+   if (confirm("Tem certeza que deseja solicitar a exclusão desse sintoma?\nEle será removido de todas as amostras relacionadas a ele, além de ser removido da lista de sintomas!")) {
      location.href="/sintoma/solicitacoes/delete/"+id;
 
    }
@@ -34,7 +34,7 @@ function confirmExclusao(id) {
 
 
 <p></p>
-<h3>Sintoma</h3>
+<h3>Sintomas</h3>
 <p></p>
 <!-- <div style="overflow: auto; border:solid 1px;""> -->
 <!-- <div style="overflow: auto; width: 1340px"> -->
@@ -63,6 +63,39 @@ function confirmExclusao(id) {
 
 </form>
 
+
+<br>
+<br>
+
+<div class="dimmable">
+    <div class="ui active inverted dimmer">
+      <div class="ui active centered inline loader"></div>
+      Carregando
+    </div>
+  <table id="example" class="ui celled table" style="width:100%">
+    <thead>
+      <tr>
+        <!-- Colunas da tabela -->
+        <th>Todos os Sintomas</th>
+        <th></th>
+        <!-- <th>Descrição</th> -->
+      </tr>
+    </thead>
+
+  <!--  Opções em cima da tabela-->
+
+    <tbody>
+      {% for sintoma in sintomas_todos  %}
+            <tr>
+              <td> <a href="{% url 'doctrainingapp:sintoma' sintoma.pk  %}" > <font color="black"> {{sintoma.nome_sintoma}} </font> </a> </td>
+              <td><a class="ui red button" type="submit" onclick="confirmExclusao({{sintoma.pk}})"  > Remover </a></td>
+            </tr>
+      {% endfor %}
+
+    </tbody>
+  </table>
+
+</div>
 
 
 

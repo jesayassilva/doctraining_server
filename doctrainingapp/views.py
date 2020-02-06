@@ -124,26 +124,35 @@ def casos_clinicos(request):
 def doenca(request, pk):#editar nome doenca
     usuario = request.user#usuario logado
     ver_remover = True
+    doencas_todas = Doenca.objects.all().order_by('nome_doenca')
     if  request.method == "POST":#se tiver sido eviado os dados no formulario
         doenca = Doenca.objects.get(pk=pk)
-        nome_doenca =  doenca.nome_doenca
+        nome_doenca =  request.POST.get("nome_doenca")
         solicitacao_alterar_doenca = Solicitacao_Alterar_Caso_Clinico()#novo objeto
         solicitacao_alterar_doenca.nome_doenca_a_modificar = doenca
-        if len(request.POST.get("nome_doenca")) <= 2:# se nome digitado for curto
+        try:
+            Doenca.objects.get(nome_doenca=nome_doenca)
+            messages.add_message(request, ERROR, 'Nome da doença já existe.')#mensagem para o usuario
+            nome_doenca = doenca.nome_doenca
+            return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario,'doencas_todas':doencas_todas})
+        except Exception as e:
+            pass
+        if len(nome_doenca) <= 2:# se nome digitado for curto
             messages.add_message(request, ERROR, 'Nome da doença é muito curto.')#mensagem para o usuario
-            return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario})
-        solicitacao_alterar_doenca.nome_nova_doenca_modificada = request.POST.get("nome_doenca")
+            nome_doenca =  doenca.nome_doenca
+            return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario,'doencas_todas':doencas_todas})
+        solicitacao_alterar_doenca.nome_nova_doenca_modificada = nome_doenca
         solicitacao_alterar_doenca.solicitante = usuario
         solicitacao_alterar_doenca.tipo_alteracao = 2#0-DELETE; 1-CREATE; ou (2)-UPDATE
         solicitacao_alterar_doenca.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
         solicitacao_alterar_doenca.save()
         messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para editar nome de doença.')#mensagem para o usuario
-        return redirect('/casos_clinicos/')
+        return redirect('/doenca/nova/')
     else:
         try:
             doenca = Doenca.objects.get(pk=pk)
             nome_doenca =  doenca.nome_doenca
-            return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario})
+            return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario,'doencas_todas':doencas_todas})
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
@@ -161,7 +170,7 @@ def solicitar_deletar_doenca(request, pk):
         solicitacao_alterar_doenca.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
         solicitacao_alterar_doenca.save()
         messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para deletar doença.')#mensagem para o usuario
-        return redirect('/casos_clinicos/')
+        return redirect('/doenca/nova/')
     except Exception as e:
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
@@ -172,21 +181,31 @@ def solicitar_nova_doenca(request):
     usuario = request.user#usuario logado
     ver_remover = False
     nome_doenca =  ""
+    doencas_todas = Doenca.objects.all().order_by('nome_doenca')
     if  request.method == "POST":#se tiver sido eviado os dados no formulario
         solicitacao_alterar_doenca = Solicitacao_Alterar_Caso_Clinico()#novo objeto
-        if len(request.POST.get("nome_doenca")) <= 2:# se nome digitado for curto
+        nome_doenca = request.POST.get("nome_doenca")
+        try:
+            Doenca.objects.get(nome_doenca=nome_doenca)
+            messages.add_message(request, ERROR, 'Nome da doença já existe.')#mensagem para o usuario
+            nome_doenca =  ''
+            return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario,'doencas_todas':doencas_todas})
+        except Exception as e:
+            pass
+        if len(nome_doenca) <= 2:# se nome digitado for curto
             messages.add_message(request, ERROR, 'Nome da doença é muito curto.')#mensagem para o usuario
-            return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario})
-        solicitacao_alterar_doenca.nome_nova_doenca_modificada = request.POST.get("nome_doenca")
+            nome_doenca = ''
+            return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario,'doencas_todas':doencas_todas})
+        solicitacao_alterar_doenca.nome_nova_doenca_modificada = nome_doenca
         solicitacao_alterar_doenca.solicitante = usuario
         solicitacao_alterar_doenca.tipo_alteracao = 1#0-DELETE; 1-CREATE; ou (2)-UPDATE
         solicitacao_alterar_doenca.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
         solicitacao_alterar_doenca.save()
         messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para novo nome de doença.')#mensagem para o usuario
-        return redirect('/casos_clinicos/')
+        return redirect('/doenca/nova/')
     else:
         try:
-            return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario})
+            return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario,'doencas_todas':doencas_todas})
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
@@ -198,18 +217,28 @@ def solicitar_nova_doenca(request):
 
 
 ##### sintomas
-def sintoma(request, pk):
+def sintoma(request, pk):#editar
     usuario = request.user#usuario logado
+    sintomas_todos = Sintoma.objects.all().order_by('nome_sintoma')
     ver_remover = True
     if  request.method == "POST":#se tiver sido eviado os dados no formulario
         sintoma = Sintoma.objects.get(pk=pk)
+        nome_sintoma = request.POST.get("nome_sintoma")
         solicitacao_alterar_sintoma = Solicitacao_Alterar_Caso_Clinico()#novo objeto
         solicitacao_alterar_sintoma.nome_sintoma_a_modificar = sintoma
-        if len(request.POST.get("nome_sintoma")) <= 2:# se nome digitado for curto
+        try:
+            Sintoma.objects.get(nome_sintoma=nome_sintoma)
+            messages.add_message(request, ERROR, 'Nome da doença já existe.')#mensagem para o usuario
+            nome_sintoma =  sintoma.nome_sintoma
+            return render(request,'sintoma.html',{'nome_sintoma':nome_sintoma,'sintoma':sintoma,'usuario':usuario,'sintomas_todos':sintomas_todos})
+        except Exception as e:
+            pass
+            #Trata o erro pq não existe doenca com esse nome e continua
+        if len(nome_sintoma) <= 2:# se nome digitado for curto
             messages.add_message(request, ERROR, 'Nome da doença é muito curto.')#mensagem para o usuario
             nome_sintoma =  sintoma.nome_sintoma
-            return render(request,'sintoma.html',{'nome_sintoma':nome_sintoma,'sintoma':sintoma,'usuario':usuario})
-        solicitacao_alterar_sintoma.nome_novo_sintoma_modificado = request.POST.get("nome_sintoma")
+            return render(request,'sintoma.html',{'nome_sintoma':nome_sintoma,'sintoma':sintoma,'usuario':usuario,'sintomas_todos':sintomas_todos})
+        solicitacao_alterar_sintoma.nome_novo_sintoma_modificado = nome_sintoma
         solicitacao_alterar_sintoma.solicitante = usuario
         solicitacao_alterar_sintoma.tipo_alteracao = 2#0-DELETE; 1-CREATE; ou (2)-UPDATE
         solicitacao_alterar_sintoma.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
@@ -220,11 +249,11 @@ def sintoma(request, pk):
         try:
             sintoma = Sintoma.objects.get(pk=pk)
             nome_sintoma =  sintoma.nome_sintoma
-            return render(request,'sintoma.html',{'ver_remover':ver_remover,'nome_sintoma':nome_sintoma,'sintoma':sintoma,'usuario':usuario})
+            return render(request,'sintoma.html',{'ver_remover':ver_remover,'nome_sintoma':nome_sintoma,'sintoma':sintoma,'usuario':usuario,'sintomas_todos':sintomas_todos})
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-            return redirect('/doctraining/')
+            return redirect('/sintoma/novo/')
 
 
 def solicitar_deletar_sintoma(request, pk):
@@ -238,7 +267,7 @@ def solicitar_deletar_sintoma(request, pk):
         solicitacao_alterar_sintoma.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
         solicitacao_alterar_sintoma.save()
         messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para deletar sintoma.')#mensagem para o usuario
-        return redirect('/casos_clinicos/')
+        return redirect('/sintoma/novo/')
     except Exception as e:
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
@@ -247,24 +276,36 @@ def solicitar_deletar_sintoma(request, pk):
 
 def solicitar_novo_sintoma(request):
     usuario = request.user#usuario logado
-    ver_remover = False
+    sintomas_todos = Sintoma.objects.all().order_by('nome_sintoma')
+    ver_remover = False#Falso indica que essa pagina é de novo sintoma e assim não há como remover sem saber o que
     if  request.method == "POST":#se tiver sido eviado os dados no formulario
         solicitacao_alterar_sintoma = Solicitacao_Alterar_Caso_Clinico()#novo objeto
-        if len(request.POST.get("nome_sintoma")) <= 2:# se nome digitado for curto
-            messages.add_message(request, ERROR, 'Nome da doença é muito curto.')#mensagem para o usuario
+        nome_sintoma = request.POST.get("nome_sintoma")
+        try:
+            Sintoma.objects.get(nome_sintoma=nome_sintoma)
+            messages.add_message(request, ERROR, 'Nome do sintoma já existe.')#mensagem para o usuario
+            nome_sintoma =  ''
+            return render(request,'sintoma.html',{'nome_sintoma':nome_sintoma,'sintoma':sintoma,'usuario':usuario,'sintomas_todos':sintomas_todos})
+        except Exception as e:
+            pass
+            #Trata o erro pq não existe doenca com esse nome e continua
+        if len(nome_sintoma) <= 2:# se nome digitado for curto
+            messages.add_message(request, ERROR, 'Nome do sintoma é muito curto.')#mensagem para o usuario
             nome_sintoma =  ""
-            return render(request,'sintoma.html',{'ver_remover':ver_remover, 'nome_sintoma':nome_sintoma, 'sintoma':sintoma,'usuario':usuario})
-        solicitacao_alterar_sintoma.nome_novo_sintoma_modificado = request.POST.get("nome_sintoma")
+            dados={'ver_remover':ver_remover, 'nome_sintoma':nome_sintoma, 'sintoma':sintoma,'usuario':usuario,'sintomas_todos':sintomas_todos}
+            return render(request,'sintoma.html',dados)
+        solicitacao_alterar_sintoma.nome_novo_sintoma_modificado = nome_sintoma
         solicitacao_alterar_sintoma.solicitante = usuario
         solicitacao_alterar_sintoma.tipo_alteracao = 1#0-DELETE; 1-CREATE; ou (2)-UPDATE
         solicitacao_alterar_sintoma.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
         solicitacao_alterar_sintoma.save()
         messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para novo nome de sintoma.')#mensagem para o usuario
-        return redirect('/casos_clinicos/')
+        return redirect('/sintoma/novo/')
     else:
         try:
             nome_sintoma =  ""
-            return render(request,'sintoma.html',{'ver_remover':ver_remover,'nome_sintoma':nome_sintoma,'sintoma':sintoma,'usuario':usuario})
+            dados={'ver_remover':ver_remover,'nome_sintoma':nome_sintoma,'sintoma':sintoma,'usuario':usuario,'sintomas_todos':sintomas_todos}
+            return render(request,'sintoma.html',dados)
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
@@ -740,7 +781,7 @@ class Deletar_Sala(DeleteView):
     template_name = 'delete.html'
 
     def get(self, request, *args, **kwargs):
-        if (self.get_object().responsavel_sala != self.request.user):
+        if ((self.get_object().responsavel_sala != self.request.user) and not request.user.is_staff):
             messages.add_message(request, ERROR, 'Você não tem Permissão para deletar esta sala.')#mensagem para o usuario
             return redirect('/salas/todas/')
         messages.add_message(request, WARNING, 'Sala "' + self.get_object().nome_sala + '" será excluida.')#mensagem para o usuario
@@ -842,7 +883,7 @@ def todas_perguntas(request,pk_sala):
     usuario = request.user
     try:
         sala = Sala.objects.get(pk=pk_sala)
-        if(sala.responsavel_sala.pk != request.user.pk):
+        if((sala.responsavel_sala.pk != request.user.pk) and not request.user.is_staff):
             messages.add_message(request, ERROR, 'Você não tem Permissão para entrar nesta sala.')#mensagem para o usuario
             return redirect('/salas/todas/')
     except Exception as e:

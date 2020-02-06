@@ -2,7 +2,8 @@
 
 <script language="Javascript">
 function confirmExclusao(id) {
-   if (confirm("Tem certeza que deseja solicitar a exclusão dessa doenca? Isso não vai apagar as amostras relacionadas a esta doença!")) {
+     if (confirm("Tem certeza que deseja solicitar a exclusão desse doença?\nEle será removido de todas as amostras relacionadas a ele e assim ficaraão sem classificação, além de também ser removida da lista de doenças!")) {
+   // if (confirm("Tem certeza que deseja solicitar a exclusão dessa doenca? Isso não vai apagar as amostras relacionadas a esta doença!")) {
      location.href="/doenca/solicitacoes/delete/"+id;
 
    }
@@ -62,6 +63,37 @@ function confirmExclusao(id) {
 
 
 </form>
+
+<br>
+<br>
+<div class="dimmable">
+      <div class="ui active inverted dimmer">
+        <div class="ui active centered inline loader"></div>
+        Carregando
+      </div>
+    <table id="example" class="ui celled table" style="width:100%">
+      <thead>
+        <tr>
+          <!-- Colunas da tabela -->
+          <th>Todas as Doenças</th>
+          <th></th>
+          <!-- <th>Descrição</th> -->
+        </tr>
+      </thead>
+
+    <!--  Opções em cima da tabela-->
+
+      <tbody>
+        {% for doenca in doencas_todas  %}
+              <tr>
+                <td> <a href="{% url 'doctrainingapp:doenca' doenca.pk  %}" > <font color="black"> {{doenca.nome_doenca}} </font> </a> </td>
+                <td><a class="ui red button" type="submit" onclick="confirmExclusao({{doenca.pk}})"  > Remover </a></td>
+              </tr>
+        {% endfor %}
+
+      </tbody>
+    </table>
+</div>
 
 
 

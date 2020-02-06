@@ -45,7 +45,7 @@
         <!-- colunas da tabela -->
         <th></th>
         <th></th>
-        <th></th>
+        <!-- <th></th> -->
         <!-- <th colspan="3"> </th> -->
       </tr>
     </thead>
@@ -57,7 +57,7 @@
             <tr>
               <td><b> {{sala.nome_sala}} </b></td>
               {% if sala.descricao  %}
-                    <td> {{sala.descricao_limitado}} </td>
+                    <td> {{sala.descricao_limitado}}...</td>
               {% else %}
                     <td>  </td>
                {% endif %}
@@ -65,7 +65,8 @@
               <td> {{sala.responsavel_sala}} </td>
               <td> {{sala.data_criacao}} </td>
               <td>
-                  {% if request.user.pk == sala.responsavel_sala.pk %}
+
+                  {% if request.user.pk == sala.responsavel_sala.pk or request.user.is_staff %}
                       <a href="{% url 'doctrainingapp:todas_perguntas' sala.pk  %}" class="ui blue button" > Visualizar   <i class="folder open icon"></i> </a>
                   {% endif %}
               </td>
@@ -74,11 +75,11 @@
                       <a href="{% url 'doctrainingapp:editar_sala' sala.pk  %}" class="ui button" >   Editar <i class="edit outline icon"></i> </a>
                   {% endif %}
               </td>
-              <td>
-                  {% if request.user.pk == sala.responsavel_sala.pk %}
+              <!-- <td>
+                  {% if request.user.pk == sala.responsavel_sala.pk or request.user.is_staff%}
                       <a href="{% url 'doctrainingapp:delete_sala' sala.pk  %}" class="ui red button" >   Deletar </a>
                   {% endif %}
-              </td>
+              </td> -->
 
 
             </tr>

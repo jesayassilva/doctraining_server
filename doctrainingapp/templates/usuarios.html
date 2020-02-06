@@ -79,7 +79,7 @@ function confirmAtivar(id) {
               <td> <b>{{usuario.username}}</b> </td>
               <td> <b>{{usuario.get_full_name}}</b> </td>
               <td> <b>{{usuario.email}}</b> </td>
-              <td> <b>{{usuario.last_login}}</b></td>
+              <td> {%if usuario.last_login %} <b>{{usuario.last_login}}</b> {%endif%}</td>
               {% if usuario.is_staff %}
                           {% if usuario.is_superuser %}
                                 <td> <b class="ui green label">Super Admin</b> </td>

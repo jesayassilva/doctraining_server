@@ -31,39 +31,37 @@ SECRET_KEY = config('SECRET_KEY')
 # DEBUG = config('DEBUG', default=False, cast=bool)
 
 #Modo de teste
-'''
-DEBUG = False
-
-ALLOWED_HOSTS = ['*']
-ADMINS = [('Jesaias Silva', 'jesayassilva@gmail.com'),('DocTraining', 'doctraining.ufersa@gmail.com')]
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
-'''
-
-# Mode de Produção
-# DEBUG = False
-
-# DEBUG = True
-DEBUG = config('DEBUG', default=False, cast=bool)
-ALLOWED_HOSTS = ['doctraining.herokuapp.com','https://doctraining.herokuapp.com']
-# ALLOWED_HOSTS = ['*']
-ADMINS = [('Jesaias Silva', 'jesayassilva@gmail.com'),('DocTraining', 'doctraining.ufersa@gmail.com')]
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'd7j8iei44b6dm6',
-        'USER': 'hxrxxeccyjhvky',
-        'PASSWORD': config('PASSWORD'),
-        'HOST': 'ec2-174-129-253-101.compute-1.amazonaws.com',
-        'PORT': '5432',
-    }
-}
 # '''
+PROJETO_EM_TESTE= False
+#True  -> SIM
+#False -> NÃO
+if(PROJETO_EM_TESTE):
+    DEBUG = True
+    ALLOWED_HOSTS = ['*']
+    ADMINS = [('Jesaias Silva', 'jesayassilva@gmail.com'),('DocTraining', 'doctraining.ufersa@gmail.com')]
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
+else:
+    # DEBUG = True
+    DEBUG = config('DEBUG', default=False, cast=bool)
+    ALLOWED_HOSTS = ['doctraining.herokuapp.com','https://doctraining.herokuapp.com']
+    # ALLOWED_HOSTS = ['*']
+    ADMINS = [('Jesaias Silva', 'jesayassilva@gmail.com'),('DocTraining', 'doctraining.ufersa@gmail.com')]
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'd7j8iei44b6dm6',
+            'USER': 'hxrxxeccyjhvky',
+            'PASSWORD': config('PASSWORD'),
+            'HOST': 'ec2-174-129-253-101.compute-1.amazonaws.com',
+            'PORT': '5432',
+        }
+    }
+
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
