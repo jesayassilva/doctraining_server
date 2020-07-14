@@ -99,10 +99,94 @@ Teste
 
 
 
+
 <a href="https://doctraining.herokuapp.com">https://doctraining.herokuapp.com</a>
 
 <p></p>
 <p>A seguir as requisições disponíveis na API do DocTraining:</p>
+
+<!-- ####################################### JSON Todas as Salas ##################################################################### -->
+        <div class="" style="padding-bottom: 4%;">
+
+          <h2>Salas</h2>
+          <p></p>
+          <p>Para solicitar os nomes das salas disponíveis deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
+          <a href="{% url 'doctrainingapp:todos_salas_api' %}"> {% url 'doctrainingapp:todos_salas_api' %}</a>
+          <p></p>
+          <p>Se for bem-sucedida, essa chamada retornará uma lista com os id, nome da sala e quantidade de perguntas na sala .<br />
+            A seguir um exemplo de resultado dessa requisição:
+          </p>
+
+          <div class="ui inverted segment ">
+<pre>[
+    {
+        "id": 5,
+        "sala_nome": "Perguntas Gerais",
+        "quantidade_perguntas": 12
+    },
+    {
+        "id": 7,
+        "sala_nome": "Perguntas Covid-19",
+        "quantidade_perguntas": 50
+    },
+    {
+        "id": 10,
+        "sala_nome": "Perguntas sobre Influenza",
+        "quantidade_perguntas": 30
+    }
+]</pre>
+          </div>
+        </div>
+
+
+
+<!-- ####################################### JSON Todas as Salas ##################################################################### -->
+        <div class="" style="padding-bottom: 4%;">
+
+          <h2>Perguntas de uma Sala</h2>
+          <p></p>
+          <p>Para solicitar as perguntas de uma sala deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button>  usando o id da sala na URL:</p>
+          <!-- <a href="{% url 'doctrainingapp:
+          perguntas_de_uma_sala_api' %}"> {% url 'doctrainingapp:
+          perguntas_de_uma_sala_api' %}</a> -->
+          <a href="#"> api/salas/<int:pk_sala>/perguntas/</a>
+          <p></p>
+          <p>Se for bem-sucedida, essa chamada retornará uma lista com os id, pergunta, questão correta, questão incorreta 1, questão incorreta 2 e questão incorreta 3 da sala, seguindo a mesma ordem no JSON.<br />
+            A seguir um exemplo de resultado dessa requisição:
+          </p>
+
+          <div class="ui inverted segment ">
+<pre>[
+    {
+        "id": 14,
+        "mainQuestion": "Fazem parte do quadro clínico de leptospirose em sua fase precoce (de 3 a 7 dias), EXCETO:",
+        "rightOp": "Icterícia",
+        "wrongOp01": "Exantema",
+        "wrongOp02": "Cefaleia",
+        "wrongOp03": "Náusea e vômitos"
+    },
+    {
+        "id": 18,
+        "mainQuestion": "O período de incubação da dengue é de:",
+        "rightOp": "7 a 10 dias.",
+        "wrongOp01": "14 a 18 dias.",
+        "wrongOp02": "20 a 25 dias.",
+        "wrongOp03": "28 a 30 dias."
+    },
+    {
+        "id": 64,
+        "mainQuestion": "São sinais de alarme da dengue:",
+        "rightOp": "Lipotimia, hepatomegalia dolorosa e desconforto respiratório.",
+        "wrongOp01": "Vômitos, esplenomegalia e aumento repentino do hematócrito.",
+        "wrongOp02": "Cefaleia, dor abdominal contínua, diminuição do hematócrito.",
+        "wrongOp03": "Dor retro-orbitária, queda abrupta das plaquetas e hematêmese."
+    }
+]</pre>
+          </div>
+        </div>
+
+
+
 
 <!-- ####################################### JSON Todas as Doenças ##################################################################### -->
         <div class="" style="padding-bottom: 4%;">
@@ -154,7 +238,7 @@ Teste
             <p>Para solicitar todos os sintomas disponíveis nas amostras deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
             <a href="{% url 'doctrainingapp:nome_sintomas_casos_clinicos_api' %}">{% url 'doctrainingapp:nome_sintomas_casos_clinicos_api' %}</a>
             <p></p>
-            <p>Se for bem-sucedida, essa chamada retornará uma lista com todos os id's e simtomas disponíveis nas amostras.<br />
+            <p>Se for bem-sucedida, essa chamada retornará uma lista com todos o id's e simtomas disponíveis nas amostras.<br />
               A seguir um exemplo de resultado dessa requisição:
             </p>
 

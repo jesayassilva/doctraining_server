@@ -32,9 +32,10 @@ SECRET_KEY = config('SECRET_KEY')
 
 #Modo de teste
 # '''
-PROJETO_EM_TESTE= False
+PROJETO_EM_TESTE= True
 #True  -> SIM
 #False -> NÃO
+
 if(PROJETO_EM_TESTE):
     DEBUG = True
     ALLOWED_HOSTS = ['*']
