@@ -367,7 +367,9 @@ class Pergunta(models.Model):
 
 
 
+class Versao(models.Model):
+    versao = models.CharField(max_length=5)
+    informacao = models.CharField(max_length=600)
+    nova_versao = models.BooleanField(default=False,)
+    atualizacao_critica = models.BooleanField(default=False)
 
-
-
-#

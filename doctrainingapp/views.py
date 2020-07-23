@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from doctraining import settings
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from .models import *
 from django.views.generic.edit import DeleteView,CreateView,UpdateView
@@ -9,6 +10,11 @@ from django.contrib.auth import logout
 import random
 import pandas as pd
 import numpy as np
+
+#DECORATORS
+from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.decorators import login_required
+
 
 from django.db import models
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -1058,6 +1064,27 @@ def todos_salas_api(request):
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
 
 
+def versao_api(request):
+    usuario = request.user
+    if request.method == 'GET':#Mostra todos os objetos
+        try:
+            json_versao = []
+            versoes = Versao.objects.all().order_by('versao')
+            for versao in versoes:#todas as Linhas
+                linha_versao = {
+                'id':versao.pk,
+                'versao':versao.versao,
+                'informacoes':versao.informacao,
+                'nova-versao':versao.nova_versao,
+                'atualizacao_critica':versao.atualizacao_critica
+                }
+                json_versao.append(linha_versao)
+            return JsonResponse(json_versao,safe=False)
+        except Exception as e:
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
+            return JsonResponse({"Erro":str(e)}, status = 406)
+    return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
+
 ###################################################################### FIM API WEB SERVICE ##############################################################################
 
 
@@ -1504,18 +1531,74 @@ def bck_casos_clinicos():
         mandar_email_error(msg_erro=str(e), url_erro="BCK Casos Clinicos")
 
 
-def mandar_email_error( msg_erro,usuario='Desconhecido',url_erro='Desconhecida'):
-    send_mail(
-    'Erro em Execução Doctraining',#Titulo da msg
-    'Olá Jesaías Silva, \nHouve um erro ocultado durante a execução do DocTraining.\n\nUsuário Logado:\n'+str(usuario)+'\n\nURL:\n'+str(url_erro)+ '\n\nErro: \n'+msg_erro+'\n\nAtt \nDocTraining \ndoctraining.herokuapp.com',#Mensagem
-    'doctraining.ufersa.contato@gmail.com',
-    ['jesayassilva@gmail.com','doctraining.ufersa@gmail.com'],
-    # settings.ADMINS,
-    fail_silently=False,
-    )
-    print('Email de Erro enviado')
+if not(settings.PROJETO_EM_TESTE):
+    def mandar_email_error( msg_erro,usuario='Desconhecido',url_erro='Desconhecida'):
+        send_mail(
+        'Erro em Execução Doctraining',#Titulo da msg
+        'Olá Jesaías Silva, \nHouve um erro ocultado durante a execução do DocTraining.\n\nUsuário Logado:\n'+str(usuario)+'\n\nURL:\n'+str(url_erro)+ '\n\nErro: \n'+msg_erro+'\n\nAtt \nDocTraining \ndoctraining.herokuapp.com',#Mensagem
+        'doctraining.ufersa.contato@gmail.com',
+        ['jesayassilva@gmail.com','doctraining.ufersa@gmail.com'],
+        # settings.ADMINS,
+        fail_silently=False,
+        )
+        print('Email de Erro enviado')
+else:
+    print("PROJETO EM TESTE")
 
 
 
+######## VERSIONAMENTO ############
+
+from doctrainingapp.forms import *
+
+
+@login_required(login_url='')
+@staff_member_required
+def versao_list(request, template_name='versao-list.html'):
+    versao = Versao.objects.all()
+
+    return render(request, template_name, {'versao': versao})
+'''
+def versao_view(request, pk, template_name='books/book_detail.html'):
+    versao = get_object_or_404(Versao, pk=pk)
+    return render(request, template_name, {'object':versao})'''
+
+
+@login_required(login_url='')
+@staff_member_required
+def versao_add(request, template_name='versao-add.html'):
+    form = VersaoForm(request.POST or None)
+    if form.is_valid():
+        try:
+            versao_aux = Versao.objects.get(versao=request.POST['versao'])
+
+            if versao_aux:
+                messages.error(request, 'Erro! Versão ja existe.')
+                return redirect('/versao')
+        except:
+            form.save()
+            return redirect('/versao')
+    return render(request, template_name, {'form':form})
+
+
+@login_required(login_url='')
+@staff_member_required
+def versao_edit(request, pk, template_name='versao-edit.html'):
+    versao= get_object_or_404(Versao, pk=pk)
+    form = VersaoForm(request.POST or None, instance=versao)
+    if form.is_valid():
+        form.save()
+        return redirect('/versao')
+    return render(request, template_name, {'form':form})
+
+
+@login_required(login_url='')
+@staff_member_required
+def versao_delete(request, pk, template_name='versao-delete.html'):
+    versao = get_object_or_404(Versao, pk=pk)
+    if request.method=='POST':
+        versao.delete()
+        return redirect('/versao')
+    return render(request, template_name, {'object':versao})
 
 #

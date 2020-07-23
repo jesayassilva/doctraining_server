@@ -78,6 +78,7 @@ urlpatterns = [
     path('api/casos_clinicos/um/',um_caso_clinico_doenca_sintomas_api,name='um_caso_clinico_doenca_sintomas_api'),
     path('api/salas/<int:pk_sala>/perguntas/',perguntas_de_uma_sala_api,name='perguntas_de_uma_sala_api'),
     path('api/salas/',todos_salas_api,name='todos_salas_api'),
+    path('api/versao', versao_api, name='versao-api'),
 
 
     #APRENDIZADO DE MÁQUINA controle das threads
@@ -89,6 +90,14 @@ urlpatterns = [
     #BACKUP E RESTAURAR BACKUP
     # path('ler_dados_salvar/',login_required(ler_dados_salvar)),#Caso o backup sejá restaurado é interessante apagar todos os dados da tabela caso clinico,doenca e sintomas pois serão novamente salvos e pode haver duplicação de caso clinico
     path('gerar_csv/',login_required(gerar_csv)),
+
+    #VERSIONAMENTO
+    path('versao', versao_list, name='lista-versao'),
+    #path('versao/<int:pk>', versao_view, name='view-versao'),
+    path('versao/add', versao_add, name='add-versao'),
+    path('versao/edit/<int:pk>', versao_edit, name='edit-versao'),
+    path('versao/delete/<int:pk>', versao_delete, name='delete-versao'),
+    #path('versao/delete/<int:pk>', versao_delete, name='delete-versao'),
 
 
 ]

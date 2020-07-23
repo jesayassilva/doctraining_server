@@ -1,0 +1,107 @@
+{% include 'cabecalho2.html' %}
+
+<h1>
+  Versões
+</h1>
+
+{% if messages %}
+    <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {% if message.tags == 'success' %}
+                        <font color="green">{{ message }}</font>
+                    {% elif message.tags == 'error' %}
+                        <font color="red">{{ message }}</font>
+                    {% else %}
+                        <!-- warning -->
+                        <font color="blue">{{ message }}</font>
+                    {% endif %}
+                </li>
+            {% endfor %}
+    </ul>
+{% endif %}
+
+
+<a href="{% url 'doctrainingapp:add-versao' %}" class="ui button positive" > Nova Versão </a>
+
+
+<p></p>
+<!-- <div style="overflow: auto; width: 100%; height: 500px; border:solid 1px; position: relative;"> -->
+  <!-- <table class="ui celled striped table"> -->
+
+  <table id="example" class="ui celled table" style="width:100%">
+    <thead>
+      <tr>
+        <!-- Colunas da tabela -->
+        <th>Versão</th>
+        <th>Informação</th>
+        <th>Nova Versão</th>
+        <th>Atualização Crítica</th>
+         <th>Edição</th>
+          <th>Deletar</th>
+        <!-- colunas da tabela -->
+
+        <!-- <th></th> -->
+        <!-- <th colspan="3"> </th> -->
+      </tr>
+    </thead>
+
+  <!--  Opções em cima da tabela-->
+
+    <tbody>
+      {% for versao in versao  %}
+            <tr>
+              <td><b> {{versao.versao}} </b></td>
+              {% if versao.informacao  %}
+                    <td> {{versao.informacao}}</td>
+              {% else %}
+                    <td>  </td>
+               {% endif %}
+              <td> {{versao.nova_versao}} </td>
+              <td> {{versao.atualizacao_critica}} </td>
+
+              <td>
+                      <a href="{% url 'doctrainingapp:edit-versao' versao.pk %}" >   Editar <i class="edit outline icon"></i> </a>
+
+
+              </td>
+                <td>
+                    <a href="{% url 'doctrainingapp:delete-versao' versao.pk %}" >   Excluir <i class=></i> </a>
+                </td>
+              <!-- <td>
+                  {% if request.user.pk == sala.responsavel_sala.pk or request.user.is_staff%}
+                      <a href="" class="ui red button" >   Deletar </a>
+                  {% endif %}
+              </td> -->
+
+
+            </tr>
+      {% endfor %}
+
+    </tbody>
+  </table>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+<!-- Cabecalho -->
+
+<div>
+
+
+
+{% include 'rodape.html' %}
