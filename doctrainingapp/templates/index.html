@@ -1,3 +1,4 @@
+{% load static %}
 {% include 'cabecalho.html' %}
 
 
@@ -64,15 +65,15 @@
 
   <script>
 
-    var banners = ["https://jesaias.000webhostapp.com/doctraining/imagens/img1.jpeg",
-    "https://jesaias.000webhostapp.com/doctraining/imagens/img2.jpeg",
-    "https://jesaias.000webhostapp.com/doctraining/imagens/img3.jpeg",
-    "https://jesaias.000webhostapp.com/doctraining/imagens/img4.jpeg",
-    "https://jesaias.000webhostapp.com/doctraining/imagens/img5.jpeg",
-    "https://jesaias.000webhostapp.com/doctraining/imagens/img6.jpeg",
-    "https://jesaias.000webhostapp.com/doctraining/imagens/img7.jpeg",
-    "https://jesaias.000webhostapp.com/doctraining/imagens/img8.jpeg",
-    "https://jesaias.000webhostapp.com/doctraining/imagens/img9.jpeg",
+    var banners = ["{% static 'imagens/img1.jpeg' %}",
+    "{% static 'imagens/img2.jpeg' %}",
+    "{% static 'imagens/img3.jpeg' %}",
+    "{% static 'imagens/img4.jpeg' %}",
+    "{% static 'imagens/img5.jpeg' %}",
+    "{% static 'imagens/img6.jpeg' %}",
+    "{% static 'imagens/img7.jpeg' %}",
+    "{% static 'imagens/img8.jpeg' %}",
+    "{% static 'imagens/img9.jpeg' %}",
     ];
     var bannerAtual = 0;
     function trocaBanner(){
@@ -148,7 +149,7 @@
 
         <!-- <a href="#" class="pause"></a> -->
         <a href="#" class="pause"></a>
-      	<img id="banner_img" width="280" height="460" src="https://jesaias.000webhostapp.com/doctraining/imagens/img1.jpeg" class="ui centered image" alt="DocTraining Mobile" style="border-radius: 15px;">
+      	<img id="banner_img" width="280" height="460" src="{% static 'imagens/img1.jpeg' %}" class="ui centered image" alt="DocTraining Mobile" style="border-radius: 15px;">
     </div>
     <p></p>
 
