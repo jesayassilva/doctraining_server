@@ -1064,21 +1064,21 @@ def todos_salas_api(request):
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
 
 
-def versao_api(request):
+def versao_api(request, versao_versao):
     usuario = request.user
     if request.method == 'GET':#Mostra todos os objetos
         try:
             json_versao = []
             versoes = Versao.objects.all().order_by('versao')
             for versao in versoes:#todas as Linhas
-                linha_versao = {
-                'id':versao.pk,
-                'versao':versao.versao,
-                'informacoes':versao.informacao,
-                'nova-versao':versao.nova_versao,
-                'atualizacao_critica':versao.atualizacao_critica
-                }
-                json_versao.append(linha_versao)
+                if versao.versao >= float(versao_versao):
+                    linha_versao = {
+                    'versao':versao.versao,
+                    'informacoes':versao.informacao,
+                    'nova-versao':versao.nova_versao,
+                    'atualizacao_critica':versao.atualizacao_critica
+                    }
+                    json_versao.append(linha_versao)
             return JsonResponse(json_versao,safe=False)
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)

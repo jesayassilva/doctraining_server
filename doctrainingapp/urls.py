@@ -78,7 +78,8 @@ urlpatterns = [
     path('api/casos_clinicos/um/',um_caso_clinico_doenca_sintomas_api,name='um_caso_clinico_doenca_sintomas_api'),
     path('api/salas/<int:pk_sala>/perguntas/',perguntas_de_uma_sala_api,name='perguntas_de_uma_sala_api'),
     path('api/salas/',todos_salas_api,name='todos_salas_api'),
-    path('api/versao', versao_api, name='versao-api'),
+    url(r"^api/versao/(?P<versao_versao>\d+\.\d+)$", versao_api, name='versao-api'),
+    #url(r"^item/value/(?P<dollar>\d+\.\d+)$", views.show_item, name="show-item"),
 
 
     #APRENDIZADO DE MÁQUINA controle das threads
