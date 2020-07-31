@@ -376,8 +376,8 @@ Teste
 
           <h2>Versões do Sistema </h2>
           <p></p>
-          <p>Para solicitar todas as versões do sistema deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
-          <a href="{% url 'doctrainingapp:versao-api' %}">{% url 'doctrainingapp:versao-api' %}</a>
+          <p>Para solicitar todas as versões do sistema a partir da usa versao atual, deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
+          <a href="versao/2.0">/api/versao/2.0</a>
 
           <p></p>
           <p>Se for bem-sucedida, essa chamada retornará uma lista no formato de id, versao, informação, nova versao (booleano) e atualização critica (booleano).<br />
@@ -388,20 +388,9 @@ Teste
           <div class="ui inverted segment ">
 <pre>[
     {
-    "id": 8,
-    "versao": "3.3",
-    "informacoes": "versão para melhoria de desempenho",
-    "nova-versao": true,
-    "atualizacao_critica": true
-    },
-    {
-    "id": 9,
-    "versao": "33.0",
-    "informacoes": "versão para correção de bugs",
-    "nova-versao": true,
-    "atualizacao_critica": true
-    }
-    ]
+    "versao": "33.00",
+    "informacoes": ["melhoria de desempenho", "correção de bugs"],
+    "atualizacao_critica": true}
 ]</pre>
 
           </div>

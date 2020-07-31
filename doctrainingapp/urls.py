@@ -101,6 +101,40 @@ urlpatterns = [
     #path('versao/delete/<int:pk>', versao_delete, name='delete-versao'),
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ]
 
 

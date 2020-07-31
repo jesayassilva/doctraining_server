@@ -1069,16 +1069,26 @@ def versao_api(request, versao_versao):
     if request.method == 'GET':#Mostra todos os objetos
         try:
             json_versao = []
-            versoes = Versao.objects.all().order_by('versao')
+            versoes = Versao.objects.filter(versao__gt=versao_versao).order_by('versao')
+            lista_informações = []
+            lista_atualizações = []
+            versao_aux = 0
+            critica = False
             for versao in versoes:#todas as Linhas
-                if versao.versao >= float(versao_versao):
-                    linha_versao = {
-                    'versao':versao.versao,
-                    'informacoes':versao.informacao,
-                    'nova-versao':versao.nova_versao,
-                    'atualizacao_critica':versao.atualizacao_critica
-                    }
-                    json_versao.append(linha_versao)
+                lista_informações.append(versao.informacao)
+                versao_aux = versao.versao
+                lista_atualizações.append(versao.atualizacao_critica)
+            if True in lista_atualizações :
+                critica = True
+            if versao_aux == 0:
+                versao_aux = versao_versao
+            linha_versao = {
+            'versao':versao_aux,
+            'informacoes':lista_informações,
+            'atualizacao_critica':critica
+             }
+            json_versao.append(linha_versao)
+
             return JsonResponse(json_versao,safe=False)
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
