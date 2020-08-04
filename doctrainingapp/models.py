@@ -7,9 +7,6 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 
-
-
-
 class Doenca(models.Model):
     nome_doenca = models.CharField(max_length=100,unique=True)
     descricao = models.TextField(blank=True)
@@ -39,7 +36,6 @@ class Sintoma(models.Model):
     #         super(Sintoma, self).delete(force_insert, force_update)
 
 
-
 class Caso_Clinico(models.Model):
     doenca = models.ForeignKey(Doenca, on_delete=models.PROTECT, blank=True, null=True)
     sintomas = models.ManyToManyField(Sintoma, blank=False)
@@ -60,8 +56,6 @@ class Caso_Clinico(models.Model):
     #     else:
     #         self.doenca_classificada = True
     #     super(Caso_Clinico, self).save(force_insert, force_update)
-
-
 
 
 class Solicitacao_Alterar_Caso_Clinico(models.Model):
@@ -125,14 +119,12 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
             else:
                 return 'NOVO: Doença: Classificação Automática [' + str(self.nova_doenca)+'], Sintomas:'+str(lista_sintomas)
 
-
     def save(self, force_insert=False, force_update=False):
         if ( not self.nova_doenca):
             self.doenca_classificada = False
         else:
             self.doenca_classificada = True
         super(Solicitacao_Alterar_Caso_Clinico, self).save(force_insert, force_update)
-
 
     #As demais Def são usadas no template puxando os dadas formatados
     def solicitante_DEF(self):#Nome do usuario que solicitou a alteração
@@ -234,7 +226,6 @@ class Solicitacao_Alterar_Caso_Clinico(models.Model):
                     lista_sintomas = lista_sintomas + item.nome_sintoma+', '#adicionar com virgula
             return lista_sintomas
 
-
 class Log(models.Model):
     data_solicitacao = models.DateTimeField()
     # solicitante = models.CharField(max_length=100,blank=False, null=False)
@@ -259,8 +250,6 @@ class Log(models.Model):
 
     def __str__(self):
         return '{ "Data Solicitação": "'+ str(self.data_solicitacao)+'", '+ '"Solicitante": "'+ self.solicitante.username +'", '+'"Doenca": "' + self.doenca +'", '+'"Sintomas": "'+ self.sintomas +'", '+'"Nova doenca": "'+ self.nova_doenca +'", '+'"Novos sintomas": "'+ self.novos_sintomas +'", '+'"Doenca classificada": "'+ str(self.doenca_classificada) +'", '+'"Tipo alteracao": "'+ str(self.tipo_alteracao_DEF()) +'", '+'"Acao": "'+ str(self.acaoDEF()) +'", '+'"Data alteracao": "'+ str(self.data_alteracao) +'", '+'"Avaliado por": "'+ str(self.avaliador.username) +'" }'
-
-
 
     def tipo_alteracao_DEF(self):#retorna nome da alteração
         if self.tipo_alteracao == 0:#0-DELETE; 1-CREATE; ou (2)-UPDATE
@@ -295,8 +284,6 @@ class Log(models.Model):
             return 'yellow'
 
 
-
-
 class Perfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     apelido = models.CharField(max_length=100,blank=True,null=True)
@@ -324,8 +311,6 @@ def email_save_user(sender, instance, **kwargs):
     print('enviando email')
 
 
-
-
 class Sala(models.Model):
     responsavel_sala = models.ForeignKey(User, on_delete=models.CASCADE)
     nome_sala = models.CharField(max_length=50, blank=False,null=False,unique=True)
@@ -340,10 +325,6 @@ class Sala(models.Model):
 
     def descricao_limitado(self):#retorna nome da alteração
         return self.descricao[:40]
-    # def save(self, force_insert=False, force_update=False):
-    #     self.nome_sala = self.nome_sala.upper()
-    #     super(Sala, self).save(force_insert, force_update)
-
 
 class Pergunta(models.Model):
     sala = models.ForeignKey(Sala, on_delete=models.CASCADE)
@@ -355,16 +336,6 @@ class Pergunta(models.Model):
     # email = models.EmailField(max_length=254,blank=True,null=True)
     def __str__(self):
         return self.pergunta
-
-
-    # def save(self, force_insert=False, force_update=False):
-    #     self.pergunta = self.pergunta.upper()
-    #     super(Pergunta, self).save(force_insert, force_update)
-
-
-
-
-
 
 
 class Versao(models.Model):

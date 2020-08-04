@@ -3,19 +3,17 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from .models import *
 from django.views.generic.edit import DeleteView,CreateView,UpdateView
-from django.contrib.auth.forms import  UserCreationForm#,AuthenticationForm,UserChangeForm,PasswordResetForm
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth import logout
 import random
 import pandas as pd
 import numpy as np
-
+from doctrainingapp.views_pack import views_ia
 #DECORATORS
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
-
-
 from django.db import models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -50,15 +48,11 @@ def index(request):
 def doctraining(request):
     usuario = request.user#usuario logado
     try:
-        print( tentar_ativar_am() )
+        print( views_ia.tentar_ativar_am() )
     except Exception as e:
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         return redirect('/')
     return render(request,'doctraining.html',{'usuario':usuario})
-
-def api(request):
-    usuario = request.user#usuario logado
-    return render(request,'api.html',{'usuario':usuario})
 
 def usuarios(request):
     usuario = request.user#usuario logado
@@ -665,15 +659,13 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             #Fim-------------------Executar-------------------Salvar aqui na tabela de log ----------------------------------------------------------
             solicitacao_alterar_caso_clinico.delete()#deletando solicitação, pois seus dados já se encontram na tabela de log
         #mensagem para usuario
-        print( tentar_ativar_am() )
+        print(views_ia.tentar_ativar_am() )
         messages.add_message(request, SUCCESS, 'Foi aceitada a alteração da amostra.')
         return redirect('/casos_clinicos/solicitacoes/')
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde. ')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         return redirect('/casos_clinicos/solicitacoes/')
-
-
 
 
 #Rejeitar pedido de alteração de casos clinico (editar, novo ou delete)
@@ -720,9 +712,6 @@ def rejeitar_solicitacao_alteracao_caso_clinico(request,pk):
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         return redirect('/casos_clinicos/solicitacoes/')
 
-
-
-
 #Ver todos os log de alterações aceitadas e recusadas
 def log_solicitacoes_alteracao_casos_clinicos(request):
     # if not request.user.is_staff:#Se não for administrador
@@ -744,8 +733,6 @@ def log_solicitacoes_alteracao_casos_clinicos(request):
 
 #LoginRequiredMixin significa que o usuario precisar estar logado pra acesssar a pagina
 
-
-
 ################################################################### INICIO SALAS #################################################################################
 
 class Nova_Sala(LoginRequiredMixin, CreateView):
@@ -765,7 +752,6 @@ class Nova_Sala(LoginRequiredMixin, CreateView):
     def get(self, request, *args, **kwargs):
         messages.add_message(request, WARNING, 'Nova Sala Virtual .')#mensagem para o usuario
         return super(Nova_Sala, self).get(request, *args, **kwargs)
-
 
 
 class Editar_Sala(UpdateView):
@@ -850,7 +836,6 @@ def nova_pergunta(request,pk_sala):
     #fields = ['pergunta','opcao_correta','opcao_incorreta_1','opcao_incorreta_2','opcao_incorreta_3']
 
 
-
 class Editar_Pergunta(UpdateView):
     model = Pergunta
     # success_url = '/salas/todas/'
@@ -908,639 +893,6 @@ def todas_perguntas(request,pk_sala):
         return redirect('/doctraining/')
 
 
-
-
-###################################################################### INICIO API WEB SERVICE ##############################################################################
-#API
-def nome_doencas_casos_clinicos_api(request):
-    usuario = request.user
-    if request.method == 'GET':#Mostra todos os objetos
-        try:
-            json_lista_doencas = []
-            doencas = Doenca.objects.order_by('nome_doenca')
-            for doenca in doencas:#todas as Linhas
-                linha_doenca = {
-                'id':doenca.pk,
-                'doenca': doenca.nome_doenca
-                }
-                json_lista_doencas.append(linha_doenca)
-            return JsonResponse(json_lista_doencas,safe=False)
-        except Exception as e:
-            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-            return JsonResponse({"Erro":str(e)}, status = 400)
-    return JsonResponse({"Erro":"Somente Metodo GET"}, status = 400)
-
-#API
-def nome_sintomas_casos_clinicos_api(request):
-    usuario = request.user
-    if request.method == 'GET':#Mostra todos os objetos
-        try:
-            json_lista_sintomas = []
-            sintomas = Sintoma.objects.order_by('nome_sintoma')
-            for sintoma in sintomas:#todas as Linhas
-                linha_sintoma = {
-                'id':sintoma.pk,
-                'sintoma': sintoma.nome_sintoma
-                }
-                json_lista_sintomas.append(linha_sintoma)
-
-            return JsonResponse(json_lista_sintomas,safe=False)
-        except Exception as e:
-            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-            return JsonResponse({"Erro":str(e)}, status = 400)
-    return JsonResponse({"Erro":"Somente Metodo GET"}, status = 400)
-
-#API
-def nome_sintomas_casos_clinicos_api(request):
-    usuario = request.user
-    if request.method == 'GET':#Mostra todos os objetos
-        try:
-            json_lista_sintomas = []
-            sintomas = Sintoma.objects.order_by('nome_sintoma')
-            for sintoma in sintomas:#todas as Linhas
-                linha_sintoma = {
-                'id':sintoma.pk,
-                'sintoma': sintoma.nome_sintoma
-                }
-                json_lista_sintomas.append(linha_sintoma)
-
-            return JsonResponse(json_lista_sintomas,safe=False)
-        except Exception as e:
-            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-            return JsonResponse({"Erro":str(e)}, status = 400)
-    return JsonResponse({"Erro":"Somente Metodo GET"}, status = 400)
-
-#API
-def todos_casos_clinicos_doencas_sintomas_api(request):
-    usuario = request.user
-    if request.method == 'GET':#Mostra todos os objetos
-        print( tentar_ativar_am() )
-        try:
-            json_lista_casos_clinicos = []
-            casos_clinicos = Caso_Clinico.objects.exclude(doenca = None).order_by('doenca__nome_doenca')
-            for caso_clinico in casos_clinicos:#todas as Linhas
-                lista_sintomas = []
-                for sintoma in caso_clinico.sintomas.order_by('nome_sintoma'):
-                    lista_sintomas.append(sintoma.nome_sintoma)
-                linha_caso_clinico = {
-                'id':caso_clinico.pk,
-                'doenca': caso_clinico.doenca.nome_doenca,
-                'sintomas': lista_sintomas
-                }
-                json_lista_casos_clinicos.append(linha_caso_clinico)
-            return JsonResponse(json_lista_casos_clinicos,safe=False)
-        except Exception as e:
-            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-            return JsonResponse({"Erro":str(e)}, status = 400)
-    return JsonResponse({"Erro":"Somente Metodo GET"}, status = 400)
-
-#API
-def um_caso_clinico_doenca_sintomas_api(request):
-    usuario = request.user
-    if request.method == 'GET':#Mostra todos os objetos
-        try:
-            caso_clinico = random.choice(Caso_Clinico.objects.exclude(doenca = None).order_by('doenca__nome_doenca'))
-            lista_sintomas = []
-            for sintoma in caso_clinico.sintomas.order_by('nome_sintoma'):
-                lista_sintomas.append(sintoma.nome_sintoma)
-
-            json_caso_clinico = {
-            'id':caso_clinico.pk,
-            'doenca': caso_clinico.doenca.nome_doenca,
-            'sintomas': lista_sintomas
-            }
-
-            return JsonResponse(json_caso_clinico,safe=False)
-        except Exception as e:
-            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-            return JsonResponse({"Erro":str(e)}, status = 400)
-    return JsonResponse({"Erro":"Somente Metodo GET"}, status = 400)
-
-
-
-def perguntas_de_uma_sala_api(request,pk_sala):
-    usuario = request.user
-    if request.method == 'GET':#Mostra todos os objetos
-        print( tentar_ativar_am() )
-        try:
-            json_lista_perguntas_de_uma_sala = []
-            sala = Sala.objects.get(pk = pk_sala)
-            perguntas = Pergunta.objects.filter(sala=sala).order_by('pergunta')
-            for pergunta in perguntas:#todas as Linhas
-                linha_pergunta = {
-                'id':pergunta.pk,
-                'mainQuestion':pergunta.pergunta,
-                'rightOp': pergunta.opcao_correta,
-                'wrongOp01': pergunta.opcao_incorreta_1,
-                'wrongOp02': pergunta.opcao_incorreta_2,
-                'wrongOp03': pergunta.opcao_incorreta_3
-                }
-                json_lista_perguntas_de_uma_sala.append(linha_pergunta)
-            return JsonResponse(json_lista_perguntas_de_uma_sala,safe=False)
-        except Exception as e:
-            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-            return JsonResponse({"Erro":str(e)}, status = 406)
-    return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
-
-
-
-def todos_salas_api(request):
-    usuario = request.user
-    if request.method == 'GET':#Mostra todos os objetos
-        try:
-            json_lista_salas = []
-            salas = Sala.objects.all().order_by('nome_sala')
-            for sala in salas:#todas as Linhas
-                linha_sala = {
-                'id':sala.pk,
-                'sala_nome': sala.nome_sala,
-                'quantidade_perguntas':sala.quantidade_perguntas()
-                }
-                json_lista_salas.append(linha_sala)
-            return JsonResponse(json_lista_salas,safe=False)
-        except Exception as e:
-            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-            return JsonResponse({"Erro":str(e)}, status = 406)
-    return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
-
-
-def versao_api(request, versao_versao):
-    usuario = request.user
-    if request.method == 'GET':#Mostra todos os objetos
-        try:
-            json_versao = []
-            versoes = Versao.objects.filter(versao__gt=versao_versao).order_by('versao')
-            lista_informações = []
-            lista_atualizações = []
-            versao_aux = 0
-            critica = False
-            for versao in versoes:#todas as Linhas
-                lista_informações.append(versao.informacao)
-                versao_aux = versao.versao
-                lista_atualizações.append(versao.atualizacao_critica)
-            if True in lista_atualizações :
-                critica = True
-            if versao_aux == 0:
-                versao_aux = versao_versao
-            linha_versao = {
-            'versao':versao_aux,
-            'informacoes':lista_informações,
-            'atualizacao_critica':critica
-             }
-            json_versao.append(linha_versao)
-
-            return JsonResponse(json_versao,safe=False)
-        except Exception as e:
-            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-            return JsonResponse({"Erro":str(e)}, status = 406)
-    return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
-
-###################################################################### FIM API WEB SERVICE ##############################################################################
-
-
-
-###################################################################### INICIO SALVAR DADOS DO CSV NO BANCO ##############################################################################
-classe_casos_clinicos = 'class'
-def ler_dados_salvar(request):
-    df = pd.read_csv('backup_casos_clinicos.csv') #lendo os dados
-    # df = pd.read_csv('backup.csv') #lendo os dados
-    # df = pd.read_csv('backup_casos_clinicos.csv') #lendo os dados do backup
-    print(' -------- Data Frame --------')
-    print(df)
-
-    print(' -------- Salvando Doenças --------')
-    lista_doencas = df[classe_casos_clinicos].unique()
-    for item in lista_doencas:
-        try:
-            # doenca = Doenca.objects.get(nome_doenca=item.upper().replace("_", " "))
-            doenca = Doenca.objects.get(nome_doenca=item.replace("_", " "))
-        except Exception as e:
-            # doenca = Doenca(nome_doenca=item.upper().replace("_", " "))
-            doenca = Doenca(nome_doenca=item.replace("_", " "))
-            doenca.save()
-            print(item.replace("_", " "))
-
-    print(' -------- Salvando Sintomas --------')
-    lista_sintomas = df.columns
-    for item in lista_sintomas:
-        if item != classe_casos_clinicos:
-            try:
-                # sintoma = Sintoma.objects.get(nome_sintoma=item.upper().replace("_", " "))
-                sintoma = Sintoma.objects.get(nome_sintoma=item.replace("_", " "))
-            except Exception as e:
-                # sintoma = Sintoma(nome_sintoma=item.upper().replace("_", " "))
-                sintoma = Sintoma(nome_sintoma=item.replace("_", " "))
-                sintoma.save()
-                print(item.replace("_", " "))
-
-    print(' -------- Salvando Casos Clínicos --------')
-    salvos = 0
-    for linha in df.values:#todas as Linhas do DataFrame
-        lista_sintomas_caso_clinico = []
-        doenca_caso_clinico = None
-        linhas_e_colunas = zip(linha,df.columns) #Zipar as duas variaveis em uma só ou seja Uma linhas com as colunas respectivas
-        for valor,coluna in linhas_e_colunas:#Rodar laço com nome da coluna e valor
-            if coluna != classe_casos_clinicos:#se aquela coluna não for do nome da doença
-                    if valor == 1:#Se tiver o sintoma
-                        # lista_sintomas_caso_clinico.append(coluna)
-                        # lista_sintomas_caso_clinico.append(Sintoma.objects.get(nome_sintoma=coluna.upper().replace("_", " ")))
-                        lista_sintomas_caso_clinico.append(Sintoma.objects.get(nome_sintoma=coluna.replace("_", " ")))
-            else:
-                # doenca_caso_clinico = Doenca.objects.get(nome_doenca=valor.upper().replace("_", " "))
-                doenca_caso_clinico = Doenca.objects.get(nome_doenca=valor.replace("_", " "))
-        caso_clinico = Caso_Clinico()#Novo objeto de caso clinico
-        caso_clinico.doenca = doenca_caso_clinico#adicinando doenca
-        caso_clinico.doenca_classificada = True#adicionando se doença é classificada ou não
-        caso_clinico.save()#salvando o caso clinico
-        caso_clinico.sintomas.set(lista_sintomas_caso_clinico)#Adicionando os sintomas após objeto ser salvo pelo metodo get()
-        print(caso_clinico)
-        salvos = salvos+1
-        print(str(salvos)+' Caso Clinico Salvo')
-
-
-
-
-    print(' -------- Todos os Dados Salvos --------')
-    return HttpResponse('Salvo com sucesso')
-    # return redirect('/')#voltar para tela inicial
-###################################################################### FIM SALVAR DADOS DO CSV NO BANCO ##############################################################################
-
-
-
-
-
-################################################################### INICIO USER ##################################################
-
-# class SenhaAndUserUpdate(UpdateView):
-#     model = User
-#     form_class = UserCreationForm
-#     #form_class = ProvaForm
-#     success_url = '/'
-#     template_name = 'update_generico.html'
-#
-#     def get(self, request, *args, **kwargs):
-#         if (self.get_object().pk != self.request.user.pk):
-#             messages.add_message(request, ERROR, 'Você não tem Permissão para editar este usuário.')#mensagem para o usuario
-#             return redirect('/salas/todas/')
-#         messages.add_message(request, WARNING, 'Atualizar Usuário.')#mensagem para o usuario
-#         return super(SenhaAndUserUpdate, self).get(request, *args, **kwargs)
-
-
-class UserUpdate(UpdateView):
-    model = User
-    # form_class = UserCreationForm
-    #form_class = username
-    fields = ['username','first_name','last_name','email']
-    success_url = '/doctraining/'
-    template_name = 'update_generico.html'
-
-    def get(self, request, *args, **kwargs):
-        if (self.get_object().pk != self.request.user.pk):
-            messages.add_message(request, ERROR, 'Você não tem Permissão para editar este usuário.')#mensagem para o usuario
-            return redirect('/doctraining/')
-        # messages.add_message(request, WARNING, 'Atualizar Usuário.')#mensagem para o usuario
-        return super(UserUpdate, self).get(request, *args, **kwargs)
-
-
-
-class UserCreate(CreateView):
-    model = User
-    form_class = UserCreationForm
-    success_url = '/doctraining/'
-    template_name = 'create_generico.html'
-
-    def get(self, request, *args, **kwargs):
-        if not self.request.user.is_staff:#Se não for administrador
-            messages.add_message(request, ERROR, 'Você não tem Permissão para adicionar usuários.')#mensagem para o usuario
-            return redirect('/doctraining/')
-        messages.add_message(request, WARNING, 'Novo Usuário do Tipo Professor/Profissional.')#mensagem para o usuario
-        return super(UserCreate, self).get(request, *args, **kwargs)
-
-
-
-
-
-class PerfilUpdate(UpdateView):
-    model = Perfil
-    success_url = '/doctraining/'
-    template_name = 'update_generico.html'
-    fields = ['apelido','instituicao','idade']
-
-    def get(self, request, *args, **kwargs):
-        if (self.get_object().user.pk != self.request.user.pk):
-            messages.add_message(request, ERROR, 'Você não tem Permissão para editar este perfil.')#mensagem para o usuario
-            return redirect('/doctraining/')
-        messages.add_message(request, WARNING, 'Atualizar Perfil.')#mensagem para o usuario
-        return super(PerfilUpdate, self).get(request, *args, **kwargs)
-
-
-
-############################################# Machine Learning #############################################################
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import train_test_split#Importar divisão
-from sklearn.ensemble import BaggingClassifier
-from sklearn.metrics import classification_report, confusion_matrix # importar metodo de avaliação
-from sklearn.linear_model import LogisticRegression #Importar regressão logistica
-
-###### Threading
-import logging#Mostra logs neste caso de horario
-import threading
-import time
-
-format = "%(asctime)s: %(message)s"
-logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
-
-stop_threads = False
-
-nome_class_DF_casos_clinicos = 'class'
-taxa_aprendizado = ''
-# def aprender(request):
-def aprender():
-    try:
-        print('Inicio Função aprender')
-        global stop_threads
-        global taxa_aprendizado
-        print("Obter dados...")
-        sintomas = Sintoma.objects.all().order_by('pk')
-        casos_clinicos = Caso_Clinico.objects.exclude(doenca = None,doenca_classificada = False).order_by('pk')
-        casos_clinicos_sem_classificacao = Caso_Clinico.objects.filter(doenca_classificada = False).order_by('pk')
-        print("Obter dados: OK")
-
-        print("Lista Sintomas...")
-        lista_sintomas = []
-        lista_sintomas_sem_class =[]
-        for sintoma in sintomas:#adicinar sintiomas desse caso clinico a lista
-            lista_sintomas.append(sintoma.nome_sintoma)
-            lista_sintomas_sem_class.append(sintoma.nome_sintoma)
-        lista_sintomas.append(nome_class_DF_casos_clinicos)
-        df = pd.DataFrame(columns=lista_sintomas)
-        # casos_clinicos = Caso_Clinico.Sintoma.objects.all().order_by('pk')
-        print("Lista Sintomas: OK")
-
-        if stop_threads:#se for para parar
-            return
-
-        print("Data Frame...")
-        gerados = 0
-        for caso_clinico in casos_clinicos:
-            valor_linha = []
-
-            for sintoma in sintomas:
-                if sintoma in caso_clinico.sintomas.all():
-                    valor_linha.append(1)
-                else:
-                    valor_linha.append(0)
-            valor_linha.append(caso_clinico.doenca.nome_doenca)
-            df_auxiliar = pd.DataFrame([valor_linha], columns=lista_sintomas)
-            df = df.append(df_auxiliar,ignore_index=True)
-            gerados = gerados+1
-            print(str(gerados)+' Linhas geradas do Data Frame')
-        # print(df.head())
-        print("Data Frame: OK")
-
-        ######### DATA SET MONTADO #############
-        if stop_threads:#se for para parar
-            return
-
-        print("Treino e Teste...")
-        X = df.drop('class',axis=1)
-        y = df['class']
-        X_train, X_test, y_train, y_test = train_test_split(X, #train.drop('Survived',axis=1) remove a coluna e a retorna mas não altera na variavel
-                                                            y, test_size=0.20,
-                                                            random_state=254)#Dividir os dados em treino e teste
-        logmodel = LogisticRegression(C=10000)#contrutor
-        logmodel.fit(X_train,y_train)#treino
-        logmodel_predictions = logmodel.predict(X_test)#predizer dados de treinos
-        print(confusion_matrix(y_test,logmodel_predictions)) #Ver resultados
-        print(classification_report(y_test,logmodel_predictions)) #Ver resultados
-        scores = cross_val_score(logmodel, X, y, cv=5, scoring='f1_micro')
-        print(scores)
-        print(scores.mean())
-        taxa_aprendizado = str(round(scores.mean()*100,2))
-        print("Treino e Teste: OK")
-
-        if stop_threads:
-            return
-        print("Classificação Dados...")
-        classificados = 0
-        for caso_clinico in casos_clinicos_sem_classificacao:
-            valor_linha_classificar = []
-
-            for sintoma in sintomas:
-                if sintoma in caso_clinico.sintomas.all():
-                    valor_linha_classificar.append(1)
-                else:
-                    valor_linha_classificar.append(0)
-            df_classificar = pd.DataFrame([valor_linha_classificar], columns=lista_sintomas_sem_class)
-            #classificando novo dado
-            print(df_classificar)
-            print("Classificado como: ")
-            resultado = logmodel.predict(df_classificar)
-            print(resultado)
-
-            try:
-                nova_doenca = Doenca.objects.get(nome_doenca = resultado[0])#pegar doenca selecionada no formulario
-                caso_clinico.doenca = nova_doenca#adicinando doenca
-                caso_clinico.doenca_classificada = False#variavel indica que a doenca não foi classificada pelo usuario
-                caso_clinico.save()#salvando o caso clinico
-
-            except Exception as e:
-                mandar_email_error('Erro ao classificar dados no Aprendizado de Máquina '+str(e))
-                print('ERRO: '+str(e))
-
-            classificados = classificados+1
-            print(str(classificados)+' Exemplos Classificados')
-        # '''
-        print("Classificação Dados: OK")
-
-        print('Fim Função aprender')
-    except Exception as e:
-        mandar_email_error(msg_erro=str(e), url_erro="Thread AM")
-
-
-
-horario_tarde = 12
-horario_inicio_am = 2
-horario_fim_am = 3
-tempo_espera_segundos = 5
-def chamar_funcao_aprender():
-    while True:
-        global stop_threads
-        if stop_threads:
-            break#parar thread
-        if ( int(time.strftime('%H')) >= horario_inicio_am and int(time.strftime('%H')) <= horario_fim_am ) or ( int(time.strftime('%H')) == horario_tarde and int(time.strftime('%M')) <= 29 ):
-            print('CHAMA FUNÇÃO APRENDER')
-            aprender()
-            time.sleep(300)#5 min de espera após classificações
-        else:
-            print("FORA DO HORARIO. Classificação: "+ str(horario_inicio_am) +' - '+ str(horario_fim_am) +':59 Horas e ' + str(horario_tarde) +' - '+ str(horario_tarde) + ':30 Horas')
-        r = requests.get('https://doctraining.herokuapp.com')
-        print(r)
-        time.sleep(tempo_espera_segundos)
-
-threading_do_aprendizado_maquina = threading.Thread(target=chamar_funcao_aprender)
-def ativar_am(request):#Rodar Thread
-    if not request.user.is_staff:#Se não for administrador
-        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
-        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
-    mensagem = tentar_ativar_am()
-    return render(request,'am.html',{'mensagem':mensagem})
-
-
-def desativar_am(request):#Parar Thread
-    if not request.user.is_staff:#Se não for administrador
-        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
-        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
-    try:
-        global stop_threads
-        global threading_do_aprendizado_maquina
-        # stop_threads = True
-        #se nao tiver ativo ativar
-        # if not threading_do_aprendizado_maquina.is_alive():
-        if not stop_threads:
-            stop_threads = True
-            threading_do_aprendizado_maquina.join()
-            mensagem = 'Desativado'
-        else:
-            stop_threads = True
-            # print("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE PARADA")
-            # return HttpResponse("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE PARADA")
-            mensagem =  'Já encontra-se desativado'
-    except Exception as e:
-        mensagem = 'Erro: Não foi possível parar o Aprendizado de Máquina ou já encontra-se desativado'
-        # print('ERRO: Não foi possivel parar Thread')
-        # return HttpResponse('ERRO: NÃO FOI POSSIVEL PARAR O APRENDIZADO DE MÁQUINA')
-    return render(request,'am.html',{'mensagem':mensagem})
-    # print('APRENDIZADO DE MÁQUINA PARADO')
-    # return HttpResponse('APRENDIZADO DE MÁQUINA PARADO')
-
-def status_am(request):
-    if not request.user.is_staff:#Se não for administrador
-        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
-        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
-    if threading_do_aprendizado_maquina.is_alive():
-        # return HttpResponse('ATIVO')
-        mensagem = 'Ativo: Classificação: '+ str(horario_inicio_am) +' - '+ str(horario_fim_am) +':59 Horas e ' + str(horario_tarde) +' - '+ str(horario_tarde) + ':30 Horas. Taxa de Aprendizado: ' + taxa_aprendizado+"%"
-    else:
-        # return HttpResponse('PARADO')
-        mensagem = 'Desativado'
-    return render(request,'am.html',{'mensagem':mensagem})
-
-
-def am_agora(request):
-    global stop_threads
-    global threading_do_aprendizado_maquina
-    if not request.user.is_staff:#Se não for administrador
-        messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
-        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
-    if not threading_do_aprendizado_maquina.is_alive():
-        stop_threads = False
-        aprender()
-        stop_threads = True
-        # return HttpResponse("CLASSIFICAÇÃO DO APRENDIZADO DE MÁQUINA CONCLUIDO")
-        mensagem = 'Classificação do Aprendizado de Máquina concluído.'+ ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
-    elif not( ( int(time.strftime('%H')) >= horario_inicio_am and int(time.strftime('%H')) <= horario_fim_am ) and ( int(time.strftime('%H')) == horario_tarde and int(time.strftime('%M')) <= 29 ) ):
-        print("Horario")
-        aprender()
-        mensagem = 'Classificação do Aprendizado de Máquina concluído.' + ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
-    else:
-        # return HttpResponse("CLASSIFICAÇÃO EM USO PELO APRENDIZADO DE MÁQUINA")
-        print("AM em uso")
-        mensagem = 'Classificação em uso pelo Aprendizado de Máquina.'+ ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
-    return render(request,'am.html',{'mensagem':mensagem})
-
-
-
-def tentar_ativar_am():
-    global stop_threads
-    global threading_do_aprendizado_maquina
-    stop_threads = False
-    #se nao tiver ativo ativar
-    if not threading_do_aprendizado_maquina.is_alive():
-        threading_do_aprendizado_maquina = threading.Thread(target=chamar_funcao_aprender)
-        threading_do_aprendizado_maquina.start()#o normal
-        mensagem = 'Ativado. Classificação: '+ str(horario_inicio_am) +' - '+ str(horario_fim_am) +':59 Horas e ' + str(horario_tarde) +' - '+ str(horario_tarde) + ':30 Horas. Taxa de Aprendizado: ' + taxa_aprendizado+"%"
-    else:
-        mensagem ='Já encontra-se ativo. Classificação: '+ str(horario_inicio_am) +' - '+ str(horario_fim_am) +':59 Horas e ' + str(horario_tarde) +' - '+ str(horario_tarde) + ':30 Horas' + ' Taxa de Aprendizado: ' + taxa_aprendizado+"%"
-        # print("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE ATIVA")
-        # return HttpResponse("APRENDIZADO DE MÁQUINA JÁ ENCONTRA-SE ATIVA")
-    # threading_do_aprendizado_maquina.run()
-    # print("APRENDIZADO DE MÁQUINA ATIVA")
-    # return HttpResponse("APRENDIZADO DE MÁQUINA ATIVO")
-    return mensagem
-
-
-
-
-
-#
-import io
-from ftplib import *
-def gerar_csv(request):
-    threading_do_bck_casos_clinicos = threading.Thread(target=bck_casos_clinicos)
-    threading_do_bck_casos_clinicos.start()#o normal
-    messages.add_message(request, SUCCESS, 'Gerando CSV de Backup...')#mensagem para o usuario
-    return redirect('/doctraining/')
-
-
-def bck_casos_clinicos():
-    try:
-        print('Inicio gerar csv')
-        print("Obter dados...")
-        sintomas = Sintoma.objects.all().order_by('pk')
-        casos_clinicos = Caso_Clinico.objects.exclude(doenca = None,doenca_classificada = False).order_by('pk')
-        casos_clinicos_sem_classificacao = Caso_Clinico.objects.filter(doenca_classificada = False).order_by('pk')
-        print("Obter dados: OK")
-
-        print("Lista Sintomas...")
-        lista_sintomas = []
-        lista_sintomas_sem_class =[]
-        for sintoma in sintomas:#adicinar sintiomas desse caso clinico a lista
-            lista_sintomas.append(sintoma.nome_sintoma)
-            lista_sintomas_sem_class.append(sintoma.nome_sintoma)
-        lista_sintomas.append(nome_class_DF_casos_clinicos)
-        df = pd.DataFrame(columns=lista_sintomas)
-        # casos_clinicos = Caso_Clinico.Sintoma.objects.all().order_by('pk')
-        print("Lista Sintomas: OK")
-
-        print("Data Frame...")
-        gerados = 0
-        for caso_clinico in casos_clinicos:
-            valor_linha = []
-
-            for sintoma in sintomas:
-                if sintoma in caso_clinico.sintomas.all():
-                    valor_linha.append(1)
-                else:
-                    valor_linha.append(0)
-            valor_linha.append(caso_clinico.doenca.nome_doenca)
-            df_auxiliar = pd.DataFrame([valor_linha], columns=lista_sintomas)
-            df = df.append(df_auxiliar,ignore_index=True)
-            gerados = gerados+1
-            print(str(gerados)+' Linhas geradas do Data Frame')
-        # print(df.head())
-        print("Data Frame: OK")
-
-        print("Savando CSV...")
-        #FTP
-        ftp = FTP()
-        ftp.connect('files.000webhost.com', 21)
-        ftp.login('jesaias','09011996')
-        ftp.cwd ('/public_html/doctraining/')
-        buffer = io.StringIO()
-        df.to_csv(buffer,index=False)
-        text = buffer.getvalue()
-        bio = io.BytesIO(str.encode(text))
-        ftp.storbinary('STOR backup_casos_clinicos.csv', bio)
-        ftp.close()
-        #FTP
-
-        # df.to_csv('backup_casos_clinicos.csv',index=False) #Salvando dataframe em csv e usando
-        print("Savando CSV: OK")
-    except Exception as e:
-        mandar_email_error(msg_erro=str(e), url_erro="BCK Casos Clinicos")
-
-
 if not(settings.PROJETO_EM_TESTE):
     def mandar_email_error( msg_erro,usuario='Desconhecido',url_erro='Desconhecida'):
         send_mail(
@@ -1556,59 +908,3 @@ else:
     print("PROJETO EM TESTE")
 
 
-
-######## VERSIONAMENTO ############
-
-from doctrainingapp.forms import *
-
-
-@login_required(login_url='')
-@staff_member_required
-def versao_list(request, template_name='versao-list.html'):
-    versao = Versao.objects.all()
-
-    return render(request, template_name, {'versao': versao})
-'''
-def versao_view(request, pk, template_name='books/book_detail.html'):
-    versao = get_object_or_404(Versao, pk=pk)
-    return render(request, template_name, {'object':versao})'''
-
-
-@login_required(login_url='')
-@staff_member_required
-def versao_add(request, template_name='versao-add.html'):
-    form = VersaoForm(request.POST or None)
-    if form.is_valid():
-        try:
-            versao_aux = Versao.objects.get(versao=request.POST['versao'])
-
-            if versao_aux:
-                messages.error(request, 'Erro! Versão ja existe.')
-                return redirect('/versao')
-        except:
-            form.save()
-            return redirect('/versao')
-    return render(request, template_name, {'form':form})
-
-
-@login_required(login_url='')
-@staff_member_required
-def versao_edit(request, pk, template_name='versao-edit.html'):
-    versao= get_object_or_404(Versao, pk=pk)
-    form = VersaoForm(request.POST or None, instance=versao)
-    if form.is_valid():
-        form.save()
-        return redirect('/versao')
-    return render(request, template_name, {'form':form})
-
-
-@login_required(login_url='')
-@staff_member_required
-def versao_delete(request, pk, template_name='versao-delete.html'):
-    versao = get_object_or_404(Versao, pk=pk)
-    if request.method=='POST':
-        versao.delete()
-        return redirect('/versao')
-    return render(request, template_name, {'object':versao})
-
-#

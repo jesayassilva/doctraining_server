@@ -1,4 +1,4 @@
-
+from .views_pack import views_versao, views_api, views_ia, views_user, views_backup
 from django.urls import path
 from .views  import  *
 from django.contrib.auth import views as auth_views
@@ -16,9 +16,9 @@ urlpatterns = [
 
     path('doctraining/',login_required(doctraining),name='doctraining'),
 
-    path('user/novo/',login_required(UserCreate.as_view()),name='user_create'),
-    path('user/perfil/editar/<int:pk>/',login_required(PerfilUpdate.as_view()),name='perfil_update'),
-    path('user/<int:pk>/',login_required(UserUpdate.as_view()),name='user_update'),
+    path('user/novo/',login_required(views_user.UserCreate.as_view()),name='user_create'),
+    path('user/perfil/editar/<int:pk>/',login_required(views_user.PerfilUpdate.as_view()),name='perfil_update'),
+    path('user/<int:pk>/',login_required(views_user.UserUpdate.as_view()),name='user_update'),
     path('usuarios/',login_required(usuarios),name='usuarios'),
     path('user/ativar/<int:pk>/',login_required(usuario_ativar),name='user_ativar'),
     path('user/desativar/<int:pk>/',login_required(usuario_desativar),name='user_desativar'),
@@ -71,33 +71,33 @@ urlpatterns = [
 
 
     #WEB SERVICE
-    path('api/',login_required(api),name='api'),
-    path('api/casos_clinicos/nome_doencas/',nome_doencas_casos_clinicos_api,name='nome_doencas_casos_clinicos_api'),
-    path('api/casos_clinicos/nome_sintomas/',nome_sintomas_casos_clinicos_api,name='nome_sintomas_casos_clinicos_api'),
-    path('api/casos_clinicos/todos/',todos_casos_clinicos_doencas_sintomas_api,name='todos_casos_clinicos_doencas_sintomas_api'),
-    path('api/casos_clinicos/um/',um_caso_clinico_doenca_sintomas_api,name='um_caso_clinico_doenca_sintomas_api'),
-    path('api/salas/<int:pk_sala>/perguntas/',perguntas_de_uma_sala_api,name='perguntas_de_uma_sala_api'),
-    path('api/salas/',todos_salas_api,name='todos_salas_api'),
-    url(r"^api/versao/(?P<versao_versao>\d+\.\d+)$", versao_api, name='versao-api'),
+    path('api/',login_required(views_api.api),name='api'),
+    path('api/casos_clinicos/nome_doencas/', views_api.nome_doencas_casos_clinicos_api,name='nome_doencas_casos_clinicos_api'),
+    path('api/casos_clinicos/nome_sintomas/', views_api.nome_sintomas_casos_clinicos_api,name='nome_sintomas_casos_clinicos_api'),
+    path('api/casos_clinicos/todos/', views_api.todos_casos_clinicos_doencas_sintomas_api,name='todos_casos_clinicos_doencas_sintomas_api'),
+    path('api/casos_clinicos/um/', views_api.um_caso_clinico_doenca_sintomas_api,name='um_caso_clinico_doenca_sintomas_api'),
+    path('api/salas/<int:pk_sala>/perguntas/', views_api.perguntas_de_uma_sala_api,name='perguntas_de_uma_sala_api'),
+    path('api/salas/', views_api.todos_salas_api,name='todos_salas_api'),
+    url(r"^api/versao/(?P<versao_versao>\d+\.\d+)$", views_api.versao_api, name='versao-api'),
     #url(r"^item/value/(?P<dollar>\d+\.\d+)$", views.show_item, name="show-item"),
 
 
     #APRENDIZADO DE MÁQUINA controle das threads
-    path('ativar_am/', login_required(ativar_am), name='ativar_am'),
+    path('ativar_am/', login_required(views_ia.ativar_am), name='ativar_am'),
     # path('desativar_am/', login_required(desativar_am), name='desativar_am'),
-    path('status_am/', login_required(status_am), name='status_am'),
-    path('am_agora/', login_required(am_agora), name='am_agora'),
+    path('status_am/', login_required(views_ia.status_am), name='status_am'),
+    path('am_agora/', login_required(views_ia.am_agora), name='am_agora'),
     
     #BACKUP E RESTAURAR BACKUP
     # path('ler_dados_salvar/',login_required(ler_dados_salvar)),#Caso o backup sejá restaurado é interessante apagar todos os dados da tabela caso clinico,doenca e sintomas pois serão novamente salvos e pode haver duplicação de caso clinico
-    path('gerar_csv/',login_required(gerar_csv)),
+    path('gerar_csv/',login_required(views_backup.gerar_csv)),
 
     #VERSIONAMENTO
-    path('versao', versao_list, name='lista-versao'),
+    path('versao', views_versao.versao_list, name='lista-versao'),
     #path('versao/<int:pk>', versao_view, name='view-versao'),
-    path('versao/add', versao_add, name='add-versao'),
-    path('versao/edit/<int:pk>', versao_edit, name='edit-versao'),
-    path('versao/delete/<int:pk>', versao_delete, name='delete-versao'),
+    path('versao/add', views_versao.versao_add, name='add-versao'),
+    path('versao/edit/<int:pk>', views_versao.versao_edit, name='edit-versao'),
+    path('versao/delete/<int:pk>', views_versao.versao_delete, name='delete-versao'),
     #path('versao/delete/<int:pk>', versao_delete, name='delete-versao'),
 
 
