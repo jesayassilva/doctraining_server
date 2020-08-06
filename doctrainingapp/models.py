@@ -311,27 +311,12 @@ def email_save_user(sender, instance, **kwargs):
     print('enviando email')
 
 
-class Categoria(models.Model):
-    nome = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.nome
-
-
-class Area(models.Model):
-    nome = models.CharField(max_length=50)
-    salas = models.ManyToManyField('Sala', null=True, blank=True, )
-
-    def __str__(self):
-        return self.nome
-
 class Sala(models.Model):
     responsavel_sala = models.ForeignKey(User, on_delete=models.CASCADE)
     nome_sala = models.CharField(max_length=50, blank=False,null=False,unique=True)
     descricao = models.CharField(max_length=100, blank=True,null=True)
     data_criacao = models.DateTimeField(default=datetime.now)
     # email = models.EmailField(max_length=254,blank=True,null=True)
-
     def __str__(self):
         return self.nome_sala
 
@@ -340,10 +325,6 @@ class Sala(models.Model):
 
     def descricao_limitado(self):#retorna nome da alteração
         return self.descricao[:40]
-
-
-
-
 
 class Pergunta(models.Model):
     sala = models.ForeignKey(Sala, on_delete=models.CASCADE)

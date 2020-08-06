@@ -7,7 +7,7 @@
 {% if messages %}
     <ul class="messages">
             {% for message in messages %}
-                <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
                     {% if message.tags == 'success' %}
                         <font color="green">{{ message }}</font>
                     {% elif message.tags == 'error' %}
