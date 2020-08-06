@@ -18,7 +18,7 @@ from django.db import models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.urls import reverse
-
+from doctrainingapp.forms import *
 from django.core.mail import send_mail #Para mandar email
 
 import requests
@@ -734,13 +734,32 @@ def log_solicitacoes_alteracao_casos_clinicos(request):
 #LoginRequiredMixin significa que o usuario precisar estar logado pra acesssar a pagina
 
 ################################################################### INICIO SALAS #################################################################################
+@login_required(login_url='')
+def sala_add(request, template_name='salas-add.html'):
+    areas = Area.objects.all()
+    if request.method == 'POST':
+        form = SalaForm(request.POST)
+        if form.is_valid():
+            area_get = request.POST['areas']
+            area_aux = Area.objects.get(id=area_get)
+            sala = form.save(commit=False)
+            sala.responsavel_sala = request.user
+            sala.save()
+            area_aux.salas.add(sala)
+        return redirect('/areas')
+    else:
+        form = SalaForm()
+
+    return render(request, template_name, {'form':form, 'areas': areas})
 
 class Nova_Sala(LoginRequiredMixin, CreateView):
     model = Sala
+
     success_url = reverse_lazy("doctrainingapp:todas_salas")
     # success_url = reverse_lazy('todas_salas')
     template_name = 'create_generico.html'
     fields = ['nome_sala','descricao']
+
     # fields = '__all__'
     # exclude = ['user']
     # success_url = reverse_lazy('author-list')
@@ -752,6 +771,7 @@ class Nova_Sala(LoginRequiredMixin, CreateView):
     def get(self, request, *args, **kwargs):
         messages.add_message(request, WARNING, 'Nova Sala Virtual .')#mensagem para o usuario
         return super(Nova_Sala, self).get(request, *args, **kwargs)
+
 
 
 class Editar_Sala(UpdateView):
@@ -769,13 +789,13 @@ class Editar_Sala(UpdateView):
 
 class Deletar_Sala(DeleteView):
     model = Sala
-    success_url = '/salas/todas/'
+    success_url = '/areas/'
     template_name = 'delete.html'
 
     def get(self, request, *args, **kwargs):
         if ((self.get_object().responsavel_sala != self.request.user) and not request.user.is_staff):
             messages.add_message(request, ERROR, 'Você não tem Permissão para deletar esta sala.')#mensagem para o usuario
-            return redirect('/salas/todas/')
+            return redirect('/areas')
         messages.add_message(request, WARNING, 'Sala "' + self.get_object().nome_sala + '" será excluida.')#mensagem para o usuario
         messages.add_message(request, WARNING, 'Todas perguntas nesta sala serão excluidas.')#mensagem para o usuario
         return super(Deletar_Sala, self).get(request, *args, **kwargs)
@@ -863,12 +883,12 @@ class Deletar_Pergunta(DeleteView):
     def get(self, request, *args, **kwargs):
         if (self.get_object().sala.responsavel_sala != self.request.user):
             messages.add_message(request, ERROR, 'Você não tem Permissão para deletar esta pergunta.')#mensagem para o usuario
-            return redirect('/salas/todas/')
+            return redirect('/areas/')
         messages.add_message(request, WARNING, 'Pergunta "' + self.get_object().pergunta + '" da Sala "'+self.get_object().sala.nome_sala+' "será excluida.')#mensagem para o usuario
         return super(Deletar_Pergunta, self).get(request, *args, **kwargs)
     def get_success_url(self, **kwargs):
         # return '/salas/'+ str(self.get_object().sala.pk) +'/perguntas/'
-        return reverse_lazy("doctrainingapp:todas_perguntas", args=(self.get_object().sala.pk, ))
+        return reverse_lazy("doctrainingapp:areas_list", args=(self.get_object().sala.pk, ))
 
 def todas_perguntas(request,pk_sala):
     usuario = request.user
@@ -885,6 +905,8 @@ def todas_perguntas(request,pk_sala):
     try:
         # perguntas = Pergunta.objects.filter(sala=sala).order_by('pergunta')
         perguntas = Pergunta.objects.filter(sala=sala).extra( select={'pergunta_QS': 'lower(pergunta)'}).order_by('pergunta_QS')
+        print(perguntas)
+        print(sala)
         # return HttpResponse(perguntas)
         return render(request,'perguntas_sala_todas.html',{'sala':sala,'perguntas':perguntas})
     except Exception as e:
@@ -892,6 +914,30 @@ def todas_perguntas(request,pk_sala):
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         return redirect('/doctraining/')
 
+def area_list(request, template_name='area-list.html'):
+    areas = Area.objects.all()
+    return render(request, template_name, {'areas': areas})
+
+@login_required(login_url='')
+@staff_member_required
+def area_add(request, template_name='area-add.html'):
+     form = AreaForm(request.POST or None)
+     if form.is_valid():
+         try:
+             area_aux = Area.objects.get(versao=request.POST['nome'])
+
+             if area_aux:
+                 messages.error(request, 'Erro! Area ja existe.')
+                 return redirect('/areas')
+         except:
+             form.save()
+             return redirect('/areas')
+     return render(request, template_name, {'form': form})
+
+
+def salas_area(request,id, template_name='salas-area.html'):
+    salas = Sala.objects.filter(area__id=id)
+    return render(request, template_name, {'salas': salas})
 
 if not(settings.PROJETO_EM_TESTE):
     def mandar_email_error( msg_erro,usuario='Desconhecido',url_erro='Desconhecida'):

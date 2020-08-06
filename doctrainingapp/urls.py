@@ -57,15 +57,22 @@ urlpatterns = [
 
     #SALAS
     path('salas/todas/',login_required(todas_salas),name='todas_salas'),
-    path('salas/nova/',login_required(Nova_Sala.as_view()),name='nova_sala'),
+    #path('salas/nova/',login_required(Nova_Sala.as_view()),name='nova_sala'),
     path('salas/editar/<int:pk>/',login_required(Editar_Sala.as_view()),name='editar_sala'),
     path('salas/deletar/<int:pk>/',login_required(Deletar_Sala.as_view()),name='delete_sala'),
+    path('salas/add/', sala_add, name='sala_add'),
 
     # PERGUNTAS
     path('salas/<int:pk_sala>/perguntas/nova/',login_required(nova_pergunta),name='nova_pergunta'),
     path('salas/<int:pk_sala>/perguntas/',login_required(todas_perguntas),name='todas_perguntas'),
     path('salas/editar/perguntas/<int:pk>/',login_required(Editar_Pergunta.as_view()),name='editar_pergunta'),
     path('salas/perguntas/deletar/<int:pk>/',login_required(Deletar_Pergunta.as_view()),name='delete_pergunta'),
+
+
+    #AREAS
+    path('areas/', login_required(area_list), name='areas_list'),
+    path('areas/add', area_add, name='area_add'),
+    path('salas/area/<int:id>', login_required(salas_area), name='salas_area'),
 
 
 
