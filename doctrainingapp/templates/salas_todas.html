@@ -37,6 +37,7 @@
     <thead>
       <tr>
         <!-- Colunas da tabela -->
+        <th>Area</th>
         <th>Sala</th>
         <th>Descrição</th>
         <th>Quantidade Pergunta(s)</th>
@@ -55,6 +56,7 @@
     <tbody>
       {% for sala in salas  %}
             <tr>
+              <td><b> {{sala.area}} </b></td>
               <td><b> {{sala.nome_sala}} </b></td>
               {% if sala.descricao  %}
                     <td> {{sala.descricao_limitado}}...</td>

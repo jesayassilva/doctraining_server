@@ -1,4 +1,4 @@
-from .views_pack import views_versao, views_api, views_ia, views_user, views_backup
+from .views_pack import views_versao, views_api, views_ia, views_user, views_backup, views_area
 from django.urls import path
 from .views  import  *
 from django.contrib.auth import views as auth_views
@@ -80,6 +80,7 @@ urlpatterns = [
     path('api/salas/', views_api.todos_salas_api,name='todos_salas_api'),
     url(r"^api/versao/(?P<versao_versao>\d+\.\d+)$", views_api.versao_api, name='versao-api'),
     #url(r"^item/value/(?P<dollar>\d+\.\d+)$", views.show_item, name="show-item"),
+    path('api/area/salas/', views_api.areas_salas_api,name='areas_salas_api'),
 
 
     #APRENDIZADO DE MÁQUINA controle das threads
@@ -100,6 +101,12 @@ urlpatterns = [
     path('versao/delete/<int:pk>', views_versao.versao_delete, name='delete-versao'),
     #path('versao/delete/<int:pk>', versao_delete, name='delete-versao'),
 
+
+    #AREAS
+    path('areas/', views_area.area_list, name='areas_list'),
+    path('area/add', views_area.area_add, name='area_add'),
+    path('area/edit/<int:pk>', views_area.area_edit, name='area_edit'),
+    path('area/delete/<int:pk>', views_area.area_delete, name='area_delete'),
 
 
 

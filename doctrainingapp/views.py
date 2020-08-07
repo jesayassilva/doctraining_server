@@ -18,7 +18,7 @@ from django.db import models
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.urls import reverse
-
+from .forms import *
 from django.core.mail import send_mail #Para mandar email
 
 import requests
@@ -735,12 +735,14 @@ def log_solicitacoes_alteracao_casos_clinicos(request):
 
 ################################################################### INICIO SALAS #################################################################################
 
+
+
 class Nova_Sala(LoginRequiredMixin, CreateView):
     model = Sala
     success_url = reverse_lazy("doctrainingapp:todas_salas")
     # success_url = reverse_lazy('todas_salas')
     template_name = 'create_generico.html'
-    fields = ['nome_sala','descricao']
+    fields = ['nome_sala','descricao', 'area']
     # fields = '__all__'
     # exclude = ['user']
     # success_url = reverse_lazy('author-list')

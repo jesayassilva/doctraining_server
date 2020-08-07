@@ -6,5 +6,5 @@ from .models import *
 admin.site.register({
                     Doenca, Sintoma, Caso_Clinico,
                      Solicitacao_Alterar_Caso_Clinico,
-                     Log, Perfil, Sala, Pergunta, Versao
+                     Log, Perfil, Sala, Pergunta, Versao, Area
                                                             })#para o admin reconhecer suas classes

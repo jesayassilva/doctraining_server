@@ -310,8 +310,14 @@ def save_user_perfil(sender, instance, **kwargs):
 def email_save_user(sender, instance, **kwargs):
     print('enviando email')
 
+class Area(models.Model):
+    nome = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.nome
 
 class Sala(models.Model):
+    area = models.ForeignKey(Area, on_delete=models.PROTECT)
     responsavel_sala = models.ForeignKey(User, on_delete=models.CASCADE)
     nome_sala = models.CharField(max_length=50, blank=False,null=False,unique=True)
     descricao = models.CharField(max_length=100, blank=True,null=True)

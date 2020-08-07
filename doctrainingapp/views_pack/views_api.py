@@ -192,3 +192,32 @@ def versao_api(request, versao_versao):
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             return JsonResponse({"Erro":str(e)}, status = 406)
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
+
+
+def areas_salas_api(request):
+    usuario = request.user
+    if request.method == 'GET':#Mostra todos os objetos
+        try:
+            json_lista_salas = []
+            areas = Area.objects.all()
+            salas = Sala.objects.all().order_by('area')
+            for area in areas:
+                lista = []
+                linha_area = {
+                    'id': area.pk,
+                    'area_nome': area.nome,
+                    'salas_list': lista }
+                for sala in salas:#todas as Linhas
+                    if sala.area == area:
+                        linha_sala = {
+                        'id':sala.pk,
+                        'sala_nome': sala.nome_sala,
+                        'quantidade_perguntas':sala.quantidade_perguntas()
+                        }
+                        linha_area['salas_list'].append(linha_sala)
+                json_lista_salas.append(linha_area)
+            return JsonResponse(json_lista_salas,safe=False)
+        except Exception as e:
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
+            return JsonResponse({"Erro":str(e)}, status = 406)
+    return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
