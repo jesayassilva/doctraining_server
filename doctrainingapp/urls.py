@@ -1,12 +1,14 @@
-from .views_pack import views_versao, views_api, views_ia, views_user, views_backup, views_area
+from .views_pack import views_versao, views_api, views_ia, views_user, views_backup, views_area, views_conteudo
 from django.urls import path
 from .views  import  *
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.decorators import login_required
 
 from django.conf.urls import url
+from django.contrib.staticfiles.urls import static, staticfiles_urlpatterns
 
 app_name="doctrainingapp"
+
 
 urlpatterns = [
 
@@ -81,6 +83,7 @@ urlpatterns = [
     url(r"^api/versao/(?P<versao_versao>\d+\.\d+)$", views_api.versao_api, name='versao-api'),
     #url(r"^item/value/(?P<dollar>\d+\.\d+)$", views.show_item, name="show-item"),
     path('api/area/salas/', views_api.areas_salas_api,name='areas_salas_api'),
+    path('api/conteudo/todos/', views_api.conteudos_api,name='conteudos_api'),
 
 
     #APRENDIZADO DE MÁQUINA controle das threads
@@ -108,43 +111,20 @@ urlpatterns = [
     path('area/edit/<int:pk>', views_area.area_edit, name='area_edit'),
     path('area/delete/<int:pk>', views_area.area_delete, name='area_delete'),
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    #CONTEUDO
+    path('conteudos/', views_conteudo.conteudo_list, name='list-conteudo'),
+    path('conteudo/add', views_conteudo.conteudo_add, name='add-conteudo'),
+    path('conteudo/edit/<int:pk>', views_conteudo.conteudo_edit, name='edit-conteudo'),
+    path('conteudo/view/<int:pk>', views_conteudo.conteudo_view, name='view-conteudo'),
+    path('conteudo/delete/<int:pk>', views_conteudo.conteudo_delete, name='delete-conteudo'),
 
 
 
 
 ]
 
-
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 

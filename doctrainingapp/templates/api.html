@@ -397,9 +397,123 @@ Teste
 
         </div>
 
+    <!-- ################## conteudos ########################## -->
+
+
+ <div class="" style="padding-bottom: 4%;">
+
+          <h2>Conteudos </h2>
+          <p></p>
+          <p>Para solicitar todos os conteudos, deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
+          <a href="{% url 'doctrainingapp:conteudos_api' %}">/api/conteudos/todos</a>
+
+          <p></p>
+          <p>Se for bem-sucedida, essa chamada retornará uma lista no formato de id, titulo, descrição, conteudo, link, referencia, imagem e data de criação.<br />
+            <br />
+            A seguir um exemplo de resultado dessa requisição:
+          </p>
+
+          <div class="ui inverted segment ">
+<pre>[
+    {
+        "id": 5,
+        "titulo": "Quais as diferenças entre os exames PCR e Sorologia?",
+        "descrição": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "conteudo": "PCR é a metodologia “padrão-ouro” capaz de detectar a presença do vírus nos pacientes. O exame é feito em material coletado da garganta e do nariz (em ambientes hospitalares, pode ser utilizada secreção do pulmão, o que aumenta a assertividade do teste), e por meio de técnicas de biologia molecular, detecta o material genético do vírus na amostra do paciente. O exame é recomendado para o diagnóstico de COVID-19 para pessoas com sintomas e pode detectar a presença do vírus em média até o 12º dia de sintomas.\r\n\r\n\r\nSorologia são testes imunológicos capazes de detectar os níveis de anticorpos IgM e IgG em amostra de sangue do paciente. É aconselhado para pacientes com sintomas a partir do sétimo dia, tempo que leva para os anticorpos começarem a ser produzidos. Ressaltamos que um resultado negativo NÃO exclui a presença da doença.",
+        "link": "https://dasa.com.br/coronavirus",
+        "referencia": "Dasa",
+        "imagem": "/media/conteudo/unnamed.jpg",
+        "data_criação": "2020-08-12T00:11:08Z"
+    },
+    {
+        "id": 1,
+        "titulo": "aaaaaaaaaaaaaaaaaaa",
+        "descrição": "bbbbbbbbbbbbbbbbbbbbbbbb",
+        "conteudo": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "link": "http://google.com",
+        "referencia": "Souza, Aleff",
+        "imagem": "/media/conteudo/istockphoto-1011498282-170667a.jpg",
+        "data_criação": "2020-08-10T16:54:35Z"
+    }
+    ]
+]</pre>
+
+          </div>
+
+        </div>
 
 
 
+
+     <div class="" style="padding-bottom: 4%;">
+
+          <h2>Area - Salas </h2>
+          <p></p>
+          <p>Para solicitar Areas e suas respectivas salas, deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
+          <a href="{% url 'doctrainingapp:areas_salas_api' %}">/api/area/salas</a>
+
+          <p></p>
+          <p>Se for bem-sucedida, essa chamada retornará uma lista no formato de id, nome da area, lista de salas (id, nome da sala, quantidade de perguntas).<br />
+            <br />
+            A seguir um exemplo de resultado dessa requisição:
+          </p>
+
+          <div class="ui inverted segment ">
+<pre>[
+    {
+        "id": 1,
+        "area_nome": "Covid-190",
+        "salas_list": [
+            {
+                "id": 1,
+                "sala_nome": "falta de ar",
+                "quantidade_perguntas": 0
+            },
+            {
+                "id": 4,
+                "sala_nome": "weqeqweqweqw",
+                "quantidade_perguntas": 2
+            },
+            {
+                "id": 6,
+                "sala_nome": "Teste321",
+                "quantidade_perguntas": 0
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "area_nome": "Dengue",
+        "salas_list": [
+            {
+                "id": 2,
+                "sala_nome": "teste dengue",
+                "quantidade_perguntas": 0
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "area_nome": "Febre Amarela",
+        "salas_list": [
+            {
+                "id": 3,
+                "sala_nome": "Aaaaaaaaaaaaaaaa",
+                "quantidade_perguntas": 0
+            },
+            {
+                "id": 5,
+                "sala_nome": "ssss",
+                "quantidade_perguntas": 0
+            }
+        ]
+    }
+    ]
+]</pre>
+
+          </div>
+
+        </div>
 
 </div>
 

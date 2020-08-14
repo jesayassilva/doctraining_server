@@ -165,7 +165,7 @@
 
     <div class="right menu">
       <div class="item">
-        <a class="ui button" href="{% url 'doctrainingapp:login' %}">Log in</a>
+        <a class="ui button" href="{% if user.is_authenticated %}{% url 'doctrainingapp:doctraining' %}{%else%} {% url 'doctrainingapp:login' %}{%endif%}">Log in</a>
       </div>
       <!-- <div class="item">
         <a class="ui primary button">Sign Up</a>

@@ -350,3 +350,18 @@ class Versao(models.Model):
     atualizacao_critica = models.BooleanField(default=False)
     data = models.DateTimeField(default=datetime.now)
 
+
+class Conteudo(models.Model):
+    area = models.ForeignKey(Area, on_delete=models.PROTECT)
+    titulo = models.CharField(max_length=100)
+    descricao = models.CharField(max_length=100)
+    conteudo = models.TextField(max_length=1000)
+    link = models.CharField(max_length=300, blank=True)
+    referencia = models.CharField(max_length=100)
+    imagem = models.ImageField(upload_to='conteudo')
+    data_criacao = models.DateTimeField(default=datetime.now)
+
+    def __str__(self):
+        return str(self.titulo)
+
+
