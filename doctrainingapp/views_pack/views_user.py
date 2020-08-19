@@ -29,7 +29,7 @@ class UserUpdate(UpdateView):
     def get(self, request, *args, **kwargs):
         if (self.get_object().pk != self.request.user.pk):
             messages.add_message(request, ERROR, 'Você não tem Permissão para editar este usuário.')#mensagem para o usuario
-            return redirect('/doctraining/')
+            return redirect('/doctraining/doctraining/')
         # messages.add_message(request, WARNING, 'Atualizar Usuário.')#mensagem para o usuario
         return super(UserUpdate, self).get(request, *args, **kwargs)
 
@@ -44,7 +44,7 @@ class UserCreate(CreateView):
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_staff:#Se não for administrador
             messages.add_message(request, ERROR, 'Você não tem Permissão para adicionar usuários.')#mensagem para o usuario
-            return redirect('/doctraining/')
+            return redirect('/doctraining/doctraining/')
         messages.add_message(request, WARNING, 'Novo Usuário do Tipo Professor/Profissional.')#mensagem para o usuario
         return super(UserCreate, self).get(request, *args, **kwargs)
 
@@ -61,7 +61,7 @@ class PerfilUpdate(UpdateView):
     def get(self, request, *args, **kwargs):
         if (self.get_object().user.pk != self.request.user.pk):
             messages.add_message(request, ERROR, 'Você não tem Permissão para editar este perfil.')#mensagem para o usuario
-            return redirect('/doctraining/')
+            return redirect('/doctraining/doctraining/')
         messages.add_message(request, WARNING, 'Atualizar Perfil.')#mensagem para o usuario
         return super(PerfilUpdate, self).get(request, *args, **kwargs)
 

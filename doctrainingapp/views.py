@@ -38,7 +38,7 @@ WARNING=30
 ERROR=40
 
 
-redirecionar_sem_permissao = '/doctraining/'
+redirecionar_sem_permissao = '/doctraining/doctraining/'
 
 
 def index(request):
@@ -729,7 +729,7 @@ def log_solicitacoes_alteracao_casos_clinicos(request):
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('/casos_clinicos/solicitacoes/')
+        return redirect('doctraining/casos_clinicos/solicitacoes/')
 
 #LoginRequiredMixin significa que o usuario precisar estar logado pra acesssar a pagina
 
@@ -765,7 +765,7 @@ class Editar_Sala(UpdateView):
     def get(self, request, *args, **kwargs):
         if (self.get_object().responsavel_sala != self.request.user):
             messages.add_message(request, ERROR, 'Você não tem Permissão para editar esta sala.')#mensagem para o usuario
-            return redirect('/salas/todas/')
+            return redirect('doctraining/salas/todas/')
         messages.add_message(request, WARNING, 'Sala Virtual .')#mensagem para o usuario
         return super(Editar_Sala, self).get(request, *args, **kwargs)
 
@@ -777,7 +777,7 @@ class Deletar_Sala(DeleteView):
     def get(self, request, *args, **kwargs):
         if ((self.get_object().responsavel_sala != self.request.user) and not request.user.is_staff):
             messages.add_message(request, ERROR, 'Você não tem Permissão para deletar esta sala.')#mensagem para o usuario
-            return redirect('/salas/todas/')
+            return redirect('doctraining/salas/todas/')
         messages.add_message(request, WARNING, 'Sala "' + self.get_object().nome_sala + '" será excluida.')#mensagem para o usuario
         messages.add_message(request, WARNING, 'Todas perguntas nesta sala serão excluidas.')#mensagem para o usuario
         return super(Deletar_Sala, self).get(request, *args, **kwargs)
@@ -791,7 +791,7 @@ def todas_salas(request):
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar salas. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('/doctraining/')
+        return redirect('doctraining/doctraining/')
 
 
 def nova_pergunta(request,pk_sala):
@@ -800,11 +800,11 @@ def nova_pergunta(request,pk_sala):
         sala = Sala.objects.get(pk=pk_sala)
         if(sala.responsavel_sala.pk != request.user.pk):
             messages.add_message(request, ERROR, 'Você não tem Permissão para entrar nesta sala.')#mensagem para o usuario
-            return redirect('/salas/todas/')
+            return redirect('doctraining/salas/todas/')
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar perguntas. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('/salas/todas/')
+        return redirect('doctraining/salas/todas/')
 
     if  request.method == "POST":#se tiver sido eviado os dados no formulario
         continuar = request.POST.get('post')#Qual botão foi presionado
@@ -827,14 +827,14 @@ def nova_pergunta(request,pk_sala):
             Pergunta(sala=sala, pergunta=pergunta, dificuldade=dificuldade, opcao_correta=opcao_correta, opcao_incorreta_1=opcao_incorreta_1, opcao_incorreta_2=opcao_incorreta_2, opcao_incorreta_3=opcao_incorreta_3 ).save()
             messages.add_message(request, SUCCESS, 'Foi adicionada uma pergunta na sala '+ str(sala.nome_sala) )
             if ( continuar == 'Salvar'):#Salvar apenas esse
-                return redirect('/salas/'+str(pk_sala)+'/perguntas/')
+                return redirect('doctraining/salas/'+str(pk_sala)+'/perguntas/')
                 # return reverse("doctrainingapp:todas_perguntas", args=[pk_sala])
             else:#Continuar
                 return render(request,'pergunta_na_sala_nova.html',{'sala':sala})
         except Exception as e:
             messages.add_message(request, ERROR, 'Ocorreu um erro ao salvar pergunta. Tente novamente mais tarde.')#mensagem para o usuario
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-            return redirect('/salas/todas/')
+            return redirect('/doctraining/salas/todas/')
     else:#Abrir tela
         return render(request,'pergunta_na_sala_nova.html',{'sala':sala})
     #fields = ['pergunta','opcao_correta','opcao_incorreta_1','opcao_incorreta_2','opcao_incorreta_3']
@@ -850,7 +850,7 @@ class Editar_Pergunta(UpdateView):
     def get(self, request, *args, **kwargs):
         if (self.get_object().sala.responsavel_sala != self.request.user):
             messages.add_message(request, ERROR, 'Você não tem Permissão para editar esta pergunta.')#mensagem para o usuario
-            return redirect('/salas/todas/')
+            return redirect('/doctraining/salas/todas/')
         # self.success_url = '/salas/'+ str(self.get_object().sala.pk) +'/perguntas/'
         # self.success_url = '/'
         messages.add_message(request, WARNING, 'Editar Pergunta.')#mensagem para o usuario
@@ -867,7 +867,7 @@ class Deletar_Pergunta(DeleteView):
     def get(self, request, *args, **kwargs):
         if (self.get_object().sala.responsavel_sala != self.request.user):
             messages.add_message(request, ERROR, 'Você não tem Permissão para deletar esta pergunta.')#mensagem para o usuario
-            return redirect('/salas/todas/')
+            return redirect('/doctraining/salas/todas/')
         messages.add_message(request, WARNING, 'Pergunta "' + self.get_object().pergunta + '" da Sala "'+self.get_object().sala.nome_sala+' "será excluida.')#mensagem para o usuario
         return super(Deletar_Pergunta, self).get(request, *args, **kwargs)
     def get_success_url(self, **kwargs):
@@ -880,11 +880,11 @@ def todas_perguntas(request,pk_sala):
         sala = Sala.objects.get(pk=pk_sala)
         if((sala.responsavel_sala.pk != request.user.pk) and not request.user.is_staff):
             messages.add_message(request, ERROR, 'Você não tem Permissão para entrar nesta sala.')#mensagem para o usuario
-            return redirect('/salas/todas/')
+            return redirect('/doctraining/salas/todas/')
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar perguntas. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('/salas/todas/')
+        return redirect('/doctraining/salas/todas/')
 
     try:
         # perguntas = Pergunta.objects.filter(sala=sala).order_by('pergunta')
@@ -894,7 +894,7 @@ def todas_perguntas(request,pk_sala):
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar a sala. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('/doctraining/')
+        return redirect('/doctraining/doctraining/')
 
 
 if not(settings.PROJETO_EM_TESTE):

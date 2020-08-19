@@ -72,7 +72,7 @@ def gerar_csv(request):
     threading_do_bck_casos_clinicos = threading.Thread(target=bck_casos_clinicos)
     threading_do_bck_casos_clinicos.start()#o normal
     messages.add_message(request, SUCCESS, 'Gerando CSV de Backup...')#mensagem para o usuario
-    return redirect('/doctraining/')
+    return redirect('/doctraining/doctraining/')
 
 
 def bck_casos_clinicos():

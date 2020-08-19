@@ -30,10 +30,10 @@ def conteudo_add(request, template_name='conteudo-add.html'):
 
             if conteudo_aux:
                 messages.error(request, 'Erro! Conteudo ja existe.')
-                return redirect('/conteudos')
+                return redirect('/doctraining/conteudos')
         except:
             form.save()
-            return redirect('/conteudos')
+            return redirect('/doctraining/conteudos')
     return render(request, template_name, {'form':form})
 
 
@@ -44,7 +44,7 @@ def conteudo_edit(request, pk, template_name='conteudo-edit.html'):
     form = ConteudoForm(request.POST or None, instance=conteudo)
     if form.is_valid():
         form.save()
-        return redirect('/conteudos')
+        return redirect('/doctraining/conteudos')
     return render(request, template_name, {'form':form})
 
 
@@ -54,5 +54,5 @@ def conteudo_delete(request, pk, template_name='conteudo-delete.html'):
     conteudo = get_object_or_404(Conteudo, pk=pk)
     if request.method=='POST':
         conteudo.delete()
-        return redirect('/conteudos')
+        return redirect('/doctraining/conteudos')
     return render(request, template_name, {'object':conteudo})

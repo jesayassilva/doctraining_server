@@ -25,7 +25,7 @@ def area_add(request, template_name='area-add.html'):
                 return redirect('/areas')
         except:
             form.save()
-            return redirect('/areas')
+            return redirect('/doctraining/areas')
     return render(request, template_name, {'form': form})
 
 
@@ -36,7 +36,7 @@ def area_edit(request, pk, template_name='area-edit.html'):
     form = AreaForm(request.POST or None, instance=area)
     if form.is_valid():
         form.save()
-        return redirect('/areas')
+        return redirect('/doctraining/areas')
     return render(request, template_name, {'form':form})
 
 
@@ -48,10 +48,10 @@ def area_delete(request, pk, template_name='area-delete.html'):
         salas = Sala.objects.filter(area=area)
         if salas:
             messages.error(request, 'Erro! Area você não pode deletar essa Area pois existe salas contidas nela...')
-            return redirect('/areas')
+            return redirect('/doctraining/areas')
     except:
         area.delete()
-        return redirect('/areas')
+        return redirect('/doctraining/areas')
 
     return render(request, template_name, {'object': area})
 
