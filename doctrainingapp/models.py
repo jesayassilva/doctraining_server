@@ -333,13 +333,23 @@ class Sala(models.Model):
         return self.descricao[:40]
 
 class Pergunta(models.Model):
+    DIFICULDADES_CHOICES = (
+        (1, 'Muito facil'),
+        (2, 'Facil'),
+        (3, 'Normal'),
+        (4, 'Dificil'),
+        (5, 'Muito Dificil'),
+    )
+
     sala = models.ForeignKey(Sala, on_delete=models.CASCADE)
+    dificuldade = models.IntegerField(choices=DIFICULDADES_CHOICES, blank=True, default=1, help_text='Dificuldade da pergunta',)
     pergunta = models.TextField(max_length=1200)
     opcao_correta = models.CharField(max_length=600)
     opcao_incorreta_1 = models.CharField(max_length=600)
     opcao_incorreta_2 = models.CharField(max_length=600)
     opcao_incorreta_3 = models.CharField(max_length=600)
     # email = models.EmailField(max_length=254,blank=True,null=True)
+
     def __str__(self):
         return self.pergunta
 

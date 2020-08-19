@@ -810,10 +810,12 @@ def nova_pergunta(request,pk_sala):
         continuar = request.POST.get('post')#Qual botão foi presionado
         try:#tente
             pergunta = request.POST.get('pergunta')
+            dificuldade = request.POST.get('selecao')
             opcao_correta = request.POST.get('opcao_correta')
             opcao_incorreta_1 = request.POST.get('opcao_incorreta_1')
             opcao_incorreta_2 = request.POST.get('opcao_incorreta_2')
             opcao_incorreta_3 = request.POST.get('opcao_incorreta_3')
+            print(dificuldade)
             #se os dados forem muito pequenos
             if( len(pergunta) < 10 or len(opcao_correta) <1 or len(opcao_incorreta_1) <1 or len(opcao_incorreta_2) <1 or len(opcao_incorreta_3) <1):
                 messages.add_message(request, ERROR, 'Os dados são muito pequenos')#mensagem para o usuario
@@ -822,7 +824,7 @@ def nova_pergunta(request,pk_sala):
             if( len(pergunta) > 1500 or len(opcao_correta) > 600 or len(opcao_incorreta_1) >600 or len(opcao_incorreta_2) >600 or len(opcao_incorreta_3) > 600):
                 messages.add_message(request, ERROR, 'Os dados são muito grandes')#mensagem para o usuario
                 return render(request,'pergunta_na_sala_nova.html',{'sala':sala})
-            Pergunta(sala=sala, pergunta=pergunta, opcao_correta=opcao_correta, opcao_incorreta_1=opcao_incorreta_1, opcao_incorreta_2=opcao_incorreta_2, opcao_incorreta_3=opcao_incorreta_3 ).save()
+            Pergunta(sala=sala, pergunta=pergunta, dificuldade=dificuldade, opcao_correta=opcao_correta, opcao_incorreta_1=opcao_incorreta_1, opcao_incorreta_2=opcao_incorreta_2, opcao_incorreta_3=opcao_incorreta_3 ).save()
             messages.add_message(request, SUCCESS, 'Foi adicionada uma pergunta na sala '+ str(sala.nome_sala) )
             if ( continuar == 'Salvar'):#Salvar apenas esse
                 return redirect('/salas/'+str(pk_sala)+'/perguntas/')
