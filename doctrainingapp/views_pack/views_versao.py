@@ -32,10 +32,12 @@ def versao_add(request, template_name='versao-add.html'):
 
             if versao_aux:
                 messages.error(request, 'Erro! Versão ja existe.')
-                return redirect('/doctraining/versao')
+                # return redirect('/versao')
+                return redirect(reverse_lazy("doctrainingapp:lista-versao"))
         except:
             form.save()
-            return redirect('/doctraining/versao')
+            # return redirect('/versao')
+            return redirect(reverse_lazy("doctrainingapp:lista-versao"))
     return render(request, template_name, {'form':form})
 
 
@@ -46,7 +48,8 @@ def versao_edit(request, pk, template_name='versao-edit.html'):
     form = VersaoForm(request.POST or None, instance=versao)
     if form.is_valid():
         form.save()
-        return redirect('/doctraining/versao')
+        # return redirect('/versao')
+        return redirect(reverse_lazy("doctrainingapp:lista-versao"))
     return render(request, template_name, {'form':form})
 
 
@@ -56,5 +59,6 @@ def versao_delete(request, pk, template_name='versao-delete.html'):
     versao = get_object_or_404(Versao, pk=pk)
     if request.method=='POST':
         versao.delete()
-        return redirect('/doctraining/versao')
+        # return redirect('/versao')
+        return redirect(reverse_lazy("doctrainingapp:lista-versao"))
     return render(request, template_name, {'object':versao})

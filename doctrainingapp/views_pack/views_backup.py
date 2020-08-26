@@ -72,7 +72,8 @@ def gerar_csv(request):
     threading_do_bck_casos_clinicos = threading.Thread(target=bck_casos_clinicos)
     threading_do_bck_casos_clinicos.start()#o normal
     messages.add_message(request, SUCCESS, 'Gerando CSV de Backup...')#mensagem para o usuario
-    return redirect('/doctraining/doctraining/')
+    # return redirect('/doctraining/')
+    return redirect(reverse_lazy("doctrainingapp:doctraining"))
 
 
 def bck_casos_clinicos():
@@ -114,20 +115,20 @@ def bck_casos_clinicos():
         print("Data Frame: OK")
 
         print("Savando CSV...")
-        #FTP
-        ftp = FTP()
-        ftp.connect('files.000webhost.com', 21)
-        ftp.login('jesaias','09011996')
-        ftp.cwd ('/public_html/doctraining/')
-        buffer = io.StringIO()
-        df.to_csv(buffer,index=False)
-        text = buffer.getvalue()
-        bio = io.BytesIO(str.encode(text))
-        ftp.storbinary('STOR backup_casos_clinicos.csv', bio)
-        ftp.close()
-        #FTP
+        # #FTP
+        # ftp = FTP()
+        # ftp.connect('files.000webhost.com', 21)
+        # ftp.login('jesaias','minha D N')
+        # ftp.cwd ('/public_html/doctraining/')
+        # buffer = io.StringIO()
+        # df.to_csv(buffer,index=False)
+        # text = buffer.getvalue()
+        # bio = io.BytesIO(str.encode(text))
+        # ftp.storbinary('STOR backup_casos_clinicos.csv', bio)
+        # ftp.close()
+        # #FTP
 
-        # df.to_csv('backup_casos_clinicos.csv',index=False) #Salvando dataframe em csv e usando
+        df.to_csv('backup_casos_clinicos.csv',index=False) #Salvando dataframe em csv e usando
         print("Savando CSV: OK")
     except Exception as e:
         mandar_email_error(msg_erro=str(e), url_erro="BCK Casos Clinicos")

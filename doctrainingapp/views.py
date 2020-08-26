@@ -37,8 +37,8 @@ SUCCESS=25
 WARNING=30
 ERROR=40
 
-
-redirecionar_sem_permissao = '/doctraining/doctraining/'
+# redirecionar_sem_permissao = '/doctraining/'
+redirecionar_sem_permissao = 'doctrainingapp:doctraining'
 
 
 def index(request):
@@ -51,56 +51,66 @@ def doctraining(request):
         print( views_ia.tentar_ativar_am() )
     except Exception as e:
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('/')
+        # return redirect('/')
+        return redirect(reverse_lazy('doctrainingapp:index'))
     return render(request,'doctraining.html',{'usuario':usuario})
 
 def usuarios(request):
     usuario = request.user#usuario logado
     if not usuario.is_staff:#Se não for administrador
         messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
-        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        # return redirect(redirecionar_sem_permissao)
+        return redirect(reverse_lazy(redirecionar_sem_permissao))#voltar para pagina que pode acessar e ver a msg
     try:
         users = User.objects.all().order_by("username")
         return render(request,'usuarios.html',{'usuarios':users})
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('/')
+        # return redirect('/')
+        return redirect(reverse_lazy('doctrainingapp:index'))
 
 def usuario_ativar(request,pk):
     usuario = request.user#usuario logado
     if not usuario.is_staff:#Se não for administrador
         messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
-        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        # return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        return redirect(reverse_lazy(redirecionar_sem_permissao))#voltar para pagina que pode acessar e ver a msg
     try:
         user = User.objects.get(pk=pk)
         user.is_active = True
         user.save()
         messages.add_message(request, SUCCESS, 'Usuário '+user.username+' Ativado com Sucesso.')#mensagem para o usuario
-        return redirect('/usuarios/')
+        # return redirect('/usuarios/')
+        return redirect(reverse_lazy('doctrainingapp:usuarios'))
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('/usuarios/')
+        # return redirect('/usuarios/')
+        return redirect(reverse_lazy('doctrainingapp:usuarios'))
 
 def usuario_desativar(request,pk):
     usuario = request.user#usuario logado
     if not usuario.is_staff:#Se não for administrador
         messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
-        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        # return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        return redirect(reverse_lazy(redirecionar_sem_permissao))#voltar para pagina que pode acessar e ver a msg
     try:
         user = User.objects.get(pk=pk)
         if user.is_superuser:
             messages.add_message(request, ERROR, 'Você não tem Permissão para desativar um Super Usuário.')#mensagem para o usuario
-            return redirect('/usuarios/')
+            # return redirect('/usuarios/')
+            return redirect(reverse_lazy('doctrainingapp:usuarios'))
         user.is_active = False
         user.save()
         messages.add_message(request, SUCCESS, 'O Usuário '+user.username+' foi Desativado.')#mensagem para o usuario
-        return redirect('/usuarios/')
+        # return redirect('/usuarios/')
+        return redirect(reverse_lazy('doctrainingapp:usuarios'))
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('/usuarios/')
+        # return redirect('/usuarios/')
+        return redirect(reverse_lazy('doctrainingapp:usuarios'))
 
 def sair(request):
     usuario = request.user#usuario logado
@@ -108,7 +118,8 @@ def sair(request):
     request.session.items = []
     request.session.modified = True
     logout(request)
-    return redirect('/')#voltar para tela inicial
+    # return redirect('/')#voltar para tela inicial
+    return redirect(reverse_lazy('doctrainingapp:index'))
 
 #Todos os casos clinicos
 def casos_clinicos(request):
@@ -119,7 +130,8 @@ def casos_clinicos(request):
     except Exception as e:
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-        return redirect('/doctraining/')
+        # return redirect('/doctraining/')
+        return redirect(reverse_lazy('doctrainingapp:doctraining'))
 
 def doenca(request, pk):#editar nome doenca
     usuario = request.user#usuario logado
@@ -147,7 +159,8 @@ def doenca(request, pk):#editar nome doenca
         solicitacao_alterar_doenca.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
         solicitacao_alterar_doenca.save()
         messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para editar nome de doença.')#mensagem para o usuario
-        return redirect('/doenca/nova/')
+        # return redirect('/doenca/nova/')
+        return redirect(reverse_lazy('doctrainingapp:solicitar_nova_doenca'))
     else:
         try:
             doenca = Doenca.objects.get(pk=pk)
@@ -156,7 +169,8 @@ def doenca(request, pk):#editar nome doenca
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-            return redirect('/doctraining/')
+            # return redirect('/doctraining/')
+            return redirect(reverse_lazy('doctrainingapp:doctraining'))
 
 
 def solicitar_deletar_doenca(request, pk):
@@ -170,11 +184,13 @@ def solicitar_deletar_doenca(request, pk):
         solicitacao_alterar_doenca.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
         solicitacao_alterar_doenca.save()
         messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para deletar doença.')#mensagem para o usuario
-        return redirect('/doenca/nova/')
+        # return redirect('/doenca/nova/')
+        return redirect(reverse_lazy('doctrainingapp:solicitar_nova_doenca'))
     except Exception as e:
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-        return redirect('/doctraining/')
+        # return redirect('/doctraining/')
+        return redirect(reverse_lazy('doctrainingapp:doctraining'))
 
 
 def solicitar_nova_doenca(request):
@@ -202,14 +218,17 @@ def solicitar_nova_doenca(request):
         solicitacao_alterar_doenca.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
         solicitacao_alterar_doenca.save()
         messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para novo nome de doença.')#mensagem para o usuario
-        return redirect('/doenca/nova/')
+        # return redirect('/doenca/nova/')
+        return redirect(reverse_lazy('doctrainingapp:solicitar_nova_doenca'))
+
     else:
         try:
             return render(request,'doenca.html',{'ver_remover':ver_remover,'nome_doenca':nome_doenca,'doenca':doenca,'usuario':usuario,'doencas_todas':doencas_todas})
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-            return redirect('/doctraining/')
+            # return redirect('/doctraining/')
+            return redirect(reverse_lazy('doctrainingapp:doctraining'))
 
 
 
@@ -244,7 +263,8 @@ def sintoma(request, pk):#editar
         solicitacao_alterar_sintoma.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
         solicitacao_alterar_sintoma.save()
         messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para editar nome de sintoma.')#mensagem para o usuario
-        return redirect('/casos_clinicos/')
+        # return redirect('/casos_clinicos/')
+        return redirect(reverse_lazy('doctrainingapp:casos_clinicos'))
     else:
         try:
             sintoma = Sintoma.objects.get(pk=pk)
@@ -253,7 +273,8 @@ def sintoma(request, pk):#editar
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-            return redirect('/sintoma/novo/')
+            # return redirect('/sintoma/novo/')
+            return redirect(reverse_lazy('doctrainingapp:solicitar_novo_sintoma'))
 
 
 def solicitar_deletar_sintoma(request, pk):
@@ -267,11 +288,13 @@ def solicitar_deletar_sintoma(request, pk):
         solicitacao_alterar_sintoma.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
         solicitacao_alterar_sintoma.save()
         messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para deletar sintoma.')#mensagem para o usuario
-        return redirect('/sintoma/novo/')
+        # return redirect('/sintoma/novo/')
+        return redirect(reverse_lazy('doctrainingapp:solicitar_novo_sintoma'))
     except Exception as e:
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-        return redirect('/doctraining/')
+        # return redirect('/doctraining/')
+        return redirect(reverse_lazy('doctrainingapp:doctraining'))
 
 
 def solicitar_novo_sintoma(request):
@@ -300,7 +323,8 @@ def solicitar_novo_sintoma(request):
         solicitacao_alterar_sintoma.acao = 2#0-RECUSADO; 1-ACEITO; ou (2)-PENDENTE
         solicitacao_alterar_sintoma.save()
         messages.add_message(request, SUCCESS, 'Foi cadastrada uma solicitação para novo nome de sintoma.')#mensagem para o usuario
-        return redirect('/sintoma/novo/')
+        # return redirect('/sintoma/novo/')
+        return redirect(reverse_lazy('doctrainingapp:solicitar_novo_sintoma'))
     else:
         try:
             nome_sintoma =  ""
@@ -309,7 +333,8 @@ def solicitar_novo_sintoma(request):
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-            return redirect('/doctraining/')
+            # return redirect('/doctraining/')
+            return redirect(reverse_lazy('doctrainingapp:doctraining'))
 
 
 #Solicitar edicão de caso clinico
@@ -328,8 +353,9 @@ def solicitar_editar_caso_clinico(request,pk):
 
             #se não tiver informado sintomas no formulario mostrar mensagem de erro
             if len(lista_sintomas_novo) == 0:
-                messages.add_message(request, ERROR, 'Você precisa selecionar pelo menos um sintoma.')
-                return redirect('/casos_clinicos/solicitar/editar/'+str(pk))
+                messages.add_message(request, ERROR, 'Você precisa selecionar pelo menos um sintoma...')
+                # return redirect('/casos_clinicos/solicitar/editar/'+str(pk))
+                return redirect(reverse_lazy("doctrainingapp:solicitar_editar_caso_clinico", args=(pk, )))
             #tente pegar pk da doenca selecionada
             try:
                 nova_doenca = Doenca.objects.get(pk = int(request.POST.get('doenca')))#pegar doenca selecionada no formulario
@@ -356,11 +382,13 @@ def solicitar_editar_caso_clinico(request,pk):
                 solicitacao_alterar_caso_clinico.delete()
                 mandar_email_error(str(e),usuario,request.resolver_match.url_name)
                 messages.add_message(request, ERROR, 'Ocorreu um erro ao adicionar sintomas. Tente novamente mais tarde.')#mensagem para o usuario
-            return redirect('/casos_clinicos/')
+            # return redirect('/casos_clinicos/')
+            return redirect(reverse_lazy("doctrainingapp:casos_clinicos"))
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-            return redirect('/casos_clinicos/')
+            # return redirect('/casos_clinicos/')
+            return redirect(reverse_lazy("doctrainingapp:casos_clinicos"))
             # return HttpResponse('Erro: '+ str(e))
     else:
         try:
@@ -375,7 +403,8 @@ def solicitar_editar_caso_clinico(request,pk):
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-            return redirect('/casos_clinicos/')
+            # return redirect('/casos_clinicos/')
+            return redirect(reverse_lazy("doctrainingapp:casos_clinicos"))
 
 #Solicitar deletar um caso clinico
 def solicitar_deletar_caso_clinico(request,pk):
@@ -398,13 +427,15 @@ def solicitar_deletar_caso_clinico(request,pk):
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             messages.add_message(request, ERROR, 'Ocorreu um erro ao adicionar sintomas da exclusão. Tente novamente mais tarde.')#mensagem para o usuario
             solicitacao_alterar_caso_clinico.delete()
-        return redirect('/casos_clinicos/')
+        # return redirect('/casos_clinicos/')
+        return redirect(reverse_lazy("doctrainingapp:casos_clinicos"))
         # a4.publications.set([p3])
         # return HttpResponse(str(lista_sintomas_novo))
     except Exception as e:
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
-        return redirect('/casos_clinicos/')
+        # return redirect('/casos_clinicos/')
+        return redirect(reverse_lazy("doctrainingapp:casos_clinicos"))
 
 #Solicitar cadastrar caso clinico
 def solicitar_novo_caso_clinico(request):
@@ -422,7 +453,8 @@ def solicitar_novo_caso_clinico(request):
             #se não tiver informado sintomas mostrar msg
             if len(lista_sintomas_novo) == 0:
                 messages.add_message(request, ERROR, 'Você precisa selecionar pelo menos um sintoma.')
-                return redirect('/casos_clinicos/solicitar/novo/')
+                # return redirect('/casos_clinicos/solicitar/novo/')
+                return redirect(reverse_lazy("doctrainingapp:solicitar_novo_caso_clinico"))
                 # return HttpResponse('Erro: Você precisa selecionar pelo menos um sintoma')
             #tente pegar pk da doenca selecionada
             try:
@@ -448,13 +480,15 @@ def solicitar_novo_caso_clinico(request):
                 solicitacao_alterar_caso_clinico.delete()
                 mandar_email_error(str(e),usuario,request.resolver_match.url_name)
                 messages.add_message(request, ERROR, 'Ocorreu um erro ao adicionar sintomas. Tente novamente mais tarde.')
-            return redirect('/casos_clinicos/')
+            # return redirect('/casos_clinicos/')
+            return redirect(reverse_lazy("doctrainingapp:casos_clinicos"))
             # a4.publications.set([p3])
             # return HttpResponse(str(lista_sintomas_novo))
         except Exception as e:
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-            return redirect('/casos_clinicos/')
+            # return redirect('/casos_clinicos/')
+            return redirect(reverse_lazy("doctrainingapp:casos_clinicos"))
     else:
         try:
             doencas = Doenca.objects.filter().order_by('nome_doenca')#todas as doencas
@@ -463,7 +497,8 @@ def solicitar_novo_caso_clinico(request):
         except Exception as e:
             messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-            return redirect('/casos_clinicos/')
+            # return redirect('/casos_clinicos/')
+            return redirect(reverse_lazy("doctrainingapp:casos_clinicos"))
             # return HttpResponse('Erro: '+ str(e))
 
 
@@ -484,13 +519,15 @@ def solicitacoes_alteracao_casos_clinicos(request):
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('/casos_clinicos/solicitacoes/')
+        # return redirect('/casos_clinicos/solicitacoes/')
+        return redirect(reverse_lazy("doctrainingapp:solicitacoes_alteracao_casos_clinicos"))
 
 #Aceitar uma solicitação de alteração de caso clinico (Novo, Editar ou Deletar)
 def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
     if not request.user.is_staff:#Se não for administrador
         messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
-        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        # return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        return redirect(reverse_lazy(redirecionar_sem_permissao))#voltar para pagina que pode acessar e ver a msg
     usuario = request.user#usuario logado, se tiver
     try:
         #Solicitação de alteração em casos clinicos
@@ -661,18 +698,21 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
         #mensagem para usuario
         print(views_ia.tentar_ativar_am() )
         messages.add_message(request, SUCCESS, 'Foi aceitada a alteração da amostra.')
-        return redirect('/casos_clinicos/solicitacoes/')
+        # return redirect('/casos_clinicos/solicitacoes/')
+        return redirect(reverse_lazy("doctrainingapp:solicitacoes_alteracao_casos_clinicos"))
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde. ')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('/casos_clinicos/solicitacoes/')
+        # return redirect('/casos_clinicos/solicitacoes/')
+        return redirect(reverse_lazy("doctrainingapp:solicitacoes_alteracao_casos_clinicos"))
 
 
 #Rejeitar pedido de alteração de casos clinico (editar, novo ou delete)
 def rejeitar_solicitacao_alteracao_caso_clinico(request,pk):
     if not request.user.is_staff:#Se não for administrador
         messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
-        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        # return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        return redirect(reverse_lazy(redirecionar_sem_permissao))#voltar para pagina que pode acessar e ver a msg
 
     usuario = request.user#usuario logado, se tiver
     try:
@@ -706,11 +746,13 @@ def rejeitar_solicitacao_alteracao_caso_clinico(request,pk):
 
         solicitacao_alterar_caso_clinico.delete()#deletando solicitação, pois seus dados já se encontram na tabela de log
         messages.add_message(request, SUCCESS, 'Foi recusada a alteração da amostra.')
-        return redirect('/casos_clinicos/solicitacoes/')
+        # return redirect('/casos_clinicos/solicitacoes/')
+        return redirect(reverse_lazy("doctrainingapp:solicitacoes_alteracao_casos_clinicos"))
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('/casos_clinicos/solicitacoes/')
+        # return redirect('/casos_clinicos/solicitacoes/')
+        return redirect(reverse_lazy("doctrainingapp:solicitacoes_alteracao_casos_clinicos"))
 
 #Ver todos os log de alterações aceitadas e recusadas
 def log_solicitacoes_alteracao_casos_clinicos(request):
@@ -729,7 +771,8 @@ def log_solicitacoes_alteracao_casos_clinicos(request):
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('doctraining/casos_clinicos/solicitacoes/')
+        # return redirect('doctraining/casos_clinicos/solicitacoes/')
+        return redirect(reverse_lazy("doctrainingapp:solicitacoes_alteracao_casos_clinicos"))
 
 #LoginRequiredMixin significa que o usuario precisar estar logado pra acesssar a pagina
 
@@ -765,19 +808,21 @@ class Editar_Sala(UpdateView):
     def get(self, request, *args, **kwargs):
         if (self.get_object().responsavel_sala != self.request.user):
             messages.add_message(request, ERROR, 'Você não tem Permissão para editar esta sala.')#mensagem para o usuario
-            return redirect('doctraining/salas/todas/')
+            # return redirect('/salas/todas/')
+            return redirect(reverse_lazy("doctrainingapp:todas_salas"))
         messages.add_message(request, WARNING, 'Sala Virtual .')#mensagem para o usuario
         return super(Editar_Sala, self).get(request, *args, **kwargs)
 
 class Deletar_Sala(DeleteView):
     model = Sala
-    success_url = '/salas/todas/'
+    success_url = reverse_lazy("doctrainingapp:todas_salas")
     template_name = 'delete.html'
 
     def get(self, request, *args, **kwargs):
         if ((self.get_object().responsavel_sala != self.request.user) and not request.user.is_staff):
             messages.add_message(request, ERROR, 'Você não tem Permissão para deletar esta sala.')#mensagem para o usuario
-            return redirect('doctraining/salas/todas/')
+            # return redirect('salas/todas/')
+            return redirect(reverse_lazy("doctrainingapp:todas_salas"))
         messages.add_message(request, WARNING, 'Sala "' + self.get_object().nome_sala + '" será excluida.')#mensagem para o usuario
         messages.add_message(request, WARNING, 'Todas perguntas nesta sala serão excluidas.')#mensagem para o usuario
         return super(Deletar_Sala, self).get(request, *args, **kwargs)
@@ -791,7 +836,8 @@ def todas_salas(request):
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar salas. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('doctraining/doctraining/')
+        # return redirect('doctraining/')
+        return redirect(reverse_lazy("doctrainingapp:doctraining"))
 
 
 def nova_pergunta(request,pk_sala):
@@ -800,11 +846,13 @@ def nova_pergunta(request,pk_sala):
         sala = Sala.objects.get(pk=pk_sala)
         if(sala.responsavel_sala.pk != request.user.pk):
             messages.add_message(request, ERROR, 'Você não tem Permissão para entrar nesta sala.')#mensagem para o usuario
-            return redirect('doctraining/salas/todas/')
+            # return redirect('salas/todas/')
+            return redirect(reverse_lazy("doctrainingapp:todas_salas"))
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar perguntas. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('doctraining/salas/todas/')
+        # return redirect('salas/todas/')
+        return redirect(reverse_lazy("doctrainingapp:todas_salas"))
 
     if  request.method == "POST":#se tiver sido eviado os dados no formulario
         continuar = request.POST.get('post')#Qual botão foi presionado
@@ -830,14 +878,17 @@ def nova_pergunta(request,pk_sala):
             Pergunta(sala=sala, pergunta=pergunta, dificuldade=dificuldade, opcao_correta=opcao_correta, opcao_incorreta_1=opcao_incorreta_1, opcao_incorreta_2=opcao_incorreta_2, opcao_incorreta_3=opcao_incorreta_3 ).save()
             messages.add_message(request, SUCCESS, 'Foi adicionada uma pergunta na sala '+ str(sala.nome_sala) )
             if ( continuar == 'Salvar'):#Salvar apenas esse
-                return redirect('doctraining/salas/'+str(pk_sala)+'/perguntas/')
+                # return redirect('/salas/'+str(pk_sala)+'/perguntas/')
+                return redirect(reverse_lazy("doctrainingapp:todas_perguntas", args=(pk_sala, )))
+
                 # return reverse("doctrainingapp:todas_perguntas", args=[pk_sala])
             else:#Continuar
                 return render(request,'pergunta_na_sala_nova.html',{'sala':sala})
         except Exception as e:
             messages.add_message(request, ERROR, 'Ocorreu um erro ao salvar pergunta. Tente novamente mais tarde.')#mensagem para o usuario
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-            return redirect('/doctraining/salas/todas/')
+            # return redirect('/salas/todas/')
+            return redirect(reverse_lazy("doctrainingapp:todas_salas"))
     else:#Abrir tela
         return render(request,'pergunta_na_sala_nova.html',{'sala':sala})
     #fields = ['pergunta','opcao_correta','opcao_incorreta_1','opcao_incorreta_2','opcao_incorreta_3']
@@ -853,7 +904,8 @@ class Editar_Pergunta(UpdateView):
     def get(self, request, *args, **kwargs):
         if (self.get_object().sala.responsavel_sala != self.request.user):
             messages.add_message(request, ERROR, 'Você não tem Permissão para editar esta pergunta.')#mensagem para o usuario
-            return redirect('/doctraining/salas/todas/')
+            # return redirect('/salas/todas/')
+            return redirect(reverse_lazy("doctrainingapp:todas_salas"))
         # self.success_url = '/salas/'+ str(self.get_object().sala.pk) +'/perguntas/'
         # self.success_url = '/'
         messages.add_message(request, WARNING, 'Editar Pergunta.')#mensagem para o usuario
@@ -870,7 +922,8 @@ class Deletar_Pergunta(DeleteView):
     def get(self, request, *args, **kwargs):
         if (self.get_object().sala.responsavel_sala != self.request.user):
             messages.add_message(request, ERROR, 'Você não tem Permissão para deletar esta pergunta.')#mensagem para o usuario
-            return redirect('/doctraining/salas/todas/')
+            # return redirect('/salas/todas/')
+            return redirect(reverse_lazy("doctrainingapp:todas_salas"))
         messages.add_message(request, WARNING, 'Pergunta "' + self.get_object().pergunta + '" da Sala "'+self.get_object().sala.nome_sala+' "será excluida.')#mensagem para o usuario
         return super(Deletar_Pergunta, self).get(request, *args, **kwargs)
     def get_success_url(self, **kwargs):
@@ -883,11 +936,13 @@ def todas_perguntas(request,pk_sala):
         sala = Sala.objects.get(pk=pk_sala)
         if((sala.responsavel_sala.pk != request.user.pk) and not request.user.is_staff):
             messages.add_message(request, ERROR, 'Você não tem Permissão para entrar nesta sala.')#mensagem para o usuario
-            return redirect('/doctraining/salas/todas/')
+            # return redirect('/salas/todas/')
+            return redirect(reverse_lazy("doctrainingapp:todas_salas"))
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar perguntas. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('/doctraining/salas/todas/')
+        # return redirect('/salas/todas/')
+        return redirect(reverse_lazy("doctrainingapp:todas_salas"))
 
     try:
         # perguntas = Pergunta.objects.filter(sala=sala).order_by('pergunta')
@@ -897,7 +952,8 @@ def todas_perguntas(request,pk_sala):
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar a sala. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        return redirect('/doctraining/doctraining/')
+        # return redirect('/doctraining/')
+        return redirect(reverse_lazy("doctrainingapp:doctraining"))
 
 
 if not(settings.PROJETO_EM_TESTE):
@@ -913,6 +969,3 @@ if not(settings.PROJETO_EM_TESTE):
         print('Email de Erro enviado')
 else:
     print("PROJETO EM TESTE")
-
-
-

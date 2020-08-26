@@ -63,8 +63,13 @@ else:
         }
     }
 
+#Se tiver na VM em les.ufersa.edu.br/doctraining/ precisa colocar '/doctraining'
+#para lincar corretamente media e login, se não apenas ''
+# ALIAS_settings = '/doctraining'
+ALIAS_settings = ''
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_URL = ALIAS_settings+'/media/'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
@@ -151,9 +156,9 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Fortaleza'
 
-LOGIN_URL = "/login/"
+LOGIN_URL = ALIAS_settings+"/login/"
 
-LOGIN_REDIRECT_URL = '/doctraining/'
+LOGIN_REDIRECT_URL = ALIAS_settings+'/doctraining/'
 
 USE_I18N = True
 

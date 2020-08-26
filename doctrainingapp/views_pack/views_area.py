@@ -22,10 +22,12 @@ def area_add(request, template_name='area-add.html'):
 
             if area_aux:
                 messages.error(request, 'Erro! Area ja existe.')
-                return redirect('/areas')
+                # return redirect('/areas')
+                return redirect(reverse_lazy("doctrainingapp:areas_list"))
         except:
             form.save()
-            return redirect('/doctraining/areas')
+            # return redirect('/areas')
+            return redirect(reverse_lazy("doctrainingapp:areas_list"))
     return render(request, template_name, {'form': form})
 
 
@@ -36,7 +38,8 @@ def area_edit(request, pk, template_name='area-edit.html'):
     form = AreaForm(request.POST or None, instance=area)
     if form.is_valid():
         form.save()
-        return redirect('/doctraining/areas')
+        # return redirect('/areas')
+        return redirect(reverse_lazy("doctrainingapp:areas_list"))
     return render(request, template_name, {'form':form})
 
 
@@ -48,10 +51,10 @@ def area_delete(request, pk, template_name='area-delete.html'):
         salas = Sala.objects.filter(area=area)
         if salas:
             messages.error(request, 'Erro! Area você não pode deletar essa Area pois existe salas contidas nela...')
-            return redirect('/doctraining/areas')
+            # return redirect('/areas')
+            return redirect(reverse_lazy("doctrainingapp:areas_list"))
     except:
         area.delete()
-        return redirect('/doctraining/areas')
-
+        # return redirect('/areas')
+        return redirect(reverse_lazy("doctrainingapp:areas_list"))
     return render(request, template_name, {'object': area})
-

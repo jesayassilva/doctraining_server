@@ -105,9 +105,9 @@ urlpatterns = [
     # path('desativar_am/', login_required(desativar_am), name='desativar_am'),
     path('status_am/', login_required(views_ia.status_am), name='status_am'),
     path('am_agora/', login_required(views_ia.am_agora), name='am_agora'),
-    
+
     #BACKUP E RESTAURAR BACKUP
-    # path('ler_dados_salvar/',login_required(ler_dados_salvar)),#Caso o backup sejá restaurado é interessante apagar todos os dados da tabela caso clinico,doenca e sintomas pois serão novamente salvos e pode haver duplicação de caso clinico
+    path('ler_dados_salvar/',login_required(views_backup.ler_dados_salvar)),#Caso o backup sejá restaurado é interessante apagar todos os dados da tabela caso clinico,doenca e sintomas pois serão novamente salvos e pode haver duplicação de caso clinico
     path('gerar_csv/',login_required(views_backup.gerar_csv)),
 
     #VERSIONAMENTO
@@ -137,8 +137,6 @@ urlpatterns = [
 
 ]
 
-urlpatterns += staticfiles_urlpatterns()
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 

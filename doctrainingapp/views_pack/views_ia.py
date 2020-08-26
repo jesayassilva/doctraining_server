@@ -15,7 +15,8 @@ import logging#Mostra logs neste caso de horario
 import threading
 import time
 
-redirecionar_sem_permissao = '/doctraining/'
+# redirecionar_sem_permissao = '/doctraining/'
+redirecionar_sem_permissao = 'doctrainingapp:doctraining'
 SUCCESS=25
 WARNING=30
 ERROR=40
@@ -155,7 +156,8 @@ threading_do_aprendizado_maquina = threading.Thread(target=chamar_funcao_aprende
 def ativar_am(request):#Rodar Thread
     if not request.user.is_staff:#Se não for administrador
         messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
-        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        # return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        return redirect(reverse_lazy(redirecionar_sem_permissao))#voltar para pagina que pode acessar e ver a msg
     mensagem = tentar_ativar_am()
     return render(request,'am.html',{'mensagem':mensagem})
 
@@ -163,7 +165,8 @@ def ativar_am(request):#Rodar Thread
 def desativar_am(request):#Parar Thread
     if not request.user.is_staff:#Se não for administrador
         messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
-        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        # return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        return redirect(reverse_lazy(redirecionar_sem_permissao))#voltar para pagina que pode acessar e ver a msg
     try:
         global stop_threads
         global threading_do_aprendizado_maquina
@@ -190,7 +193,8 @@ def desativar_am(request):#Parar Thread
 def status_am(request):
     if not request.user.is_staff:#Se não for administrador
         messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
-        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        # return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        return redirect(reverse_lazy(redirecionar_sem_permissao))#voltar para pagina que pode acessar e ver a msg
     if threading_do_aprendizado_maquina.is_alive():
         # return HttpResponse('ATIVO')
         mensagem = 'Ativo: Classificação: '+ str(horario_inicio_am) +' - '+ str(horario_fim_am) +':59 Horas e ' + str(horario_tarde) +' - '+ str(horario_tarde) + ':30 Horas. Taxa de Aprendizado: ' + taxa_aprendizado+"%"
@@ -205,7 +209,8 @@ def am_agora(request):
     global threading_do_aprendizado_maquina
     if not request.user.is_staff:#Se não for administrador
         messages.add_message(request, ERROR, 'Você não tem Permissão para acessar esta página.')#mensagem para o usuario
-        return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        # return redirect(redirecionar_sem_permissao)#voltar para pagina que pode acessar e ver a msg
+        return redirect(reverse_lazy(redirecionar_sem_permissao))#voltar para pagina que pode acessar e ver a msg
     if not threading_do_aprendizado_maquina.is_alive():
         stop_threads = False
         aprender()
@@ -241,4 +246,3 @@ def tentar_ativar_am():
     # print("APRENDIZADO DE MÁQUINA ATIVA")
     # return HttpResponse("APRENDIZADO DE MÁQUINA ATIVO")
     return mensagem
-
