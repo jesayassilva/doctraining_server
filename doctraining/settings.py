@@ -65,8 +65,8 @@ else:
 
 #Se tiver na VM em les.ufersa.edu.br/doctraining/ precisa colocar '/doctraining'
 #para lincar corretamente media e login, se não apenas ''
-# ALIAS_settings = '/doctraining'
-ALIAS_settings = ''
+ALIAS_settings = '/doctraining'#Na VM
+# ALIAS_settings = ''#Quando local
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = ALIAS_settings+'/media/'
