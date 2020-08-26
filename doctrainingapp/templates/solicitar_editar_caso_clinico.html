@@ -1,0 +1,111 @@
+{% include 'cabecalho2.html' %}
+
+
+
+
+<h1>
+  Casos Clínicos
+</h1>
+
+<script>
+
+</script>
+
+
+<p></p>
+<h3>Solicitar edição de amostra de doença</h3>
+<p></p>
+
+{% if messages %}
+    <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {% if message.tags == 'success' %}
+                        <font color="green">{{ message }}</font>
+                    {% elif message.tags == 'error' %}
+                        <font color="red">{{ message }}</font>
+                    {% else %}
+                        <!-- warning -->
+                        <font color="blue">{{ message }}</font>
+                    {% endif %}
+                </li>
+            {% endfor %}
+    </ul>
+{% endif %}
+
+
+<form class="ui form" action="" method="post">{% csrf_token %}
+
+    <!-- <div class="field">
+        <label for="id_doenca">Doença:</label>
+          <select name="doenca" id="id_doenca" required="">
+            <option value="{{nome_doenca}}" selected >{{nome_doenca}}</option>
+            {% for item in doencas.doenca  %}
+              <option value="{{item}}">{{item}}</option>
+            {% endfor %}
+          </select>
+    </div> -->
+
+    <div class="field">
+        <label for="id_doenca">Doença:</label>
+          <select name="doenca" id="id_doenca" required="" class="ui">
+            <option value="0" >Classificação Automática [{{caso_clinico.doenca.nome_doenca}}]</option>
+            {% for doenca in doencas  %}
+                  {% if doenca.pk == caso_clinico.doenca.pk and caso_clinico.doenca_classificada  %}
+                      <option value="{{doenca.pk}}" selected>{{doenca}}</option>
+                  {% else %}
+                      <option value="{{doenca.pk}}">{{doenca}}</option>
+                  {% endif %}
+            {% endfor %}
+          </select>
+    </div>
+
+
+
+<!-- caso_clinico -->
+    <p></p>
+    <p>Sintomas:</p>
+    <div class="ui segment">
+
+      <div class="field">
+          <div><input placeholder="Buscar Sintoma" id="botao_filtro_sintomas"/></div>
+      </div>
+
+      <div id="busca_sintomas" class="ui four column very relaxed grid">
+        {% for sintoma in sintomas  %}
+
+                      {% if sintoma.pk in lista_sintomas %}
+                            <div class="column">
+                              <div class="ui checked checkbox">
+                                <input type="checkbox" name="{{sintoma}}" checked="">
+                                <label>{{sintoma}}</label>
+                              </div>
+                            </div>
+                      {%else%}
+
+                              <div class="column">
+                                  <div class="ui checked checkbox">
+                                    <input type="checkbox" name="{{sintoma}}">
+                                    <label>{{sintoma}}</label>
+                                  </div>
+                              </div>
+                      {%endif%}
+
+        {% endfor %}
+      </div>
+    </div>
+
+ <input type="submit" value="Salvar" class="ui button green" />
+ </form>
+
+
+</div>
+
+</div>
+<!-- Cabecalho -->
+
+<div>
+
+
+
+{% include 'rodape.html' %}

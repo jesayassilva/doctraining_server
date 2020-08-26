@@ -1,0 +1,43 @@
+{% include 'cabecalho2.html' %}
+
+<!-- {% extends "app/html_base.html"
+ %} -->
+{% load static %}
+<!-- {% block title %}Recuperar conta{% endblock %} -->
+{% block menu %}
+{% endblock %}
+{% block tudo %}
+<div class="ui container text">
+    <form method="post" class="ui form"  style="margin: 0 auto;margin-top: 2em;max-width: 400px;">{% csrf_token %}
+      <h2>Recuperar conta</h2>
+
+        {{ form.email.errors }}
+        <div class="required field">
+        <label>Endereço de E-mail:</label>
+            {{ form.email }}
+        </div>
+        <input type="submit" class="ui blue button " value="Redefinir Senha" />
+        <a href="/login/" class="ui positive button">Voltar para Login</a>
+    </form>
+</div>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+</div>
+<!-- Cabecalho -->
+<div>
+{% include 'rodape.html' %}

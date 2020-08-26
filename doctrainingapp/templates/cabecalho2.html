@@ -1,0 +1,183 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Standard Meta -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <!-- Site Properties -->
+  <title>DocTraining</title>
+
+ <!-- <link rel="apple-touch-icon" sizes="194x194" href="http://les.ufersa.edu.br/doctraining/web/images/logo2.png" type="image/png" /> -->
+<link rel="shortcut icon" href="{% static 'imagens/logo_sem_fundo.png' %}">
+
+  <!-- <link rel="stylesheet" href="{%  static 'app/index.css'
+  %}" /> -->
+
+
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.css"/>
+  <script src="{%static 'app/js/jquery.min.js' %}"></script>
+  <script src="{% static 'app/semantic/semantic.min.js' %}"></script>
+
+
+
+
+<!-- para tabela pesquisa -->
+<script src="{% static 'app/js/jquery-3.3.1.js' %}"></script>
+<!-- Problema no botão de menu no celular -->
+<script src="{% static 'app/js/jquery.dataTables.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/jquery.dataTables.min.css' %}"/>
+<script src="{% static 'app/js/dataTables.semanticui.min.js' %}"></script>
+
+<!-- <script src="https://cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese.json"></script> -->
+<!-- <script>
+  $(document).ready(function() {
+      $('#example').DataTable();
+  } );
+</script> -->
+<script>
+$.noConflict();//Resolver conflito de usar dois jQuery
+jQuery( document ).ready(function( $ ) {
+    // $('#example').DataTable();
+    // setTimeout(2000);
+    $("#example").DataTable({
+    "bJQueryUI": true,
+    "oLanguage": {
+        "sProcessing":   "Processando...",
+        "sLengthMenu":   "Mostrar _MENU_ registros",
+        "sZeroRecords":  "Não foram encontrados resultados",
+        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+        "sInfoFiltered": "",
+        "sInfoPostFix":  "",
+        "sSearch":       "Buscar:",
+        "sUrl":          "",
+        "oPaginate": {
+            "sFirst":    "Primeiro",
+            "sPrevious": "Anterior",
+            "sNext":     "Seguinte",
+            "sLast":     "Último"
+        }
+      }
+    });
+    $( ".loader" ).addClass("disabled").removeClass("active");
+    $( ".dimmer" ).removeClass("dimmer").html("");//remove o carregando simbolo, habilita clicar e remova a palavra carregando
+    // $('#texto_addF').html(messages[index]);
+    $('#botao_filtro_sintomas').keyup(function() {
+        var nomeFiltro = $(this).val().toLowerCase();
+        console.log(nomeFiltro);
+        // alert(nomeFiltro);
+        $('#busca_sintomas').find('div').each(function() {
+            var conteudoCelula = $(this).find('label').text();
+            console.log(conteudoCelula);
+            // alert(conteudoCelula);
+            var corresponde = conteudoCelula.toLowerCase().indexOf(nomeFiltro) >= 0;
+            $(this).css('display', corresponde ? '' : 'none');
+        });
+    });
+
+
+});// Code that uses other library's $ can follow here.
+
+
+
+
+</script>
+<!-- para tabela pesquisa-->
+
+
+
+
+
+  <!-- <script src="{% static 'app/js/angular.min.js'
+  %}"></script> da erro na pesquisa pois confunde o angular com python-->
+
+
+  <!-- app/js/ngStorage.js -->
+
+
+  {% include 'css.html' %}
+
+
+</head>
+<body ng-app="myApp" ng-controller="appCtrl">
+  <!-- <div class="ui fixed inverted green menu"> -->
+  <!--  <div class="ui fixed inverted blue menu">   nao responsivo-->
+  <!-- <div class="ui inverted red menu stackable"> -->
+
+  <div class="ui inverted teal menu masthead">
+
+      <!--<div class="ui container font_menu secondary inverted pointing"  > -->
+  <!-- Menu de Notebook -->
+  <div class="ui container secondary teal inverted pointing font_menu"  >
+        <a class="header item" href="{% url 'doctrainingapp:index' %}" >
+          <!-- <img src="http://les.ufersa.edu.br/doctraining/web/images/logo2.png" class="ui image circular ajustar_imagem_em_cima"> -->
+          DocTraining
+        </a>
+
+        {% include 'menu.html' %}
+  </div>
+
+  <div class="ui vertical inverted teal sidebar menu left" style="">
+    <!-- Este menu é usado em celular -->
+    <!-- <a class="item" href="#">exemplo1</a> -->
+
+    <a class="item" href="{% url 'doctrainingapp:index' %}">DocTraining</a>
+    {%if request.user.is_authenticated %}
+        <a class="item" href="{% url 'doctrainingapp:todas_salas' %}">Salas</a>
+        <a class="item" href="{% url 'doctrainingapp:casos_clinicos' %}">Amostras de Doenças</a>
+
+        <!-- se membro da aquipe ou adm, mesmo sem todos poderes no adm django -->
+
+        {%if request.user.is_staff %}
+                <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Solicitações</a>
+                <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Histórico </a>
+                <a href="{% url 'doctrainingapp:usuarios' %}" class="item">Usuários </a>
+
+
+        {% else %}
+                <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Minhas Solicitações</a>
+                <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Meu Histórico </a>
+        {% endif %}
+
+        <!-- {%if request.user.is_staff %}
+              <a href="{% url 'doctrainingapp:user_create' %}" class="item">Novo Usuário </a>
+        {%endif%}
+
+        <a class="item" href="{% url 'doctrainingapp:perfil_update' request.user.perfil.pk %}">Meu Perfil </a>
+        <a class="item" href="{% url 'doctrainingapp:user_update' request.user.pk %}">Minhas Informações</a> -->
+
+
+        {%if request.user.is_superuser %}
+            <div class="ui simple dropdown item right">
+
+                      <i class="settings icon"></i>Aprendizado de Máquina<i class="dropdown"></i>
+
+              <div class="menu">
+                <a class="item" href="{% url 'doctrainingapp:status_am' %}">Status do AM</a>
+                <a class="item" href="{% url 'doctrainingapp:ativar_am' %}">Ativar AM</a>
+                <!-- <a class="item" href="{% url 'doctrainingapp:desativar_am'
+                %}">Desativar AM </a> -->
+                <a class="item" href="{% url 'doctrainingapp:am_agora' %}">Rodar Classificação do AM</a>
+              </div>
+            </div>
+        {% endif %}
+
+
+        <!-- <a class="item" href="{% url 'password_change' %}">Alterar Senha</a> -->
+        <a href="{% url 'doctrainingapp:logout' %}" class="item">Sair</a>
+    {% endif %}
+
+  </div>
+
+
+
+
+      </div>
+
+
+<div class="corpo_app">

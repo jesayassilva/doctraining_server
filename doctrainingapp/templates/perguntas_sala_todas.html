@@ -1,0 +1,107 @@
+{% include 'cabecalho2.html' %}
+
+<h1>
+  Sala: {{sala.nome_sala}}
+</h1>
+<p>Criada Por: {{sala.responsavel_sala}}</p>
+{% if sala.descricao %}
+  <p>Descrição: {{sala.descricao}}</p>
+{% endif %}
+<p>Data da criação da sala: {{sala.data_criacao}}</p>
+<p>Quantidade de Perguntas: {{sala.quantidade_perguntas}}</p>
+
+{% if messages %}
+    <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {% if message.tags == 'success' %}
+                        <font color="green">{{ message }}</font>
+                    {% elif message.tags == 'error' %}
+                        <font color="red">{{ message }}</font>
+                    {% else %}
+                        <!-- warning -->
+                        <font color="blue">{{ message }}</font>
+                    {% endif %}
+                </li>
+            {% endfor %}
+    </ul>
+{% endif %}
+
+
+<a href="{% url 'doctrainingapp:nova_pergunta' sala.pk %}" class="ui button positive" > Nova Pergunta </a>
+
+<a href="{% url 'doctrainingapp:todas_salas' %}" class="ui brown button" >Voltar</a>
+
+<a href="{% url 'doctrainingapp:delete_sala' sala.pk  %}" class="ui red button" >   Deletar Sala </a>
+
+
+<h2>Perguntas</h2>
+<p></p>
+
+
+{% for pergunta in perguntas %}
+  <table class="ui celled striped table">
+    <thead>
+      <tr>
+        <th colspan="2">{{pergunta.pergunta}}</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr class="positive">
+        <td>Opção Correta</td>
+        <td>{{pergunta.opcao_correta}}</td>
+      </tr>
+      <tr class="negative">
+        <td>Opção Incorreta</td>
+        <td>{{pergunta.opcao_incorreta_1}}</td>
+      </tr>
+      <tr class="negative">
+        <td>Opção Incorreta</td>
+        <td>{{pergunta.opcao_incorreta_2}}</td>
+      </tr>
+      <tr class="negative">
+        <td>Opção Incorreta</td>
+        <td>{{pergunta.opcao_incorreta_3}}</td>
+      </tr>
+    </tbody>
+
+    <tfoot class="full-width">
+    <tr>
+      <th colspan="2">
+        {% if request.user.pk == sala.responsavel_sala.pk %}
+        <a class="ui right floated small labeled icon red button" href="{% url 'doctrainingapp:delete_pergunta' pergunta.pk %}">
+          <i class="x icon"></i> Deletar
+        </a>
+        <a class="ui right floated small labeled icon button" href="{% url 'doctrainingapp:editar_pergunta' pergunta.pk %}">
+          <i class="edit icon"></i> Editar
+        </a>
+        {% endif%}
+      </th>
+    </tr>
+  </tfoot>
+
+
+
+  </table>
+{% endfor %}
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+<!-- Cabecalho -->
+
+<div>
+
+
+
+{% include 'rodape.html' %}

@@ -1,0 +1,149 @@
+{% include 'cabecalho2.html' %}
+
+<div style="margin-left: 7%;" class="">
+    <h1> Fase Virtual </h1>
+    <h4>{{fase.nome_sala}}</h4>
+</div>
+<p></p>
+
+
+
+{% if messages %}
+    <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {% if message.tags == 'success' %}
+                        <font color="green">{{ message }}</font>
+                    {% elif message.tags == 'error' %}
+                        <font color="red">{{ message }}</font>
+                    {% else %}
+                        <!-- warning -->
+                        <font color="blue">{{ message }}</font>
+                    {% endif %}
+                </li>
+            {% endfor %}
+    </ul>
+{% endif %}
+
+
+
+<!-- <div style="overflow: auto; border:solid 1px;""> -->
+<!-- <div style="overflow: auto; width: 1340px"> -->
+
+
+
+
+<form class="ui form" action="" method="post">{% csrf_token %}
+
+
+  <div class="ui two column stackable grid container">
+      <div class="column">
+
+              <!-- <div class="field left">
+                  <label for="id_sala">Sala:</label>
+                    <select name="sala" id="id_sala" required="" class="ui">
+                      <option value="0" >Sala 1</option>
+                      <option value="1" selected>Sala 2</option>
+                      <option value="2" >Sala 3</option>
+                      <option value="3">Sala 4</option>
+                    </select>
+              </div>
+              <p></p> -->
+
+              <div>
+                    <label class="ui labeled input" for="id_descricao">Pergunta:</label>
+                    <!-- <input type="textarea" placeholder="Insira a pergunta"> -->
+                    <textarea name="pergunta" maxlength="1200" required rows="10" class="vLargeTextField" id="id_pergunta"></textarea>
+                </div>
+                <!-- rows coluns -->
+          <div>
+
+              <div>
+
+</form>
+                  </div>
+              </div>
+
+      </div>
+
+      <div class="column">
+
+            <p></p>
+              <div class="ui labeled input">
+                <div class="ui label green">
+                  <i class="check icon"></i>
+                </div>
+                <input name="opcao_correta" maxlength="600" type="text" required placeholder="Insira a resposta correta">
+              </div>
+
+              <p></p>
+
+              <div class="ui labeled input">
+                <div class="ui label red">
+                  <i class="x icon"></i>
+                </div>
+                <input name="opcao_incorreta_1" maxlength="600" type="text" required placeholder="Insira a resposta incorreta">
+              </div>
+
+              <p></p>
+
+              <div class="ui labeled input">
+                <div class="ui label red">
+                  <i class="x icon"></i>
+                </div>
+                <input name="opcao_incorreta_2" maxlength="600" type="text" required placeholder="Insira outra resposta incorreta">
+              </div>
+
+              <p></p>
+
+              <div class="ui labeled input">
+                <div class="ui label red">
+                  <i class="x icon"></i>
+                </div>
+                <input name="opcao_incorreta_3" maxlength="600" type="text" required placeholder="Insira outra resposta incorreta">
+              </div>
+
+              <p></p>
+
+      </div>
+
+
+      <p></p>
+      <input type="submit" name="post" value="Salvar e adicionar outro(a)" class="ui button olive" class="plus icon" />
+      <input type="submit" name="post" value="Salvar" class="ui button green" />
+
+      <a href="{% url 'doctrainingapp:todas_perguntasfase' fase.pk %}" class="ui brown button" >Voltar</a>
+
+  </div>
+
+  <!-- <button name="subject" type="submit" value="fav_HTML">HTML</button>
+  <button name="subject" type="submit" value="fav_CSS">CSS</button> -->
+
+
+
+
+
+</form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+<!-- Cabecalho -->
+
+<div>
+
+
+
+{% include 'rodape.html' %}
