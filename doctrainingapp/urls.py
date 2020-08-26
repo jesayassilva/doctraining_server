@@ -1,4 +1,4 @@
-from .views_pack import views_versao, views_api, views_ia, views_user, views_backup, views_area, views_conteudo
+from .views_pack import views_versao, views_api, views_ia, views_user, views_backup, views_area, views_conteudo, views_fases
 from django.urls import path
 from .views  import  *
 from django.contrib.auth import views as auth_views
@@ -63,6 +63,19 @@ urlpatterns = [
     path('salas/editar/<int:pk>/',login_required(Editar_Sala.as_view()),name='editar_sala'),
     path('salas/deletar/<int:pk>/',login_required(Deletar_Sala.as_view()),name='delete_sala'),
 
+    # FASES
+    path('fases/todas/', login_required(views_fases.todas_fases), name='todas_fases'),
+    path('fases/nova/', login_required(views_fases.Nova_Fase.as_view()), name='nova_fase'),
+    path('fases/editar/<int:pk>/', login_required(views_fases.Editar_Fase.as_view()), name='editar_fase'),
+    path('fases/deletar/<int:pk>/', login_required(views_fases.Deletar_Fase.as_view()), name='delete_fase'),
+
+    # PERGUNTAS FASES
+    path('fases/<int:pk_fase>/perguntas/nova/',login_required(views_fases.nova_pergunta),name='nova_perguntafase'),
+    path('fases/<int:pk_fase>/perguntas/',login_required(views_fases.todas_perguntas),name='todas_perguntasfase'),
+    path('fases/editar/perguntas/<int:pk>/',login_required(views_fases.Editar_PerguntaFase.as_view()),name='editar_perguntafase'),
+    path('fases/perguntas/deletar/<int:pk>/',login_required(views_fases.Deletar_PerguntaFase.as_view()),name='delete_perguntafase'),
+
+
     # PERGUNTAS
     path('salas/<int:pk_sala>/perguntas/nova/',login_required(nova_pergunta),name='nova_pergunta'),
     path('salas/<int:pk_sala>/perguntas/',login_required(todas_perguntas),name='todas_perguntas'),
@@ -84,6 +97,7 @@ urlpatterns = [
     #url(r"^item/value/(?P<dollar>\d+\.\d+)$", views.show_item, name="show-item"),
     path('api/area/salas/', views_api.areas_salas_api,name='areas_salas_api'),
     path('api/conteudo/todos/', views_api.conteudos_api,name='conteudos_api'),
+    path('api/fases/', views_api.fases_api, name='fases_api'),
 
 
     #APRENDIZADO DE MÁQUINA controle das threads

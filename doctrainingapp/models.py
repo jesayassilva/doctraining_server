@@ -50,6 +50,8 @@ class Caso_Clinico(models.Model):
         else:
             return 'Doença: Classificação Automática [' + str(self.doenca)+'], Sintomas:'+str(lista_sintomas)
 
+
+
     # def save(self, force_insert=False, force_update=False):
     #     if ( not self.doenca):
     #         self.doenca_classificada = False
@@ -343,6 +345,45 @@ class Pergunta(models.Model):
 
     sala = models.ForeignKey(Sala, on_delete=models.CASCADE)
     dificuldade = models.IntegerField(choices=DIFICULDADES_CHOICES, blank=True, default=1, help_text='Dificuldade da pergunta',)
+    pergunta = models.TextField(max_length=1200)
+    opcao_correta = models.CharField(max_length=600)
+    opcao_incorreta_1 = models.CharField(max_length=600)
+    opcao_incorreta_2 = models.CharField(max_length=600)
+    opcao_incorreta_3 = models.CharField(max_length=600)
+    # email = models.EmailField(max_length=254,blank=True,null=True)
+
+    def __str__(self):
+        return self.pergunta
+
+class Fase(models.Model):
+    caso_clinico = models.ForeignKey(Caso_Clinico, on_delete=models.PROTECT)
+    responsavel_fase = models.ForeignKey(User, on_delete=models.CASCADE)
+    nome_fase = models.CharField(max_length=50, blank=False,null=False,unique=True)
+    descricao = models.CharField(max_length=100, blank=True,null=True)
+    data_criacao = models.DateTimeField(default=datetime.now)
+
+    DIFICULDADES_CHOICES = (
+        (1, 'Muito facil'),
+        (2, 'Facil'),
+        (3, 'Normal'),
+        (4, 'Dificil'),
+        (5, 'Muito Dificil'),
+    )
+    dificuldade = models.IntegerField(choices=DIFICULDADES_CHOICES, blank=True, default=1,
+                                      help_text='Dificuldade da pergunta', )
+    # email = models.EmailField(max_length=254,blank=True,null=True)
+    def __str__(self):
+        return self.nome_fase
+
+    def quantidade_perguntas(self):#retorna nome da alteração
+        return PerguntaFase.objects.filter(fase__pk=self.pk).count()
+
+    def descricao_limitado(self):#retorna nome da alteração
+        return self.descricao[:40]
+
+class PerguntaFase(models.Model):
+
+    fase = models.ForeignKey(Fase, on_delete=models.CASCADE)
     pergunta = models.TextField(max_length=1200)
     opcao_correta = models.CharField(max_length=600)
     opcao_incorreta_1 = models.CharField(max_length=600)

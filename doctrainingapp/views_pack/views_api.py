@@ -246,3 +246,35 @@ def conteudos_api(request):
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             return JsonResponse({"Erro":str(e)}, status = 406)
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
+
+def fases_api(request):
+    usuario = request.user
+    if request.method == 'GET':#Mostra todos os objetos
+        try:
+            json_lista_fases = []
+            fases = Fase.objects.all().order_by('caso_clinico')
+            perguntas = PerguntaFase.objects.all()
+            for fase in fases:
+                lista = []
+                linha_caso = {
+                    'id': fase.pk ,
+                    'clinicalCaseName': fase.caso_clinico.doenca.nome_doenca,
+                    'difficulty': fase.dificuldade,
+                    'questionList': lista }
+                for pergunta in perguntas:#todas as Linhas
+                    if pergunta.fase == fase:
+                        linha_pergunta = {
+                        'questionId':pergunta.pk,
+                        'mainQuestion': pergunta.pergunta,
+                        'rightOp': pergunta.opcao_correta,
+                        "wrongOp01": pergunta.opcao_incorreta_1 ,
+                        "wrongOp02":pergunta.opcao_incorreta_2 ,
+                        "wrongOp03":pergunta.opcao_incorreta_3
+                        }
+                        linha_caso['questionList'].append(linha_pergunta)
+                json_lista_fases.append(linha_caso)
+            return JsonResponse(json_lista_fases,safe=False)
+        except Exception as e:
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
+            return JsonResponse({"Erro":str(e)}, status = 406)
+    return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)

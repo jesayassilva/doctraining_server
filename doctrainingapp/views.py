@@ -815,7 +815,10 @@ def nova_pergunta(request,pk_sala):
             opcao_incorreta_1 = request.POST.get('opcao_incorreta_1')
             opcao_incorreta_2 = request.POST.get('opcao_incorreta_2')
             opcao_incorreta_3 = request.POST.get('opcao_incorreta_3')
-            print(dificuldade)
+
+            if dificuldade == None:
+                messages.add_message(request, ERROR, 'Porfavor adicione uma dificuldade')  # mensagem para o usuario
+                return render(request, 'pergunta_na_sala_nova.html', {'sala': sala})
             #se os dados forem muito pequenos
             if( len(pergunta) < 10 or len(opcao_correta) <1 or len(opcao_incorreta_1) <1 or len(opcao_incorreta_2) <1 or len(opcao_incorreta_3) <1):
                 messages.add_message(request, ERROR, 'Os dados são muito pequenos')#mensagem para o usuario
