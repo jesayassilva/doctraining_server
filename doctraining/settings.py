@@ -55,10 +55,10 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'd7j8iei44b6dm6',
-            'USER': 'hxrxxeccyjhvky',
+            'NAME': 'doctraining',
+            'USER': 'doctraining',
             'PASSWORD': config('PASSWORD'),
-            'HOST': 'ec2-174-129-253-101.compute-1.amazonaws.com',
+            'HOST': 'localhost',
             'PORT': '5432',
         }
     }
