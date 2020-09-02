@@ -11,9 +11,8 @@ class Nova_Fase(LoginRequiredMixin, CreateView):
     # exclude = ['user']
     # success_url = reverse_lazy('author-list')
     # from django.urls import reverse_lazy
-    def form_valid(self, form, pk_area):
+    def form_valid(self, form):
         form.instance.responsavel_fase = self.request.user
-        form.instance.area = pk_area
         return super().form_valid(form)
 
     def get(self, request, *args, **kwargs):
