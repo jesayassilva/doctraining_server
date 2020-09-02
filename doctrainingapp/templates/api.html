@@ -442,7 +442,70 @@ Teste
 
         </div>
 
+        <!-- fases -->
 
+     <div class="" style="padding-bottom: 4%;">
+
+          <h2>Fases </h2>
+          <p></p>
+          <p>Para solicitar todas as fases, deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
+          <a href="{% url 'doctrainingapp:fases_api' %}">/api/fases/</a>
+
+          <p></p>
+          <p>Se for bem-sucedida, essa chamada retornará uma lista no formato de id, clinicalCaseName e quastionList (lista de questões).<br />
+            <br />
+            A seguir um exemplo de resultado dessa requisição:
+          </p>
+
+          <div class="ui inverted segment ">
+<pre>[
+    {
+        "id": 2,
+        "clinicalCaseName": "Dengue",
+        "difficulty": 1,
+        "questionList": []
+    },
+    {
+        "id": 3,
+        "clinicalCaseName": "Dengue",
+        "difficulty": 1,
+        "questionList": []
+    },
+    {
+        "id": 4,
+        "clinicalCaseName": "Dengue",
+        "difficulty": 1,
+        "questionList": []
+    },
+    {
+        "id": 5,
+        "clinicalCaseName": "Dengue",
+        "difficulty": 3,
+        "questionList": [
+            {
+                "questionId": 2,
+                "mainQuestion": "fdghdfgdfsgsfdg",
+                "rightOp": "sdfgfdssgdsg",
+                "wrongOp01": "sdfgsdffgsfd",
+                "wrongOp02": "fdggdfs",
+                "wrongOp03": "fsdgfgdfsgsdf"
+            },
+            {
+                "questionId": 3,
+                "mainQuestion": "sdfgxcvxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                "rightOp": "xxxxxxxxxxx",
+                "wrongOp01": "xxxxxxxxxxx23cg",
+                "wrongOp02": "ffffffffffffffffffffffffffffff",
+                "wrongOp03": "refgdf"
+            }
+        ]
+    }
+]
+]</pre>
+
+          </div>
+
+        </div>
 
 
      <div class="" style="padding-bottom: 4%;">

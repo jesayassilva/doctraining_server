@@ -34,6 +34,8 @@
       <tr>
         <!-- Colunas da tabela -->
         <th>Area</th>
+          <th>Salas</th>
+          <th>Fases</th>
          <th>Edição</th>
           <th>Deletar</th>
         <!-- colunas da tabela -->
@@ -49,6 +51,16 @@
       {% for area in areas  %}
             <tr>
               <td><b> {{area.nome}} </b></td>
+                <td>
+                      <a href="{% url 'doctrainingapp:area_fases' area.pk %}" >   Salas  <i class="edit outline icon"></i> </a>
+
+
+              </td>
+                <td>
+                      <a href="{% url 'doctrainingapp:area_fases' area.pk %}" >   Fases <i class="edit outline icon"></i> </a>
+
+
+              </td>
 
               <td>
                       <a href="{% url 'doctrainingapp:area_edit' area.pk %}" >   Editar <i class="edit outline icon"></i> </a>

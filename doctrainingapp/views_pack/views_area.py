@@ -18,7 +18,7 @@ def area_add(request, template_name='area-add.html'):
     form = AreaForm(request.POST or None)
     if form.is_valid():
         try:
-            area_aux = Area.objects.get(versao=request.POST['nome'])
+            area_aux = Area.objects.get(nome=request.POST['nome'])
 
             if area_aux:
                 messages.error(request, 'Erro! Area ja existe.')
@@ -58,3 +58,4 @@ def area_delete(request, pk, template_name='area-delete.html'):
         # return redirect('/areas')
         return redirect(reverse_lazy("doctrainingapp:areas_list"))
     return render(request, template_name, {'object': area})
+

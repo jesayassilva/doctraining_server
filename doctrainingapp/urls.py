@@ -96,8 +96,10 @@ urlpatterns = [
     url(r"^api/versao/(?P<versao_versao>\d+\.\d+)$", views_api.versao_api, name='versao-api'),
     #url(r"^item/value/(?P<dollar>\d+\.\d+)$", views.show_item, name="show-item"),
     path('api/area/salas/', views_api.areas_salas_api,name='areas_salas_api'),
+    path('api/areas/', views_api.areas,name='areas'),
     path('api/conteudo/todos/', views_api.conteudos_api,name='conteudos_api'),
-    path('api/fases/', views_api.fases_api, name='fases_api'),
+    path('api/fases/<int:pk_area>', views_api.fases_api, name='fases_api'),
+
 
 
     #APRENDIZADO DE MÁQUINA controle das threads
@@ -121,6 +123,7 @@ urlpatterns = [
 
     #AREAS
     path('areas/', views_area.area_list, name='areas_list'),
+    path('areas/fases/<int:pk_area>', views_fases.todas_fases, name='area_fases'),
     path('area/add', views_area.area_add, name='area_add'),
     path('area/edit/<int:pk>', views_area.area_edit, name='area_edit'),
     path('area/delete/<int:pk>', views_area.area_delete, name='area_delete'),

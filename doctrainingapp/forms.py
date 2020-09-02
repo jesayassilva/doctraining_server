@@ -1,6 +1,6 @@
 
 from django.forms import ModelForm
-from doctrainingapp.models import Versao, Area, Conteudo
+from doctrainingapp.models import Versao, Area, Conteudo, Fase
 
 
 
@@ -27,6 +27,20 @@ class AreaForm(ModelForm):
         super(AreaForm, self).__init__(*args, **kwargs)
 
         self.fields['nome'].widget.attrs['class'] = 'ui form'
+
+class FaseForm(ModelForm):
+    class Meta:
+        model = Fase
+        fields = ['caso_clinico','nome_fase','descricao', 'dificuldade' ]
+
+
+    def __init__(self, *args, **kwargs):
+        super(FaseForm, self).__init__(*args, **kwargs)
+
+        self.fields['caso_clinico'].widget.attrs['class'] = 'ui form'
+        self.fields['nome_fase'].widget.attrs['class'] = 'ui form'
+        self.fields['descricao'].widget.attrs['class'] = 'ui form'
+        self.fields['dificuldade'].widget.attrs['class'] = 'ui form'
 
 class ConteudoForm(ModelForm):
     class Meta:

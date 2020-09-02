@@ -247,12 +247,12 @@ def conteudos_api(request):
             return JsonResponse({"Erro":str(e)}, status = 406)
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
 
-def fases_api(request):
+def fases_api(request, pk_area):
     usuario = request.user
     if request.method == 'GET':#Mostra todos os objetos
         try:
             json_lista_fases = []
-            fases = Fase.objects.all().order_by('caso_clinico')
+            fases = Fase.objects.filter(area=pk_area).order_by('dificuldade')
             perguntas = PerguntaFase.objects.all()
             for fase in fases:
                 lista = []
@@ -273,6 +273,26 @@ def fases_api(request):
                         }
                         linha_caso['questionList'].append(linha_pergunta)
                 json_lista_fases.append(linha_caso)
+            return JsonResponse(json_lista_fases,safe=False)
+        except Exception as e:
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
+            return JsonResponse({"Erro":str(e)}, status = 406)
+    return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
+
+def areas(request):
+    usuario = request.user
+    if request.method == 'GET':#Mostra todos os objetos
+        try:
+            json_lista_fases = []
+            areas = Area.objects.all()
+            for area in areas:
+                linha_area = {
+                    'id': area.pk,
+                    'areaName': area.nome,
+                    'fasesCount': area.quantidade_fases(),
+                    'salasCount': area.quantidade_salas()
+                    }
+                json_lista_fases.append(linha_area)
             return JsonResponse(json_lista_fases,safe=False)
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)

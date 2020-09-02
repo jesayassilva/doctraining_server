@@ -11,13 +11,15 @@ class Nova_Fase(LoginRequiredMixin, CreateView):
     # exclude = ['user']
     # success_url = reverse_lazy('author-list')
     # from django.urls import reverse_lazy
-    def form_valid(self, form):
+    def form_valid(self, form, pk_area):
         form.instance.responsavel_fase = self.request.user
+        form.instance.area = pk_area
         return super().form_valid(form)
 
     def get(self, request, *args, **kwargs):
         messages.add_message(request, WARNING, 'Nova Fase.')#mensagem para o usuario
         return super(Nova_Fase, self).get(request, *args, **kwargs)
+
 
 
 class Editar_Fase(UpdateView):
@@ -49,11 +51,11 @@ class Deletar_Fase(DeleteView):
         messages.add_message(request, WARNING, 'Todas perguntas nesta Fase serão excluidas.')#mensagem para o usuario
         return super(Deletar_Fase, self).get(request, *args, **kwargs)
 
-def todas_fases(request):
+def todas_fases(request, pk_area):
     usuario = request.user
     try:
         #todas as solicitações ordenadas pel data
-        fases = Fase.objects.all().extra(select={'nome_fase_QS': 'lower(nome_fase)'}).order_by('nome_fase_QS')
+        fases = Fase.objects.filter(area=pk_area).extra(select={'nome_fase_QS': 'lower(nome_fase)'}).order_by('nome_fase_QS')
         return render(request,'fases_todas.html',{'fases':fases})
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abrir fases. Tente novamente mais tarde.')#mensagem para o usuario

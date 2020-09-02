@@ -315,9 +315,16 @@ def email_save_user(sender, instance, **kwargs):
 class Area(models.Model):
     nome = models.CharField(max_length=50)
 
+    def quantidade_fases(self):  # retorna nome da alteração
+        return Fase.objects.filter(area__pk=self.pk).count()
+
+    def quantidade_salas(self):  # retorna nome da alteração
+        return Sala.objects.filter(area__pk=self.pk).count()
+
+
     def __str__(self):
         return self.nome
-
+##################### SALAS ##################################
 class Sala(models.Model):
     area = models.ForeignKey(Area, on_delete=models.PROTECT)
     responsavel_sala = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -355,7 +362,9 @@ class Pergunta(models.Model):
     def __str__(self):
         return self.pergunta
 
+########################## FASES #########################
 class Fase(models.Model):
+    area = models.ForeignKey(Area, on_delete=models.PROTECT)
     caso_clinico = models.ForeignKey(Caso_Clinico, on_delete=models.PROTECT)
     responsavel_fase = models.ForeignKey(User, on_delete=models.CASCADE)
     nome_fase = models.CharField(max_length=50, blank=False,null=False,unique=True)
@@ -394,7 +403,7 @@ class PerguntaFase(models.Model):
     def __str__(self):
         return self.pergunta
 
-
+########################################################################################################
 class Versao(models.Model):
     versao = models.DecimalField(max_digits=5, decimal_places=2)
     informacao = models.CharField(max_length=600)
