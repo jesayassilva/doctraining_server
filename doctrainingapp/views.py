@@ -798,6 +798,28 @@ class Nova_Sala(LoginRequiredMixin, CreateView):
         messages.add_message(request, WARNING, 'Nova Sala Virtual .')#mensagem para o usuario
         return super(Nova_Sala, self).get(request, *args, **kwargs)
 
+@login_required(login_url='')
+@staff_member_required
+def sala_add(request, area_pk, template_name='sala-add.html'):
+    area = Area.objects.get(pk=area_pk)
+    form = SalaForm(request.POST, request.FILES or None)
+    if form.is_valid():
+        try:
+            sala_aux = Sala.objects.get(nome_fase=request.POST['nome_sala'])
+
+            if sala_aux:
+                messages.error(request, 'Erro! Sala ja existe.')
+                # return redirect('/conteudos')
+                return redirect(reverse_lazy("doctrainingapp:areas_list"))
+        except:
+            sala = form.save(commit=False)
+            sala.area = area
+            sala.responsavel_sala = request.user
+            sala.save()
+            # return redirect('/conteudos')
+            return redirect(reverse_lazy("doctrainingapp:areas_list"))
+    return render(request, template_name, {'form':form})
+
 
 class Editar_Sala(UpdateView):
     model = Sala
@@ -827,12 +849,12 @@ class Deletar_Sala(DeleteView):
         messages.add_message(request, WARNING, 'Todas perguntas nesta sala serão excluidas.')#mensagem para o usuario
         return super(Deletar_Sala, self).get(request, *args, **kwargs)
 
-def todas_salas(request):
+def todas_salas(request, pk_area):
     usuario = request.user
     try:
         #todas as solicitações ordenadas pel data
         salas = Sala.objects.all().extra( select={'nome_sala_QS': 'lower(nome_sala)'}).order_by('nome_sala_QS')
-        return render(request,'salas_todas.html',{'salas':salas})
+        return render(request,'salas_todas.html',{'salas':salas, 'pk_area': pk_area})
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar salas. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)

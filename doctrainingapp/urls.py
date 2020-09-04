@@ -59,13 +59,13 @@ urlpatterns = [
 
     #SALAS
     path('salas/todas/',login_required(todas_salas),name='todas_salas'),
-    path('salas/nova/',login_required(Nova_Sala.as_view()),name='nova_sala'),
+    path('salas/nova/<int:area_pk>',sala_add,name='nova_sala'),
     path('salas/editar/<int:pk>/',login_required(Editar_Sala.as_view()),name='editar_sala'),
     path('salas/deletar/<int:pk>/',login_required(Deletar_Sala.as_view()),name='delete_sala'),
 
     # FASES
     path('fases/todas/', login_required(views_fases.todas_fases), name='todas_fases'),
-    path('fases/nova/', login_required(views_fases.Nova_Fase.as_view()), name='nova_fase'),
+    path('fases/nova/<int:area_pk>', views_fases.fase_add, name='nova_fase'),
     path('fases/editar/<int:pk>/', login_required(views_fases.Editar_Fase.as_view()), name='editar_fase'),
     path('fases/deletar/<int:pk>/', login_required(views_fases.Deletar_Fase.as_view()), name='delete_fase'),
 
@@ -124,6 +124,7 @@ urlpatterns = [
     #AREAS
     path('areas/', views_area.area_list, name='areas_list'),
     path('areas/fases/<int:pk_area>', views_fases.todas_fases, name='area_fases'),
+    path('areas/salas/<int:pk_area>', todas_salas, name='area_salas'),
     path('area/add', views_area.area_add, name='area_add'),
     path('area/edit/<int:pk>', views_area.area_edit, name='area_edit'),
     path('area/delete/<int:pk>', views_area.area_delete, name='area_delete'),

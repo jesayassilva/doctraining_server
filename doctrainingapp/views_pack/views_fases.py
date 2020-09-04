@@ -2,6 +2,7 @@ from doctrainingapp.views import *
 from doctrainingapp.models import Fase
 
 class Nova_Fase(LoginRequiredMixin, CreateView):
+    id_area = 0
     model = Fase
     success_url = reverse_lazy("doctrainingapp:todas_fases")
     # success_url = reverse_lazy('todas_salas')
@@ -12,6 +13,7 @@ class Nova_Fase(LoginRequiredMixin, CreateView):
     # success_url = reverse_lazy('author-list')
     # from django.urls import reverse_lazy
     def form_valid(self, form):
+        form.instance.area = Area.objects.get(pk=self.id_area)
         form.instance.responsavel_fase = self.request.user
         return super().form_valid(form)
 
@@ -19,6 +21,27 @@ class Nova_Fase(LoginRequiredMixin, CreateView):
         messages.add_message(request, WARNING, 'Nova Fase.')#mensagem para o usuario
         return super(Nova_Fase, self).get(request, *args, **kwargs)
 
+@login_required(login_url='')
+@staff_member_required
+def fase_add(request, area_pk, template_name='fase-add.html'):
+    area = Area.objects.get(pk=area_pk)
+    form = FaseForm(request.POST, request.FILES or None)
+    if form.is_valid():
+        try:
+            fase_aux = Fase.objects.get(nome_fase=request.POST['nome_fase'])
+
+            if fase_aux:
+                messages.error(request, 'Erro! Fase com esse caso clinico ja existe.')
+                # return redirect('/conteudos')
+                return redirect(reverse_lazy("doctrainingapp:areas_list"))
+        except:
+            fase = form.save(commit=False)
+            fase.area = area
+            fase.responsavel_fase = request.user
+            fase.save()
+            # return redirect('/conteudos')
+            return redirect(reverse_lazy("doctrainingapp:areas_list"))
+    return render(request, template_name, {'form':form})
 
 
 class Editar_Fase(UpdateView):
@@ -55,7 +78,7 @@ def todas_fases(request, pk_area):
     try:
         #todas as solicitações ordenadas pel data
         fases = Fase.objects.filter(area=pk_area).extra(select={'nome_fase_QS': 'lower(nome_fase)'}).order_by('nome_fase_QS')
-        return render(request,'fases_todas.html',{'fases':fases})
+        return render(request,'fases_todas.html',{'fases':fases, 'pk_area': pk_area} )
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abrir fases. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
