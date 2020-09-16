@@ -368,7 +368,7 @@ class Fase(models.Model):
     caso_clinico = models.ForeignKey(Caso_Clinico, on_delete=models.PROTECT)
     responsavel_fase = models.ForeignKey(User, on_delete=models.CASCADE)
     nome_fase = models.CharField(max_length=50, blank=False,null=False,unique=True)
-    descricao = models.CharField(max_length=100, blank=True,null=True)
+    descricao = models.CharField(max_length=300, blank=True,null=True)
     data_criacao = models.DateTimeField(default=datetime.now)
 
     DIFICULDADES_CHOICES = (

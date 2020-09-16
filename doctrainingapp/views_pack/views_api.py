@@ -258,7 +258,7 @@ def fases_api(request, pk_area):
                 lista = []
                 linha_caso = {
                     'id': fase.pk ,
-                    'clinicalCaseName': fase.caso_clinico.doenca.nome_doenca,
+                    'description': fase.descricao,
                     'difficulty': fase.dificuldade,
                     'questionList': lista }
                 for pergunta in perguntas:#todas as Linhas
@@ -290,7 +290,6 @@ def areas(request):
                     'id': area.pk,
                     'areaName': area.nome,
                     'fasesCount': area.quantidade_fases(),
-                    'salasCount': area.quantidade_salas()
                     }
                 json_lista_fases.append(linha_area)
             return JsonResponse(json_lista_fases,safe=False)
