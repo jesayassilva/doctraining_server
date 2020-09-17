@@ -823,7 +823,7 @@ def sala_add(request, area_pk, template_name='sala-add.html'):
 
 class Editar_Sala(UpdateView):
     model = Sala
-    success_url = reverse_lazy("doctrainingapp:todas_salas")
+    success_url = reverse_lazy("doctrainingapp:areas_list")
     template_name = 'update_generico.html'#
     fields = ['nome_sala','descricao']
 
@@ -831,20 +831,20 @@ class Editar_Sala(UpdateView):
         if (self.get_object().responsavel_sala != self.request.user):
             messages.add_message(request, ERROR, 'Você não tem Permissão para editar esta sala.')#mensagem para o usuario
             # return redirect('/salas/todas/')
-            return redirect(reverse_lazy("doctrainingapp:todas_salas"))
+            return redirect(reverse_lazy("doctrainingapp:areas_list"))
         messages.add_message(request, WARNING, 'Sala Virtual .')#mensagem para o usuario
         return super(Editar_Sala, self).get(request, *args, **kwargs)
 
 class Deletar_Sala(DeleteView):
     model = Sala
-    success_url = reverse_lazy("doctrainingapp:todas_salas")
+    success_url = reverse_lazy("doctrainingapp:areas_list")
     template_name = 'delete.html'
 
     def get(self, request, *args, **kwargs):
         if ((self.get_object().responsavel_sala != self.request.user) and not request.user.is_staff):
             messages.add_message(request, ERROR, 'Você não tem Permissão para deletar esta sala.')#mensagem para o usuario
             # return redirect('salas/todas/')
-            return redirect(reverse_lazy("doctrainingapp:todas_salas"))
+            return redirect(reverse_lazy("doctrainingapp:areas_list"))
         messages.add_message(request, WARNING, 'Sala "' + self.get_object().nome_sala + '" será excluida.')#mensagem para o usuario
         messages.add_message(request, WARNING, 'Todas perguntas nesta sala serão excluidas.')#mensagem para o usuario
         return super(Deletar_Sala, self).get(request, *args, **kwargs)
@@ -852,8 +852,9 @@ class Deletar_Sala(DeleteView):
 def todas_salas(request, pk_area):
     usuario = request.user
     try:
+        salas = Sala.objects.filter(area=pk_area).extra(select={'nome_sala_QS': 'lower(nome_sala)'}).order_by('nome_sala_QS')
         #todas as solicitações ordenadas pel data
-        salas = Sala.objects.all().extra( select={'nome_sala_QS': 'lower(nome_sala)'}).order_by('nome_sala_QS')
+        #salas = Sala.objects.all().extra( select={'nome_sala_QS': 'lower(nome_sala)'}).order_by('nome_sala_QS')
         return render(request,'salas_todas.html',{'salas':salas, 'pk_area': pk_area})
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar salas. Tente novamente mais tarde.')#mensagem para o usuario
@@ -869,12 +870,12 @@ def nova_pergunta(request,pk_sala):
         if(sala.responsavel_sala.pk != request.user.pk):
             messages.add_message(request, ERROR, 'Você não tem Permissão para entrar nesta sala.')#mensagem para o usuario
             # return redirect('salas/todas/')
-            return redirect(reverse_lazy("doctrainingapp:todas_salas"))
+            return redirect(reverse_lazy("doctrainingapp:areas_list"))
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar perguntas. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         # return redirect('salas/todas/')
-        return redirect(reverse_lazy("doctrainingapp:todas_salas"))
+        return redirect(reverse_lazy("doctrainingapp:areas_list"))
 
     if  request.method == "POST":#se tiver sido eviado os dados no formulario
         continuar = request.POST.get('post')#Qual botão foi presionado
@@ -910,7 +911,7 @@ def nova_pergunta(request,pk_sala):
             messages.add_message(request, ERROR, 'Ocorreu um erro ao salvar pergunta. Tente novamente mais tarde.')#mensagem para o usuario
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             # return redirect('/salas/todas/')
-            return redirect(reverse_lazy("doctrainingapp:todas_salas"))
+            return redirect(reverse_lazy("doctrainingapp:areas_list"))
     else:#Abrir tela
         return render(request,'pergunta_na_sala_nova.html',{'sala':sala})
     #fields = ['pergunta','opcao_correta','opcao_incorreta_1','opcao_incorreta_2','opcao_incorreta_3']
@@ -927,7 +928,7 @@ class Editar_Pergunta(UpdateView):
         if (self.get_object().sala.responsavel_sala != self.request.user):
             messages.add_message(request, ERROR, 'Você não tem Permissão para editar esta pergunta.')#mensagem para o usuario
             # return redirect('/salas/todas/')
-            return redirect(reverse_lazy("doctrainingapp:todas_salas"))
+            return redirect(reverse_lazy("doctrainingapp:areas_list"))
         # self.success_url = '/salas/'+ str(self.get_object().sala.pk) +'/perguntas/'
         # self.success_url = '/'
         messages.add_message(request, WARNING, 'Editar Pergunta.')#mensagem para o usuario
@@ -945,7 +946,7 @@ class Deletar_Pergunta(DeleteView):
         if (self.get_object().sala.responsavel_sala != self.request.user):
             messages.add_message(request, ERROR, 'Você não tem Permissão para deletar esta pergunta.')#mensagem para o usuario
             # return redirect('/salas/todas/')
-            return redirect(reverse_lazy("doctrainingapp:todas_salas"))
+            return redirect(reverse_lazy("doctrainingapp:areas_list"))
         messages.add_message(request, WARNING, 'Pergunta "' + self.get_object().pergunta + '" da Sala "'+self.get_object().sala.nome_sala+' "será excluida.')#mensagem para o usuario
         return super(Deletar_Pergunta, self).get(request, *args, **kwargs)
     def get_success_url(self, **kwargs):
@@ -959,12 +960,12 @@ def todas_perguntas(request,pk_sala):
         if((sala.responsavel_sala.pk != request.user.pk) and not request.user.is_staff):
             messages.add_message(request, ERROR, 'Você não tem Permissão para entrar nesta sala.')#mensagem para o usuario
             # return redirect('/salas/todas/')
-            return redirect(reverse_lazy("doctrainingapp:todas_salas"))
+            return redirect(reverse_lazy("doctrainingapp:areas_list"))
     except Exception as e:
         messages.add_message(request, ERROR, 'Ocorreu um erro ao abriar perguntas. Tente novamente mais tarde.')#mensagem para o usuario
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         # return redirect('/salas/todas/')
-        return redirect(reverse_lazy("doctrainingapp:todas_salas"))
+        return redirect(reverse_lazy("doctrainingapp:areas_list"))
 
     try:
         # perguntas = Pergunta.objects.filter(sala=sala).order_by('pergunta')

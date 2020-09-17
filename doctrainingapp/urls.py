@@ -58,7 +58,7 @@ urlpatterns = [
 
 
     #SALAS
-    path('salas/todas/',login_required(todas_salas),name='todas_salas'),
+    #path('salas/todas/',login_required(todas_salas),name='todas_salas'),
     path('salas/nova/<int:area_pk>',sala_add,name='nova_sala'),
     path('salas/editar/<int:pk>/',login_required(Editar_Sala.as_view()),name='editar_sala'),
     path('salas/deletar/<int:pk>/',login_required(Deletar_Sala.as_view()),name='delete_sala'),
