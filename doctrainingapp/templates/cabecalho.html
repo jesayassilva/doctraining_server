@@ -204,7 +204,11 @@
         <a class="item" target="_blank" href="http://les.ufersa.edu.br/ntes/">NTES</a>
         <a class="item">Contato</a>
         <div class="right item">
+          {% if user.is_authenticated%}
+             <a class="ui inverted button" href="/doctraining/doctraining">Log in</a>
+          {%else %}
           <a class="ui inverted button" href="{% url 'doctrainingapp:login' %}">Log in</a>
+          {% endif %}
           <!-- <a class="ui inverted button">Sign Up</a> -->
         </div>
       </div>
