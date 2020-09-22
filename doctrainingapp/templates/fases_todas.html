@@ -22,7 +22,7 @@
 {% endif %}
 
 
-<a href="{% url 'doctrainingapp:nova_fase' pk_area %}" class="ui button positive" > Nova Sala </a>
+<a href="{% url 'doctrainingapp:nova_fase' pk_area %}" class="ui button positive" > Nova Fase </a>
 
 
 <p></p>
@@ -34,7 +34,7 @@
     <thead>
       <tr>
         <!-- Colunas da tabela -->
-        <th>Caso Clinico</th>
+        <th>Dificuldade</th>
         <th>Fase</th>
         <th>Descrição</th>
         <th>Quantidade Pergunta(s)</th>
@@ -53,7 +53,7 @@
     <tbody>
       {% for sala in fases  %}
             <tr>
-              <td><b> {{sala.caso_clinico}} </b></td>
+              <td><b> {{sala.get_dificuldade_display}} </b></td>
               <td><b> {{sala.nome_fase}} </b></td>
               {% if sala.descricao  %}
                     <td> {{sala.descricao_limitado}}...</td>
