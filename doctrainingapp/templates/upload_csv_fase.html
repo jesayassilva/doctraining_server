@@ -1,0 +1,62 @@
+
+{% include 'cabecalho2.html' %}
+
+
+<h2>Upload CSV - Fase</h2>
+
+{% if messages %}
+    <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {% if message.tags == 'success' %}
+                        <font color="green">{{ message }}</font>
+                    {% elif message.tags == 'error' %}
+                        <font color="red">{{ message }}</font>
+                    {% else %}
+                        <!-- warning -->
+                        <font color="">{{ message }}</font>
+                    {% endif %}
+                </li>
+            {% endfor %}
+    </ul>
+{% endif %}
+
+
+
+
+{{order}}
+ <div class="ui inverted segment ">
+<pre>
+    area,nome da fase,descrição,dificuldade
+    covid-19,fase upload,fase upload descrição,3
+    Dengue,fase upload2, fase2 upload2 descrição,4
+    covid-19,fase upload242, fase1111 upload42 descrição4,2
+    ...
+    ...
+    ...
+</pre>
+ </div>
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="file1"> Upload a file</label>
+        <input type="file" id="file1" name="file">
+        <div>
+        <small>Somente arquivos CSV </small>
+        </div>
+        <button type="submit">Upload</button>
+    </form>
+
+
+
+
+
+</div>
+
+</div>
+<!-- Cabecalho -->
+
+<div>
+
+
+
+{% include 'rodape.html' %}

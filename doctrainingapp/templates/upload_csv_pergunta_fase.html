@@ -1,0 +1,62 @@
+
+{% include 'cabecalho2.html' %}
+
+
+<h2>Upload CSV - Perguntas - Fase</h2>
+
+{% if messages %}
+    <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {% if message.tags == 'success' %}
+                        <font color="green">{{ message }}</font>
+                    {% elif message.tags == 'error' %}
+                        <font color="red">{{ message }}</font>
+                    {% else %}
+                        <!-- warning -->
+                        <font color="">{{ message }}</font>
+                    {% endif %}
+                </li>
+            {% endfor %}
+    </ul>
+{% endif %}
+
+
+
+
+{{order}}
+ <div class="ui inverted segment ">
+<pre>
+    fase,pergunta,opcão correta,opção incorreta 1,opção incorreta 2,opção incorreta 3
+    febre, a partir de qual temperatura é considerado febre?, 38 graus, 40 graus, 12 graus, 100 graus
+    falta de ar, xcxcxcxcx???, dsddss, dfsdfsdfsd, fsdfsdfsdfsdfsd, descrição
+    dores , qqqqqqqqqqqqqqqqqqqq?, sala24, upload42, descrição4, fffffffff
+    ...
+    ...
+    ...
+</pre>
+ </div>
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="file1"> Upload a file</label>
+        <input type="file" id="file1" name="file">
+        <div>
+        <small>Somente arquivos CSV </small>
+        </div>
+        <button type="submit">Upload</button>
+    </form>
+
+
+
+
+
+</div>
+
+</div>
+<!-- Cabecalho -->
+
+<div>
+
+
+
+{% include 'rodape.html' %}

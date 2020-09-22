@@ -7,7 +7,7 @@ class Nova_Fase(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("doctrainingapp:todas_fases")
     # success_url = reverse_lazy('todas_salas')
     template_name = 'create_generico.html'
-    fields = ['nome_fase','descricao', 'caso_clinico', 'dificuldade']
+    fields = ['nome_fase','descricao',  'dificuldade']
     # fields = '__all__'
     # exclude = ['user']
     # success_url = reverse_lazy('author-list')
@@ -31,7 +31,7 @@ def fase_add(request, area_pk, template_name='fase-add.html'):
             fase_aux = Fase.objects.get(nome_fase=request.POST['nome_fase'])
 
             if fase_aux:
-                messages.error(request, 'Erro! Fase com esse caso clinico ja existe.')
+                messages.error(request, 'Erro! Fase ja existe.')
                 # return redirect('/conteudos')
                 return redirect(reverse_lazy("doctrainingapp:areas_list"))
         except:

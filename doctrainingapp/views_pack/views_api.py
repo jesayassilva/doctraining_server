@@ -78,11 +78,19 @@ def todos_casos_clinicos_doencas_sintomas_api(request):
             casos_clinicos = Caso_Clinico.objects.exclude(doenca = None).order_by('doenca__nome_doenca')
             for caso_clinico in casos_clinicos:#todas as Linhas
                 lista_sintomas = []
+                falsa_doenca = ''
+                if caso_clinico.falsa_doenca is None:
+                    falsa_doenca = random.choice(Doenca.objects.exclude(pk = caso_clinico.doenca.pk))
+                    falsa_doenca = falsa_doenca.nome_doenca
+                else:
+                    falsa_doenca = caso_clinico.falsa_doenca.nome_doenca
+
                 for sintoma in caso_clinico.sintomas.order_by('nome_sintoma'):
                     lista_sintomas.append(sintoma.nome_sintoma)
                 linha_caso_clinico = {
                 'id':caso_clinico.pk,
                 'doenca': caso_clinico.doenca.nome_doenca,
+                'falsa_doenca': falsa_doenca,
                 'sintomas': lista_sintomas
                 }
                 json_lista_casos_clinicos.append(linha_caso_clinico)
@@ -232,13 +240,13 @@ def conteudos_api(request):
             for conteudo in conteudos:#todas as Linhas
                 linha_conteudo = {
                 'id':conteudo.pk,
-                'titulo': conteudo.titulo,
-                'descrição':conteudo.descricao,
-                'conteudo': conteudo.conteudo,
+                'title': conteudo.titulo,
+                'description':conteudo.descricao,
+                'content': conteudo.conteudo,
                 'link': conteudo.link,
-                'referencia': conteudo.referencia,
-                'imagem':conteudo.imagem.url,
-                'data_criação': conteudo.data_criacao
+                'reference': conteudo.referencia,
+                'image':conteudo.imagem.url,
+                'creationDate': conteudo.data_criacao
                 }
                 json_lista_conteudos.append(linha_conteudo)
             return JsonResponse(json_lista_conteudos,safe=False)

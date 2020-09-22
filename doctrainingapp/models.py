@@ -40,6 +40,8 @@ class Caso_Clinico(models.Model):
     doenca = models.ForeignKey(Doenca, on_delete=models.PROTECT, blank=True, null=True)
     sintomas = models.ManyToManyField(Sintoma, blank=False)
     doenca_classificada = models.BooleanField(default = True)
+    falsa_doenca = models.ForeignKey(Doenca, on_delete=models.PROTECT, related_name='falsa_doenca', blank=True,
+                                     null=True)
 
     def __str__(self):
         lista_sintomas = []
@@ -365,7 +367,6 @@ class Pergunta(models.Model):
 ########################## FASES #########################
 class Fase(models.Model):
     area = models.ForeignKey(Area, on_delete=models.PROTECT)
-    caso_clinico = models.ForeignKey(Caso_Clinico, on_delete=models.PROTECT)
     responsavel_fase = models.ForeignKey(User, on_delete=models.CASCADE)
     nome_fase = models.CharField(max_length=50, blank=False,null=False,unique=True)
     descricao = models.CharField(max_length=300, blank=True,null=True)

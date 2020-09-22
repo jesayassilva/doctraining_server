@@ -1,4 +1,4 @@
-from .views_pack import views_versao, views_api, views_ia, views_user, views_backup, views_area, views_conteudo, views_fases
+from .views_pack import views_versao, views_api, views_ia, views_user, views_backup, views_area, views_conteudo, views_fases, views_upload
 from django.urls import path
 from .views  import  *
 from django.contrib.auth import views as auth_views
@@ -135,6 +135,17 @@ urlpatterns = [
     path('conteudo/edit/<int:pk>', views_conteudo.conteudo_edit, name='edit-conteudo'),
     path('conteudo/view/<int:pk>', views_conteudo.conteudo_view, name='view-conteudo'),
     path('conteudo/delete/<int:pk>', views_conteudo.conteudo_delete, name='delete-conteudo'),
+
+
+    #UPLOADS
+    path('upload-area/', views_upload.area_upload, name="area_upload"),
+    path('upload-sala/', views_upload.sala_upload, name="sala_upload"),
+    path('upload-fase/', views_upload.fase_upload, name="fase_upload"),
+    path('upload-pergunta-sala/', views_upload.pergunta_sala_upload, name="pergunta_sala_upload"),
+    path('upload-pergunta-fase/', views_upload.pergunta_fase_upload, name="pergunta_fase_upload"),
+    path('upload', views_upload.upload, name='upload')
+
+
 
 
 

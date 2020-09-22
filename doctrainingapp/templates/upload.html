@@ -1,0 +1,74 @@
+
+{% include 'cabecalho2.html' %}
+
+
+<h2>Uploads </h2>
+
+{% if messages %}
+    <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {% if message.tags == 'success' %}
+                        <font color="green">{{ message }}</font>
+                    {% elif message.tags == 'error' %}
+                        <font color="red">{{ message }}</font>
+                    {% else %}
+                        <!-- warning -->
+                        <font color="">{{ message }}</font>
+                    {% endif %}
+                </li>
+            {% endfor %}
+    </ul>
+{% endif %}
+
+
+
+
+{{order}}
+<h3>Áreas </h3>
+<small>Passo 1 fazer upload das áreas </small>
+<div>
+<a href="{% url 'doctrainingapp:area_upload' %}" class="ui button positive" > Área Upload</a>
+</div>
+
+<h3>Upload das Salas </h3>
+<small>Passo 2 fazer upload das Salas </small>
+<div>
+<a href="{% url 'doctrainingapp:sala_upload' %}" class="ui button positive" > Sala Upload</a>
+</div>
+
+<h3>Upload das Perguntas das Salas </h3>
+<small>Passo 3 fazer upload das perguntas para as salas </small>
+<div>
+<a href="{% url 'doctrainingapp:pergunta_sala_upload' %}" class="ui button positive" > Pergunta-Sala Upload</a>
+</div>
+
+<h3>Upload das Fases </h3>
+<small>Passo 4 fazer upload das fases </small>
+<div>
+<a href="{% url 'doctrainingapp:fase_upload' %}" class="ui button positive" > Fase Upload</a>
+</div>
+
+<h3>Upload das Perguntas das Fases </h3>
+<small>Passo 5 fazer upload das perguntas para as fases </small>
+<div>
+<a href="{% url 'doctrainingapp:pergunta_fase_upload' %}" class="ui button positive" > Pergunta-Fase Upload</a>
+</div>
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+<!-- Cabecalho -->
+
+<div>
+
+
+
+{% include 'rodape.html' %}
