@@ -35,13 +35,13 @@ class Sintoma(models.Model):
     #     else:
     #         super(Sintoma, self).delete(force_insert, force_update)
 
-
 class Caso_Clinico(models.Model):
     doenca = models.ForeignKey(Doenca, on_delete=models.PROTECT, blank=True, null=True)
     sintomas = models.ManyToManyField(Sintoma, blank=False)
     doenca_classificada = models.BooleanField(default = True)
     falsa_doenca = models.ForeignKey(Doenca, on_delete=models.PROTECT, related_name='falsa_doenca', blank=True,
                                      null=True)
+
 
     def __str__(self):
         lista_sintomas = []
@@ -286,6 +286,7 @@ class Log(models.Model):
             return 'green'
         else:#0-DELETE; 1-CREATE; ou (2)-UPDATE
             return 'yellow'
+
 
 
 class Perfil(models.Model):
