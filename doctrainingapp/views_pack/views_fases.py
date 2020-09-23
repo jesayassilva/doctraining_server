@@ -60,7 +60,7 @@ class Editar_Fase(UpdateView):
 
 class Deletar_Fase(DeleteView):
     model = Fase
-    success_url = reverse_lazy("doctrainingapp:todas_fases")
+    success_url = reverse_lazy("doctrainingapp:areas_list")
     # '/fases/todas/'
     template_name = 'delete.html'
 
