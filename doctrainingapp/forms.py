@@ -2,7 +2,7 @@ import io
 from django.forms import ModelForm
 from django import forms
 
-from doctrainingapp.models import Versao, Area, Conteudo, Fase, Sala
+from doctrainingapp.models import Versao, Area, Conteudo, Fase, Sala, AreaFase
 
 
 
@@ -27,6 +27,17 @@ class AreaForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AreaForm, self).__init__(*args, **kwargs)
+
+        self.fields['nome'].widget.attrs['class'] = 'ui form'
+
+class AreaFaseForm(ModelForm):
+    class Meta:
+        model = AreaFase
+        fields = ['nome']
+
+
+    def __init__(self, *args, **kwargs):
+        super(AreaFaseForm, self).__init__(*args, **kwargs)
 
         self.fields['nome'].widget.attrs['class'] = 'ui form'
 

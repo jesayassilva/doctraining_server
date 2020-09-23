@@ -1,7 +1,7 @@
 {% include 'cabecalho2.html' %}
 
 <h1>
-  Areas
+  Areas Fases
 </h1>
 
 {% if messages %}
@@ -22,7 +22,7 @@
 {% endif %}
 
 
-<a href="{% url 'doctrainingapp:area_add' %}" class="ui button positive" > Nova Área </a>
+<a href="{% url 'doctrainingapp:area_fase_add' %}" class="ui button positive" > Nova Área </a>
 
 
 <p></p>
@@ -34,7 +34,7 @@
       <tr>
         <!-- Colunas da tabela -->
         <th>Area</th>
-          <th>Salas</th>
+          <th>Fases</th>
          <th>Edição</th>
           <th>Deletar</th>
         <!-- colunas da tabela -->
@@ -51,18 +51,18 @@
             <tr>
               <td><b> {{area.nome}} </b></td>
                 <td>
-                      <a href="{% url 'doctrainingapp:area_salas' area.pk %}" >   Salas  <i class="edit outline icon"></i> </a>
+                      <a href="{% url 'doctrainingapp:area_fases' area.pk %}" >   Fases  <i class="edit outline icon"></i> </a>
 
 
               </td>
 
               <td>
-                      <a href="{% url 'doctrainingapp:area_edit' area.pk %}" >   Editar <i class="edit outline icon"></i> </a>
+                      <a href="{% url 'doctrainingapp:area_fase_edit' area.pk %}" >   Editar <i class="edit outline icon"></i> </a>
 
 
               </td>
                 <td>
-                    <a href="{% url 'doctrainingapp:area_delete' area.pk %}" >   Excluir <i class=></i> </a>
+                    <a href="{% url 'doctrainingapp:area_fase_delete' area.pk %}" >   Excluir <i class=></i> </a>
                 </td>
               <!-- <td>
                   {% if request.user.pk == sala.responsavel_sala.pk or request.user.is_staff%}

@@ -1,6 +1,6 @@
 from doctrainingapp.views import *
-from doctrainingapp.models import Fase
-
+from doctrainingapp.models import Fase, AreaFase
+'''
 class Nova_Fase(LoginRequiredMixin, CreateView):
     id_area = 0
     model = Fase
@@ -20,11 +20,11 @@ class Nova_Fase(LoginRequiredMixin, CreateView):
     def get(self, request, *args, **kwargs):
         messages.add_message(request, WARNING, 'Nova Fase.')#mensagem para o usuario
         return super(Nova_Fase, self).get(request, *args, **kwargs)
-
+'''
 @login_required(login_url='')
 @staff_member_required
 def fase_add(request, area_pk, template_name='fase-add.html'):
-    area = Area.objects.get(pk=area_pk)
+    area = AreaFase.objects.get(pk=area_pk)
     form = FaseForm(request.POST, request.FILES or None)
     if form.is_valid():
         try:
@@ -33,20 +33,20 @@ def fase_add(request, area_pk, template_name='fase-add.html'):
             if fase_aux:
                 messages.error(request, 'Erro! Fase ja existe.')
                 # return redirect('/conteudos')
-                return redirect(reverse_lazy("doctrainingapp:areas_list"))
+                return redirect(reverse_lazy("doctrainingapp:areas_fase_list"))
         except:
             fase = form.save(commit=False)
             fase.area = area
             fase.responsavel_fase = request.user
             fase.save()
             # return redirect('/conteudos')
-            return redirect(reverse_lazy("doctrainingapp:areas_list"))
+            return redirect(reverse_lazy("doctrainingapp:areas_fase_list"))
     return render(request, template_name, {'form':form})
 
 
 class Editar_Fase(UpdateView):
     model = Fase
-    success_url = reverse_lazy("doctrainingapp:todas_fases")
+    success_url = reverse_lazy("doctrainingapp:areas_fase_list")
     template_name = 'update_generico.html'#
     fields = ['nome_fase','descricao', 'dificuldade']
 
@@ -60,7 +60,7 @@ class Editar_Fase(UpdateView):
 
 class Deletar_Fase(DeleteView):
     model = Fase
-    success_url = reverse_lazy("doctrainingapp:areas_list")
+    success_url = reverse_lazy("doctrainingapp:areas_fase_list")
     # '/fases/todas/'
     template_name = 'delete.html'
 
