@@ -1,3 +1,4 @@
+
 from django.db import models
 from django.core.exceptions import ValidationError
 # Create your models here.
@@ -319,9 +320,7 @@ def email_save_user(sender, instance, **kwargs):
 class Area(models.Model):
     nome = models.CharField(max_length=50)
 
-    def quantidade_fases(self):  # retorna nome da alteração
-        return Fase.objects.filter(area__pk=self.pk).count()
-
+   
     def quantidade_salas(self):  # retorna nome da alteração
         return Sala.objects.filter(area__pk=self.pk).count()
 
@@ -367,8 +366,19 @@ class Pergunta(models.Model):
         return self.pergunta
 
 ########################## FASES #########################
+class AreaFase(models.Model):
+    nome = models.CharField(max_length=50)
+
+    def quantidade_fases(self):  # retorna nome da alteração
+        return Fase.objects.filter(area__pk=self.pk).count()
+
+
+    def __str__(self):
+        return self.nome
+
+
 class Fase(models.Model):
-    area = models.ForeignKey(Area, on_delete=models.PROTECT)
+    area = models.ForeignKey(AreaFase, on_delete=models.PROTECT)
     responsavel_fase = models.ForeignKey(User, on_delete=models.CASCADE)
     nome_fase = models.CharField(max_length=50, blank=False,null=False,unique=True)
     descricao = models.CharField(max_length=300, blank=True,null=True)
