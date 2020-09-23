@@ -21,6 +21,7 @@ from django.contrib.staticfiles.urls import static, staticfiles_urlpatterns
 
 aliasURL = ''
 
+
 urlpatterns = [
     path(aliasURL+'admin/', admin.site.urls),
 
@@ -32,9 +33,10 @@ urlpatterns = [
     path(aliasURL+'contas/resetar/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/confirmar_recuperacao.html'), name='password_reset_confirm'),
     path(aliasURL+'contas/resetar/completo/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/confirmar_recuperacao_completo.html'), name='password_reset_complete'),
 
-    path(aliasURL+'', include('hide_herokuapp.urls')),
+    #path(aliasURL+'', include('hide_herokuapp.urls')),
     path(aliasURL+'', include('doctrainingapp.urls',namespace='doctrainingapp'))
 ]
+
 
 urlpatterns += staticfiles_urlpatterns()
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

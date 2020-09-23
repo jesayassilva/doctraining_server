@@ -58,4 +58,3 @@ def area_delete(request, pk, template_name='area-delete.html'):
         # return redirect('/areas')
         return redirect(reverse_lazy("doctrainingapp:areas_list"))
     return render(request, template_name, {'object': area})
-

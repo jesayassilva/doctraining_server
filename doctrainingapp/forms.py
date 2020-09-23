@@ -1,6 +1,7 @@
 import io
 from django.forms import ModelForm
 from django import forms
+
 from doctrainingapp.models import Versao, Area, Conteudo, Fase, Sala
 
 

@@ -1,3 +1,4 @@
+
 from doctrainingapp.forms import *
 from django.shortcuts import render, get_object_or_404
 from doctrainingapp.models import *
@@ -16,10 +17,10 @@ def versao_list(request, template_name='versao-list.html'):
     versao = Versao.objects.all()
 
     return render(request, template_name, {'versao': versao})
-'''
-def versao_view(request, pk, template_name='books/book_detail.html'):
-    versao = get_object_or_404(Versao, pk=pk)
-    return render(request, template_name, {'object':versao})'''
+
+#def versao_view(request, pk, template_name='books/book_detail.html'):
+#    versao = get_object_or_404(Versao, pk=pk)
+#    return render(request, template_name, {'object':versao})
 
 
 @login_required(login_url='')

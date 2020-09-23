@@ -87,8 +87,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'doctrainingapp.apps.DoctrainingappConfig',
-    'hide_herokuapp',
     'django_extensions',
+    #'hide_herokuapp',
 ]
 
 MIDDLEWARE = [

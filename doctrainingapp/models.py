@@ -315,6 +315,7 @@ def save_user_perfil(sender, instance, **kwargs):
 def email_save_user(sender, instance, **kwargs):
     print('enviando email')
 
+
 class Area(models.Model):
     nome = models.CharField(max_length=50)
 
