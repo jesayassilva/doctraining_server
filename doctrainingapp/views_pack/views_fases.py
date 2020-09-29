@@ -109,7 +109,12 @@ def nova_pergunta(request,pk_fase):
             opcao_incorreta_1 = request.POST.get('opcao_incorreta_1')
             opcao_incorreta_2 = request.POST.get('opcao_incorreta_2')
             opcao_incorreta_3 = request.POST.get('opcao_incorreta_3')
-           # print(dificuldade)
+            imagem1 = request.FILES.get('imagem1')
+            imagem2 = request.FILES.get('imagem2')
+            imagem3 = request.FILES.get('imagem3')
+
+
+            # print(dificuldade)
             #se os dados forem muito pequenos
             #if dificuldade == None:
                 #messages.add_message(request, ERROR, 'Porfavor adicione uma dificuldade')  # mensagem para o usuario
@@ -122,7 +127,7 @@ def nova_pergunta(request,pk_fase):
             if( len(pergunta) > 1500 or len(opcao_correta) > 600 or len(opcao_incorreta_1) >600 or len(opcao_incorreta_2) >600 or len(opcao_incorreta_3) > 600):
                 messages.add_message(request, ERROR, 'Os dados são muito grandes')#mensagem para o usuario
                 return render(request,'pergunta_na_fase_nova.html',{'fase':fase})
-            PerguntaFase(fase=fase, pergunta=pergunta, opcao_correta=opcao_correta, opcao_incorreta_1=opcao_incorreta_1, opcao_incorreta_2=opcao_incorreta_2, opcao_incorreta_3=opcao_incorreta_3 ).save()
+            PerguntaFase(fase=fase, pergunta=pergunta, opcao_correta=opcao_correta, opcao_incorreta_1=opcao_incorreta_1, opcao_incorreta_2=opcao_incorreta_2, opcao_incorreta_3=opcao_incorreta_3, imagem1=imagem1, imagem2=imagem2, imagem3=imagem3  ).save()
             messages.add_message(request, SUCCESS, 'Foi adicionada uma pergunta na sala '+ str(fase.nome_fase) )
             if ( continuar == 'Salvar'):#Salvar apenas esse
                 # return redirect('/fases/'+str(pk_fase)+'/perguntas/')
@@ -145,7 +150,7 @@ class Editar_PerguntaFase(UpdateView):
     # success_url = '/salas/todas/'
     # success_url = reverse_lazy("doctrainingapp:todas_salas")
     template_name = 'update_generico.html'#
-    fields = ['pergunta','opcao_correta','opcao_incorreta_1','opcao_incorreta_2','opcao_incorreta_3']
+    fields = ['pergunta','opcao_correta','opcao_incorreta_1','opcao_incorreta_2','opcao_incorreta_3', 'imagem1','imagem2','imagem3']
 
     def get(self, request, *args, **kwargs):
         if (self.get_object().fase.responsavel_fase != self.request.user):

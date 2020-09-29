@@ -33,7 +33,7 @@
 
 
 
-<form class="ui form" action="" method="post">{% csrf_token %}
+<form class="ui form" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
 
 
   <div class="ui two column stackable grid container">
@@ -68,7 +68,15 @@
     <option value="4">Difícil</option>
     <option value="5">Muito Difícil</option>
   </select>
-</form>
+              <div>
+              <label class="ui labeled input" for="id_descricao">Imagem 1:</label>
+             <input type="file" id="imagem1"  class="form-control-file border" name="imagem1" accept="image/*">
+              <label class="ui labeled input" for="id_descricao">Imagem 2:</label>
+              <input type="file" id="imagem2"  class="form-control-file border" name="imagem2" accept="image/*">
+              <label class="ui labeled input" for="id_descricao">Imagem 3:</label>
+              <input type="file" id="imagem3" class="form-control-file border" name="imagem3" accept="image/*">
+              </div>
+          </form>
                   </div>
               </div>
 

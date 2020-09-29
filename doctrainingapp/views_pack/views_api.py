@@ -139,7 +139,10 @@ def perguntas_de_uma_sala_api(request,pk_sala):
                 'rightOp': pergunta.opcao_correta,
                 'wrongOp01': pergunta.opcao_incorreta_1,
                 'wrongOp02': pergunta.opcao_incorreta_2,
-                'wrongOp03': pergunta.opcao_incorreta_3
+                'wrongOp03': pergunta.opcao_incorreta_3,
+                'image1': pergunta.imagem1,
+                'image2': pergunta.imagem2,
+                'image3': pergunta.imagem3,
                 }
                 json_lista_perguntas_de_uma_sala.append(linha_pergunta)
             return JsonResponse(json_lista_perguntas_de_uma_sala,safe=False)
@@ -277,7 +280,10 @@ def fases_api(request, pk_area):
                         'rightOp': pergunta.opcao_correta,
                         "wrongOp01": pergunta.opcao_incorreta_1 ,
                         "wrongOp02":pergunta.opcao_incorreta_2 ,
-                        "wrongOp03":pergunta.opcao_incorreta_3
+                        "wrongOp03":pergunta.opcao_incorreta_3,
+                        'image1': pergunta.imagem1,
+                        'image2': pergunta.imagem2,
+                        'image3': pergunta.imagem3,
                         }
                         linha_caso['questionList'].append(linha_pergunta)
                 json_lista_fases.append(linha_caso)

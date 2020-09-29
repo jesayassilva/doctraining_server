@@ -360,7 +360,9 @@ class Pergunta(models.Model):
     opcao_incorreta_1 = models.CharField(max_length=600)
     opcao_incorreta_2 = models.CharField(max_length=600)
     opcao_incorreta_3 = models.CharField(max_length=600)
-    # email = models.EmailField(max_length=254,blank=True,null=True)
+    imagem1 = models.ImageField(upload_to='pergunta_sala', null=True, blank=True)
+    imagem2 = models.ImageField(upload_to='pergunta_sala', null=True, blank=True)
+    imagem3 = models.ImageField(upload_to='pergunta_sala', null=True, blank=True)
 
     def __str__(self):
         return self.pergunta
@@ -411,7 +413,9 @@ class PerguntaFase(models.Model):
     opcao_incorreta_1 = models.CharField(max_length=600)
     opcao_incorreta_2 = models.CharField(max_length=600)
     opcao_incorreta_3 = models.CharField(max_length=600)
-    # email = models.EmailField(max_length=254,blank=True,null=True)
+    imagem1 = models.ImageField(upload_to='pergunta_fase', null =True, blank= True)
+    imagem2 = models.ImageField(upload_to='pergunta_fase', null =True, blank= True)
+    imagem3 = models.ImageField(upload_to='pergunta_fase', null =True, blank= True)
 
     def __str__(self):
         return self.pergunta

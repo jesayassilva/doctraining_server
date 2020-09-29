@@ -887,6 +887,10 @@ def nova_pergunta(request,pk_sala):
             opcao_incorreta_1 = request.POST.get('opcao_incorreta_1')
             opcao_incorreta_2 = request.POST.get('opcao_incorreta_2')
             opcao_incorreta_3 = request.POST.get('opcao_incorreta_3')
+            imagem1 = request.FILES.get('imagem1')
+            imagem2= request.FILES.get('imagem2')
+            imagem3 = request.FILES.get('imagem3')
+
 
             if dificuldade == None:
                 messages.add_message(request, ERROR, 'Porfavor adicione uma dificuldade')  # mensagem para o usuario
@@ -899,7 +903,7 @@ def nova_pergunta(request,pk_sala):
             if( len(pergunta) > 1500 or len(opcao_correta) > 600 or len(opcao_incorreta_1) >600 or len(opcao_incorreta_2) >600 or len(opcao_incorreta_3) > 600):
                 messages.add_message(request, ERROR, 'Os dados são muito grandes')#mensagem para o usuario
                 return render(request,'pergunta_na_sala_nova.html',{'sala':sala})
-            Pergunta(sala=sala, pergunta=pergunta, dificuldade=dificuldade, opcao_correta=opcao_correta, opcao_incorreta_1=opcao_incorreta_1, opcao_incorreta_2=opcao_incorreta_2, opcao_incorreta_3=opcao_incorreta_3 ).save()
+            Pergunta(sala=sala, pergunta=pergunta, dificuldade=dificuldade, opcao_correta=opcao_correta, opcao_incorreta_1=opcao_incorreta_1, opcao_incorreta_2=opcao_incorreta_2, opcao_incorreta_3=opcao_incorreta_3, imagem1=imagem1, imagem2=imagem2, imagem3=imagem3 ).save()
             messages.add_message(request, SUCCESS, 'Foi adicionada uma pergunta na sala '+ str(sala.nome_sala) )
             if ( continuar == 'Salvar'):#Salvar apenas esse
                 # return redirect('/salas/'+str(pk_sala)+'/perguntas/')
@@ -923,7 +927,7 @@ class Editar_Pergunta(UpdateView):
     # success_url = '/salas/todas/'
     # success_url = reverse_lazy("doctrainingapp:todas_salas")
     template_name = 'update_generico.html'#
-    fields = ['pergunta','opcao_correta','opcao_incorreta_1','opcao_incorreta_2','opcao_incorreta_3']
+    fields = ['pergunta','opcao_correta','opcao_incorreta_1','opcao_incorreta_2','opcao_incorreta_3','dificuldade', 'imagem1','imagem2','imagem3',]
 
     def get(self, request, *args, **kwargs):
         if (self.get_object().sala.responsavel_sala != self.request.user):
