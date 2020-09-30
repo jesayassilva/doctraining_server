@@ -108,7 +108,7 @@ Teste
 <!-- ####################################### JSON Todas as Salas ##################################################################### -->
         <div class="" style="padding-bottom: 4%;">
 
-          <h2>Salas</h2>
+          <h2>Todas Salas</h2>
           <p></p>
           <p>Para solicitar os nomes das salas disponíveis deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
           <a href="{% url 'doctrainingapp:todos_salas_api' %}"> {% url 'doctrainingapp:todos_salas_api' %}</a>
@@ -137,10 +137,67 @@ Teste
 ]</pre>
           </div>
         </div>
+<!-- ####################################### JSON SALAS POR AREA ##################################################################### -->
+        <div class="" style="padding-bottom: 4%;">
+
+          <h2>Salas por Area</h2>
+          <p></p>
+          <p>Para solicitar os nomes das salas disponíveis por area deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
+          <a href="{% url 'doctrainingapp:areas_salas_api' %}"> {% url 'doctrainingapp:areas_salas_api' %}</a>
+          <p></p>
+          <p>Se for bem-sucedida, essa chamada retornará uma lista com os dados<br />
+            A seguir um exemplo de resultado dessa requisição:
+          </p>
+
+          <div class="ui inverted segment ">
+<pre>[
+    {
+        "id": 1,
+        "area_nome": "Covid-190",
+        "salas_list": [
+            {
+                "id": 1,
+                "sala_nome": "falta de ar ",
+                "quantidade_perguntas": 2
+            },
+            {
+                "id": 4,
+                "sala_nome": "febre",
+                "quantidade_perguntas": 2
+            },
+            {
+                "id": 6,
+                "sala_nome": "exemplo",
+                "quantidade_perguntas": 0
+            },
+            {
+                "id": 7,
+                "sala_nome": "teste",
+                "quantidade_perguntas": 5
+            },
+            {
+                "id": 8,
+                "sala_nome": "Sala upload",
+                "quantidade_perguntas": 1
+            },
+            {
+                "id": 9,
+                "sala_nome": "Sala upload2",
+                "quantidade_perguntas": 1
+            },
+            {
+                "id": 10,
+                "sala_nome": "Sala upload242",
+                "quantidade_perguntas": 0
+            }
+        ]
+    }
+]</pre>
+          </div>
+        </div>
 
 
-
-<!-- ####################################### JSON Todas as Salas ##################################################################### -->
+<!-- ####################################### JSON PERGUNTAS DE UMA SALA ##################################################################### -->
         <div class="" style="padding-bottom: 4%;">
 
           <h2>Perguntas de uma Sala</h2>
@@ -163,7 +220,14 @@ Teste
         "rightOp": "Icterícia",
         "wrongOp01": "Exantema",
         "wrongOp02": "Cefaleia",
-        "wrongOp03": "Náusea e vômitos"
+        "wrongOp03": "Náusea e vômitos",
+        "imageList": [
+            {
+                "image1": "",
+                "image2": "/media/pergunta_sala/novo.jpg",
+                "image3": ""
+            }
+        ]
     },
     {
         "id": 18,
@@ -171,7 +235,15 @@ Teste
         "rightOp": "7 a 10 dias.",
         "wrongOp01": "14 a 18 dias.",
         "wrongOp02": "20 a 25 dias.",
-        "wrongOp03": "28 a 30 dias."
+        "wrongOp03": "28 a 30 dias.",
+        "imageList": [
+            {
+                "image1": "/media/pergunta_sala/abc.jpg",
+                "image2": "",
+                "image3": "/media/pergunta_sala/imagem23112_11.jpg"
+            }
+        ]
+
     },
     {
         "id": 64,
@@ -179,7 +251,14 @@ Teste
         "rightOp": "Lipotimia, hepatomegalia dolorosa e desconforto respiratório.",
         "wrongOp01": "Vômitos, esplenomegalia e aumento repentino do hematócrito.",
         "wrongOp02": "Cefaleia, dor abdominal contínua, diminuição do hematócrito.",
-        "wrongOp03": "Dor retro-orbitária, queda abrupta das plaquetas e hematêmese."
+        "wrongOp03": "Dor retro-orbitária, queda abrupta das plaquetas e hematêmese.",
+        "imageList": [
+            {
+                "image1": "",
+                "image2": "",
+                "image3": ""
+            }
+        ]
     }
 ]</pre>
           </div>
@@ -446,10 +525,10 @@ Teste
 
      <div class="" style="padding-bottom: 4%;">
 
-          <h2>Fases </h2>
+          <h2>Fases por Area</h2>
           <p></p>
           <p>Para solicitar todas as fases, deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
-          <a href="">/api/fases/</a>
+          <a href="#">/api/fases/pk_areafase</a>
 
           <p></p>
           <p>Se for bem-sucedida, essa chamada retornará uma lista no formato de id, clinicalCaseName e quastionList (lista de questões).<br />
@@ -510,10 +589,10 @@ Teste
 
      <div class="" style="padding-bottom: 4%;">
 
-          <h2>Area - Salas </h2>
+          <h2>AreaFases </h2>
           <p></p>
-          <p>Para solicitar Areas e suas respectivas salas, deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
-          <a href="{% url 'doctrainingapp:areas_salas_api' %}">/api/area/salas</a>
+          <p>Para solicitar AreasFases, deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
+          <a href="{% url 'doctrainingapp:areasfases' %}">/api/areafases</a>
 
           <p></p>
           <p>Se for bem-sucedida, essa chamada retornará uma lista no formato de id, nome da area, lista de salas (id, nome da sala, quantidade de perguntas).<br />
@@ -522,57 +601,20 @@ Teste
           </p>
 
           <div class="ui inverted segment ">
-<pre>[
+<pre>
+[
     {
         "id": 1,
-        "area_nome": "Covid-190",
-        "salas_list": [
-            {
-                "id": 1,
-                "sala_nome": "falta de ar",
-                "quantidade_perguntas": 0
-            },
-            {
-                "id": 4,
-                "sala_nome": "weqeqweqweqw",
-                "quantidade_perguntas": 2
-            },
-            {
-                "id": 6,
-                "sala_nome": "Teste321",
-                "quantidade_perguntas": 0
-            }
-        ]
+        "areaName": "teste1",
+        "fasesCount": 9
     },
     {
-        "id": 2,
-        "area_nome": "Dengue",
-        "salas_list": [
-            {
-                "id": 2,
-                "sala_nome": "teste dengue",
-                "quantidade_perguntas": 0
-            }
-        ]
-    },
-    {
-        "id": 3,
-        "area_nome": "Febre Amarela",
-        "salas_list": [
-            {
-                "id": 3,
-                "sala_nome": "Aaaaaaaaaaaaaaaa",
-                "quantidade_perguntas": 0
-            },
-            {
-                "id": 5,
-                "sala_nome": "ssss",
-                "quantidade_perguntas": 0
-            }
-        ]
+        "id": 4,
+        "areaName": "teste3",
+        "fasesCount": 1
     }
-    ]
-]</pre>
+]
+</pre>
 
           </div>
 

@@ -1,4 +1,4 @@
-from .views_pack import views_versao, views_api, views_ia, views_areafase, views_user, views_backup, views_area, views_conteudo, views_fases, views_upload
+from .views_pack import views_versao, views_api, views_ia, views_firebase, views_areafase, views_user, views_backup, views_area, views_conteudo, views_fases, views_upload
 from django.urls import path
 from .views  import  *
 from django.contrib.auth import views as auth_views
@@ -93,13 +93,12 @@ urlpatterns = [
     path('api/casos_clinicos/um/', views_api.um_caso_clinico_doenca_sintomas_api,name='um_caso_clinico_doenca_sintomas_api'),
     path('api/salas/<int:pk_sala>/perguntas/', views_api.perguntas_de_uma_sala_api,name='perguntas_de_uma_sala_api'),
     path('api/salas/', views_api.todos_salas_api,name='todos_salas_api'),
-    url(r"^api/versao/(?P<versao_versao>\d+\.\d+)$", views_api.versao_api, name='versao-api'),
-    #url(r"^item/value/(?P<dollar>\d+\.\d+)$", views.show_item, name="show-item"),
     path('api/area/salas/', views_api.areas_salas_api,name='areas_salas_api'),
-    path('api/areas/', views_api.areas,name='areas'),
-    path('api/conteudo/todos/', views_api.conteudos_api,name='conteudos_api'),
+    path('api/areasfases/', views_api.areasFase,name='areasfases'),
     path('api/fases/<int:pk_area>', views_api.fases_api, name='fases_api'),
-
+    url(r"^api/versao/(?P<versao_versao>\d+\.\d+)$", views_api.versao_api, name='versao-api'),
+    # url(r"^item/value/(?P<dollar>\d+\.\d+)$", views.show_item, name="show-item"),
+    path('api/conteudo/todos/', views_api.conteudos_api, name='conteudos_api'),
 
 
     #APRENDIZADO DE MÁQUINA controle das threads
@@ -147,12 +146,14 @@ urlpatterns = [
 
     #UPLOADS
     path('upload-area/', views_upload.area_upload, name="area_upload"),
+    path('upload-areafase/', views_upload.areafase_upload, name="areafase_upload"),
     path('upload-sala/', views_upload.sala_upload, name="sala_upload"),
     path('upload-fase/', views_upload.fase_upload, name="fase_upload"),
     path('upload-pergunta-sala/', views_upload.pergunta_sala_upload, name="pergunta_sala_upload"),
     path('upload-pergunta-fase/', views_upload.pergunta_fase_upload, name="pergunta_fase_upload"),
-    path('upload', views_upload.upload, name='upload')
+    path('upload', views_upload.upload, name='upload'),
 
+    path('data_firebase/', views_firebase.data_firebase, name='data_firebase')
 
 
 

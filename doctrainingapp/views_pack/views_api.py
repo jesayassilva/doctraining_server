@@ -133,6 +133,7 @@ def perguntas_de_uma_sala_api(request,pk_sala):
             sala = Sala.objects.get(pk = pk_sala)
             perguntas = Pergunta.objects.filter(sala=sala).order_by('pergunta')
             for pergunta in perguntas:#todas as Linhas
+                lista = []
                 linha_pergunta = {
                 'id':pergunta.pk,
                 'mainQuestion':pergunta.pergunta,
@@ -140,11 +141,30 @@ def perguntas_de_uma_sala_api(request,pk_sala):
                 'wrongOp01': pergunta.opcao_incorreta_1,
                 'wrongOp02': pergunta.opcao_incorreta_2,
                 'wrongOp03': pergunta.opcao_incorreta_3,
-                'image1': pergunta.imagem1,
-                'image2': pergunta.imagem2,
-                'image3': pergunta.imagem3,
+                'imageList': lista,
+
                 }
+
                 json_lista_perguntas_de_uma_sala.append(linha_pergunta)
+                ima1 = ''
+                ima2 = ''
+                ima3 = ''
+                if pergunta.imagem1:
+                    ima1 = pergunta.imagem1.url
+
+                if pergunta.imagem2:
+                    ima2 = pergunta.imagem2.url
+
+                if pergunta.imagem3:
+                    ima3 = pergunta.imagem3.url
+
+                linha_ima = {
+                    'image1': ima1,
+                    'image2': ima2,
+                    'image3': ima3
+                }
+                linha_pergunta['imageList'].append(linha_ima)
+
             return JsonResponse(json_lista_perguntas_de_uma_sala,safe=False)
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
@@ -274,6 +294,7 @@ def fases_api(request, pk_area):
                     'questionList': lista }
                 for pergunta in perguntas:#todas as Linhas
                     if pergunta.fase == fase:
+                        lista = []
                         linha_pergunta = {
                         'questionId':pergunta.pk,
                         'mainQuestion': pergunta.pergunta,
@@ -281,10 +302,27 @@ def fases_api(request, pk_area):
                         "wrongOp01": pergunta.opcao_incorreta_1 ,
                         "wrongOp02":pergunta.opcao_incorreta_2 ,
                         "wrongOp03":pergunta.opcao_incorreta_3,
-                        'image1': pergunta.imagem1,
-                        'image2': pergunta.imagem2,
-                        'image3': pergunta.imagem3,
+                        "imageList": lista
                         }
+
+                        ima1 = ''
+                        ima2 = ''
+                        ima3 = ''
+                        if pergunta.imagem1:
+                            ima1 = pergunta.imagem1.url
+
+                        if pergunta.imagem2:
+                            ima2 = pergunta.imagem2.url
+
+                        if pergunta.imagem3:
+                            ima3 = pergunta.imagem3.url
+
+                        linha_ima = {
+                            'image1': ima1,
+                            'image2': ima2,
+                            'image3': ima3
+                        }
+                        linha_pergunta['imageList'].append(linha_ima)
                         linha_caso['questionList'].append(linha_pergunta)
                 json_lista_fases.append(linha_caso)
             return JsonResponse(json_lista_fases,safe=False)
@@ -293,12 +331,12 @@ def fases_api(request, pk_area):
             return JsonResponse({"Erro":str(e)}, status = 406)
     return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
 
-def areas(request):
+def areasFase(request):
     usuario = request.user
     if request.method == 'GET':#Mostra todos os objetos
         try:
             json_lista_fases = []
-            areas = Area.objects.all()
+            areas = AreaFase.objects.all()
             for area in areas:
                 linha_area = {
                     'id': area.pk,

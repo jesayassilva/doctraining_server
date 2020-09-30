@@ -38,6 +38,32 @@ def area_upload(request):
     context = {}
     return redirect(reverse_lazy("doctrainingapp:upload"))
 
+def areafase_upload(request):
+    data = AreaFase.objects.all()
+
+    prompt = {
+        'order': 'A ordem do CSV deve ser area, nome da area ex.:',
+        'AreaFase': data
+              }
+
+    if request.method == "GET":
+        return render(request, 'upload_csv_area.html', prompt)
+    csv_file = request.FILES['file']
+
+    if not csv_file.name.endswith('.csv'):
+        messages.error(request, 'O arquivo não é .csv')
+    data_set = csv_file.read().decode('UTF-8')
+
+    io_string = io.StringIO(data_set)
+    next(io_string)
+    for column in csv.reader(io_string, delimiter=',', quotechar="|"):
+        _, created = AreaFase.objects.update_or_create(
+            nome=column[0],
+
+        )
+    context = {}
+    return redirect(reverse_lazy("doctrainingapp:upload"))
+
 
 
 def sala_upload(request):

@@ -30,3 +30,4 @@ cryptography
 django-hide-herokuapp
 django-extensions
 Pillow
+firebase-admin
