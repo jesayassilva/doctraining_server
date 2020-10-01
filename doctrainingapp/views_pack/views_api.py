@@ -136,6 +136,7 @@ def perguntas_de_uma_sala_api(request,pk_sala):
                 lista = []
                 linha_pergunta = {
                 'id':pergunta.pk,
+                'difficulty': pergunta.dificuldade,
                 'mainQuestion':pergunta.pergunta,
                 'rightOp': pergunta.opcao_correta,
                 'wrongOp01': pergunta.opcao_incorreta_1,

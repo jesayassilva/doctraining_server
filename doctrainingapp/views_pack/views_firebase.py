@@ -7,7 +7,7 @@ def data_firebase(request):
     usuario = request.user#usuario logado
     try:
         if not firebase_admin._apps:#credenciamento
-            cred = credentials.Certificate("doctrainingapp/doctraining-cbc4a-firebase-adminsdk-4p4wy-8d1d68b114.json")#carrega credencial
+            cred = credentials.Certificate("doctraining-cbc4a-firebase-adminsdk-4p4wy-8d1d68b114.json")#carrega credencial
             firebase_admin.initialize_app(cred, {'databaseURL': 'https://doctraining-cbc4a.firebaseio.com/'})#inicializa credencial
         ref = db.reference('/usuarios')#busca o banco
         snapshot = ref.order_by_key().get()#ordena pelo usuarios id do firebase

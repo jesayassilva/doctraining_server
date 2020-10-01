@@ -800,7 +800,6 @@ class Nova_Sala(LoginRequiredMixin, CreateView):
         return super(Nova_Sala, self).get(request, *args, **kwargs)
 
 @login_required(login_url='')
-@staff_member_required
 def sala_add(request, area_pk, template_name='sala-add.html'):
     area = Area.objects.get(pk=area_pk)
     form = SalaForm(request.POST, request.FILES or None)

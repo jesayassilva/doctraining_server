@@ -6,14 +6,12 @@ from django.contrib.auth.decorators import login_required
 
 
 @login_required(login_url='')
-@staff_member_required
 def area_list(request, template_name='area-list.html'):
     areas = Area.objects.all()
 
     return render(request, template_name, {'areas': areas})
 
 @login_required(login_url='')
-@staff_member_required
 def area_add(request, template_name='area-add.html'):
     form = AreaForm(request.POST or None)
     if form.is_valid():
@@ -32,7 +30,6 @@ def area_add(request, template_name='area-add.html'):
 
 
 @login_required(login_url='')
-@staff_member_required
 def area_edit(request, pk, template_name='area-edit.html'):
     area= get_object_or_404(Area, pk=pk)
     form = AreaForm(request.POST or None, instance=area)
@@ -44,7 +41,6 @@ def area_edit(request, pk, template_name='area-edit.html'):
 
 
 @login_required(login_url='')
-@staff_member_required
 def area_delete(request, pk, template_name='area-delete.html'):
     area = get_object_or_404(Area, pk=pk)
     salas = Sala.objects.filter(area=area)

@@ -68,7 +68,9 @@
 
           <div class="menu">
             <a class="item" href="{% url 'doctrainingapp:list-conteudo' %}">Conteudos</a>
+              {%if request.user.is_staff %}
         <a href="{% url 'doctrainingapp:lista-versao' %}" class="item">Versões </a>
+              {%endif%}
         <a href="{% url 'doctrainingapp:upload' %}" class="item">Upload CSV </a>
               <a href="{% url 'doctrainingapp:data_firebase' %}" class="item">Dados Firebase </a>
           </div>

@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 
 
 @login_required(login_url='')
-@staff_member_required
+@staff_member_required(login_url='/doctraining')
 def versao_list(request, template_name='versao-list.html'):
     versao = Versao.objects.all()
 
@@ -24,7 +24,7 @@ def versao_list(request, template_name='versao-list.html'):
 
 
 @login_required(login_url='')
-@staff_member_required
+@staff_member_required(login_url='/doctraining')
 def versao_add(request, template_name='versao-add.html'):
     form = VersaoForm(request.POST or None)
     if form.is_valid():
@@ -43,7 +43,7 @@ def versao_add(request, template_name='versao-add.html'):
 
 
 @login_required(login_url='')
-@staff_member_required
+@staff_member_required(login_url='/doctraining')
 def versao_edit(request, pk, template_name='versao-edit.html'):
     versao= get_object_or_404(Versao, pk=pk)
     form = VersaoForm(request.POST or None, instance=versao)
@@ -54,8 +54,8 @@ def versao_edit(request, pk, template_name='versao-edit.html'):
     return render(request, template_name, {'form':form})
 
 
-@login_required(login_url='')
-@staff_member_required
+@login_required(login_url='/doctraining')
+@staff_member_required(login_url='')
 def versao_delete(request, pk, template_name='versao-delete.html'):
     versao = get_object_or_404(Versao, pk=pk)
     if request.method=='POST':
