@@ -95,6 +95,7 @@ def aprender():
 
         if stop_threads:
             return
+
         print("Classificação Dados...")
         classificados = 0
         for caso_clinico in casos_clinicos_sem_classificacao:
@@ -112,20 +113,81 @@ def aprender():
             resultado = logmodel.predict(df_classificar)
             print(resultado)
 
+            #  Segunda Maior
+            ordenada = sorted(logmodel.predict_proba(df_classificar)[0], reverse=True)
+            probabilidade_e_classes = zip(logmodel.predict_proba(df_classificar)[0],logmodel.classes_)
+            for probabilidade_, classe_ in probabilidade_e_classes:
+                if probabilidade_ == ordenada[0]:
+                    print("Maior " + str(probabilidade_) + " - " + str(classe_) )
+                if probabilidade_ == ordenada[1]:
+                    print("Segunda Maior " + str(probabilidade_) + " - " + str(classe_) )
+            # Segunda Maior
+
             try:
                 nova_doenca = Doenca.objects.get(nome_doenca = resultado[0])#pegar doenca selecionada no formulario
                 caso_clinico.doenca = nova_doenca#adicinando doenca
                 caso_clinico.doenca_classificada = False#variavel indica que a doenca não foi classificada pelo usuario
                 caso_clinico.save()#salvando o caso clinico
-
+                classificados = classificados+1
             except Exception as e:
                 mandar_email_error('Erro ao classificar dados no Aprendizado de Máquina '+str(e))
                 print('ERRO: '+str(e))
-
-            classificados = classificados+1
-            print(str(classificados)+' Exemplos Classificados')
+            print(str(classificados)+' Exemplos Classificados \n')
         # '''
+        print('TOTAL' +str(classificados)+ 'Exemplos Classificados \n')
         print("Classificação Dados: OK")
+
+
+        #Só para Falsa Doença agora, esses dados aboixo já possuem classificação, mas será inserido também a segunda possivel doença para aumentar complexidade
+        print("Classificação Falsa Doença nos Dados Classificados...")
+        classificados = 0
+        for caso_clinico in casos_clinicos:
+            valor_linha_classificar = []
+
+            for sintoma in sintomas:
+                if sintoma in caso_clinico.sintomas.all():
+                    valor_linha_classificar.append(1)
+                else:
+                    valor_linha_classificar.append(0)
+            df_classificar = pd.DataFrame([valor_linha_classificar], columns=lista_sintomas_sem_class)
+            print(df_classificar)
+            print(".............................. Já é classificado como: " + caso_clinico.doenca.nome_doenca)
+
+            #  Segunda Maior
+            ordenada = sorted(logmodel.predict_proba(df_classificar)[0], reverse=True)
+            probabilidade_e_classes = zip(logmodel.predict_proba(df_classificar)[0],logmodel.classes_)
+            for probabilidade_, classe_ in probabilidade_e_classes:
+                if probabilidade_ == ordenada[0]:
+                    print("Classe com Maior Probabilidade" + str(probabilidade_) + " - " + str(classe_) )
+                if probabilidade_ == ordenada[1]:
+                    segunda_maior_probabilidade_doenca_ser_classificada = classe_
+                    print(".......... Segunda Maior Classe com Probabilidade " + str(probabilidade_) + " - " + str(classe_) )
+            # Segunda Maior
+
+            try:
+                if segunda_maior_probabilidade_doenca_ser_classificada != caso_clinico.doenca.nome_doenca:
+                    print("Falsa Doença Classificada: OK")
+                    falsa_doenca = Doenca.objects.get(nome_doenca = segunda_maior_probabilidade_doenca_ser_classificada)#pegar segunda maior probabilidade
+                    caso_clinico.falsa_doenca = falsa_doenca#adicinando falsa doenca
+                    caso_clinico.save()#salvando o caso clinico com falsa doença, o resto dos dados não é alterado
+                    classificados = classificados+1
+                else:
+                    print("Algo de errado, são iguais ................................................ Erro \n\n")
+
+            except Exception as e:
+                mandar_email_error('Erro ao classificar Falsa doença no Aprendizado de Máquina '+str(e))
+                print('ERRO: '+str(e))
+
+
+            print(str(classificados)+' Exemplos para Falsa Doença Classificados \n')
+        # '''
+        print('TOTAL' +str(classificados)+ 'Exemplos para Falsa doença Classificados \n')
+        print("Classificação Falsa Doença nos Dados Classificados: OK")
+
+
+
+
+
 
         print('Fim Função aprender')
     except Exception as e:

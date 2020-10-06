@@ -32,7 +32,7 @@ SECRET_KEY = config('SECRET_KEY')
 
 #Modo de teste
 # '''
-PROJETO_EM_TESTE= True
+PROJETO_EM_TESTE= False
 #True  -> SIM
 #False -> NÃO
 
