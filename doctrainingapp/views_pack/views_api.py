@@ -260,19 +260,44 @@ def conteudos_api(request):
     if request.method == 'GET':#Mostra todos os objetos
         try:
             json_lista_conteudos = []
+
             conteudos = Conteudo.objects.all().order_by('titulo')
             for conteudo in conteudos:#todas as Linhas
+                lista = []
                 linha_conteudo = {
+                'area': conteudo.area.nome,
+                'sala': conteudo.sala.nome_sala,
                 'id':conteudo.pk,
                 'title': conteudo.titulo,
                 'description':conteudo.descricao,
                 'content': conteudo.conteudo,
                 'link': conteudo.link,
                 'reference': conteudo.referencia,
-                'image':conteudo.imagem.url,
+                'imageList':lista,
                 'creationDate': conteudo.data_criacao
                 }
+
+
+                ima1 = ''
+                ima2 = ''
+                ima3 = ''
+                if conteudo.imagem1:
+                    ima1 = conteudo.imagem1.url
+
+                if conteudo.imagem2:
+                    ima2 = conteudo.imagem2.url
+
+                if conteudo.imagem3:
+                    ima3 = conteudo.imagem3.url
+
+                linha_ima = {
+                    'image1': ima1,
+                    'image2': ima2,
+                    'image3': ima3
+                }
+                linha_conteudo['imageList'].append(linha_ima)
                 json_lista_conteudos.append(linha_conteudo)
+
             return JsonResponse(json_lista_conteudos,safe=False)
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)

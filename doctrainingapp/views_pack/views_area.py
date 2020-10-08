@@ -44,13 +44,8 @@ def area_edit(request, pk, template_name='area-edit.html'):
 def area_delete(request, pk, template_name='area-delete.html'):
     area = get_object_or_404(Area, pk=pk)
     salas = Sala.objects.filter(area=area)
-    fases = Fase.objects.filter(area=area)
     if salas:
         messages.error(request, 'Erro! Area você não pode deletar essa Area pois existe salas contidas nela...')
-        # return redirect('/areas')
-        return redirect(reverse_lazy("doctrainingapp:areas_list"))
-    if fases:
-        messages.error(request, 'Erro! Area você não pode deletar essa Area pois existe fases contidas nela...')
         # return redirect('/areas')
         return redirect(reverse_lazy("doctrainingapp:areas_list"))
     elif request.method == 'POST':
