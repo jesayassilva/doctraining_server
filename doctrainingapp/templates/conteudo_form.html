@@ -1,0 +1,81 @@
+{% include 'cabecalho2.html' %}
+
+
+<h2>Cadastrar</h2>
+
+{% if messages %}
+    <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {% if message.tags == 'success' %}
+                        <font color="green">{{ message }}</font>
+                    {% elif message.tags == 'error' %}
+                        <font color="red">{{ message }}</font>
+                    {% else %}
+                        <!-- warning -->
+                        <font color="">{{ message }}</font>
+                    {% endif %}
+                </li>
+            {% endfor %}
+    </ul>
+{% endif %}
+
+
+
+<form class="ui form" method="post" id="conteudoForm"  data-cities-url="{% url 'doctrainingapp:ajax_load_cities' %}" novalidate enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for field in form %}
+ {{ field.errors }}
+<div class=" field">
+  <label>{{ field.label_tag }}</label>
+  <p></p>
+  {{ field }}
+</div>
+<p></p>
+
+{% endfor %}
+    <button class="ui button positive" type="submit">Salvar</button>
+    <a href="javascript:window.history.go(-1)" class="ui brown button" >Cancelar</a>
+  </form>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script>
+    $("#id_area").change(function () {
+      var url = $("#conteudoForm").attr("data-cities-url");  // get the url of the `load_cities` view
+      var areaId = $(this).val();  // get the selected country ID from the HTML input
+
+      $.ajax({                       // initialize an AJAX request
+        url: url,                    // set the url of the request (= localhost:8000/hr/ajax/load-cities/)
+        data: {
+          'area': areaId       // add the country id to the GET parameters
+        },
+        success: function (data) {   // `data` is the return of the `load_cities` view function
+          $("#id_sala").html(data);  // replace the contents of the city input with the data that came from the server
+        }
+      });
+
+    });
+  </script>
+</form>
+
+
+
+
+
+
+
+
+
+
+</div>
+
+</div>
+<!-- Cabecalho -->
+
+<div>
+
+
+
+{% include 'rodape.html' %}
+
+

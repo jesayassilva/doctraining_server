@@ -1,6 +1,7 @@
 import io
 from django.forms import ModelForm
 from django import forms
+import json
 
 from doctrainingapp.models import Versao, Area, Conteudo, Fase, Sala, AreaFase
 
@@ -67,21 +68,24 @@ class SalaForm(ModelForm):
         self.fields['descricao'].widget.attrs['class'] = 'ui form'
 
 class ConteudoForm(ModelForm):
+
+
     class Meta:
         model = Conteudo
-        fields = ['area', 'titulo', 'descricao', 'conteudo', 'link', 'referencia', 'imagem']
-
+        fields = ['area','sala', 'titulo', 'descricao', 'conteudo', 'link', 'referencia', 'imagem1', 'imagem2', 'imagem3']
 
     def __init__(self, *args, **kwargs):
-        super(ConteudoForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
+        self.fields['sala'].queryset = Sala.objects.none()
 
-        self.fields['area'].widget.attrs['class'] = 'ui form'
-        self.fields['titulo'].widget.attrs['class'] = 'ui form'
-        self.fields['descricao'].widget.attrs['class'] = 'ui form'
-        self.fields['conteudo'].widget.attrs['class'] = 'ui form'
-        self.fields['link'].widget.attrs['class'] = 'ui form'
-        self.fields['referencia'].widget.attrs['class'] = 'ui form'
-        self.fields['imagem'].widget.attrs['class'] = 'ui form'
+        if 'area' in self.data:
+            try:
+                country_id = int(self.data.get('area'))
+                self.fields['sala'].queryset = Sala.objects.filter(area_id=country_id).order_by('nome_sala')
+            except (ValueError, TypeError):
+                pass  # invalid input from the client; ignore and fallback to empty City queryset
+        elif self.instance.pk:
+            self.fields['sala'].queryset = self.instance.area.sala_set.order_by('nome_sala')
 
 
 class UploadAreaForm(forms.Form):

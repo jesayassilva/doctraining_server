@@ -138,10 +138,15 @@ urlpatterns = [
 
     #CONTEUDO
     path('conteudos/', views_conteudo.conteudo_list, name='list-conteudo'),
-    path('conteudo/add', views_conteudo.conteudo_add, name='add-conteudo'),
-    path('conteudo/edit/<int:pk>', views_conteudo.conteudo_edit, name='edit-conteudo'),
+    #path('conteudo/add', views_conteudo.conteudo_add, name='add-conteudo'),
+    #path('conteudo/edit/<int:pk>', views_conteudo.conteudo_edit, name='edit-conteudo'),
     path('conteudo/view/<int:pk>', views_conteudo.conteudo_view, name='view-conteudo'),
     path('conteudo/delete/<int:pk>', views_conteudo.conteudo_delete, name='delete-conteudo'),
+#############
+    path('conteudo_list', views_conteudo.ConteudoListView.as_view(), name='person_changelist'),
+    path('conteudo_add/', views_conteudo.ConteudoCreateView.as_view(), name='conteudo_add'),
+    path('conteudo/edit/<int:pk>/', views_conteudo.ConteudoUpdateView.as_view(), name='conteudo_edit'),
+    path('ajax/load-cities/', views_conteudo.load_cities, name='ajax_load_cities'),
 
 
     #UPLOADS

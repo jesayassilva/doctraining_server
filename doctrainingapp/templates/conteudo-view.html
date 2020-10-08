@@ -28,7 +28,7 @@
 <div class="ui items">
 
   <div class="item">
-    <img class="ui large image" src="{{conteudo.imagem.url}}">
+      <div class="item">
     <div class="content">
       <h2 class="header">{{conteudo.titulo}}</h2>
       <div class="meta">
@@ -45,11 +45,18 @@
       </div>
     </div>
   </div>
-</div>
-
 
 </div>
-
+{% if conteudo.imagem1 %}
+<img class="ui large image" src="{{conteudo.imagem1.url}}">
+    <p></p>
+    {% elif conteudo.imagem2 %}
+    <img class="ui large image" src="{{conteudo.imagem2.url}}">
+    <p></p>
+    {% elif conteudo.imagem3 %}
+    <img class="ui large image" src="{{conteudo.imagem3.url}}">
+</div>
+{%endif%}
 
 
 

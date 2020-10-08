@@ -338,6 +338,7 @@ class Sala(models.Model):
     def __str__(self):
         return self.nome_sala
 
+
     def quantidade_perguntas(self):#retorna nome da alteração
         return Pergunta.objects.filter(sala__pk=self.pk).count()
 
@@ -430,15 +431,22 @@ class Versao(models.Model):
 
 class Conteudo(models.Model):
     area = models.ForeignKey(Area, on_delete=models.PROTECT)
+    sala = models.ForeignKey(Sala, on_delete=models.PROTECT)
     titulo = models.CharField(max_length=100)
-    descricao = models.CharField(max_length=100)
-    conteudo = models.TextField(max_length=1000)
+    descricao = models.CharField(max_length=250, blank=True)
+    conteudo = models.TextField(max_length=1000, blank=True)
     link = models.CharField(max_length=300, blank=True)
-    referencia = models.CharField(max_length=100)
-    imagem = models.ImageField(upload_to='conteudo')
+    referencia = models.CharField(max_length=100, blank=True)
+    imagem1 = models.ImageField(upload_to='conteudo', null=True, blank=True)
+    imagem2 = models.ImageField(upload_to='conteudo', null=True, blank=True)
+    imagem3 = models.ImageField(upload_to='conteudo', null=True, blank=True)
     data_criacao = models.DateTimeField(default=datetime.now)
 
+
+
     def __str__(self):
-        return str(self.titulo)
+        #return str(self.titulo)
+
+        return self.titulo
 
 
