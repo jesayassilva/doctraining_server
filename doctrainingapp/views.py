@@ -21,6 +21,11 @@ from django.urls import reverse_lazy
 from django.urls import reverse
 from .forms import *
 from django.core.mail import send_mail #Para mandar email
+import firebase_admin
+from firebase_admin import credentials, db
+from collections import OrderedDict
+import json
+import os
 
 import requests
 # from django.conf import settings
@@ -121,6 +126,24 @@ def sair(request):
     logout(request)
     # return redirect('/')#voltar para tela inicial
     return redirect(reverse_lazy('doctrainingapp:index'))
+
+#dados trazidos do banco firebase
+def data_firebase(request):
+    usuario = request.user#usuario logado
+    try:
+        if not firebase_admin._apps:#credenciamento
+            PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
+            json_url = os.path.join(PROJECT_ROOT, 'doctraining-cbc4a-firebase-adminsdk-4p4wy-8d1d68b114.json')
+            cred = credentials.Certificate(json_url)#carrega credencial
+            firebase_admin.initialize_app(cred, {'databaseURL': 'https://doctraining-cbc4a.firebaseio.com/'})#inicializa credencial
+        ref = db.reference('/usuarios')#busca o banco 
+        snapshot = ref.order_by_key().get()#ordena pelo usuarios id do firebase
+        return render(request,'data_firebase.html',{'snapshot': snapshot,'usuario':usuario})
+    except Exception as e:
+        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
+        messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
+        # return redirect('/doctraining/')
+        return redirect(reverse_lazy('doctrainingapp:doctraining'))
 
 #Todos os casos clinicos
 def casos_clinicos(request):
