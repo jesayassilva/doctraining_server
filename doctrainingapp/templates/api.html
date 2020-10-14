@@ -100,7 +100,7 @@ Teste
 
 
 
-<a href="https://doctraining.herokuapp.com">https://doctraining.herokuapp.com</a>
+<a href="https://les.ufersade.u.br/doctraining">https://les.ufersade.u.br/doctraining</a>
 
 <p></p>
 <p>A seguir as requisições disponíveis na API do DocTraining:</p>
@@ -206,7 +206,7 @@ Teste
           <!-- <a href="{% url 'doctrainingapp:
           perguntas_de_uma_sala_api' %}"> {% url 'doctrainingapp:
           perguntas_de_uma_sala_api' %}</a> -->
-          <a href="#"> api/salas/< int:pk_sala>/perguntas/</a>
+          <a href="#">doctraining/api/salas/< int:pk_sala>/perguntas/</a>
           <p></p>
           <p>Se for bem-sucedida, essa chamada retornará uma lista com os id, pergunta, questão correta, questão incorreta 1, questão incorreta 2 e questão incorreta 3 da sala, seguindo a mesma ordem no JSON.<br />
             A seguir um exemplo de resultado dessa requisição:
@@ -384,7 +384,7 @@ Teste
           <p></p>
           <p>Para solicitar todas as amostras das doenças e seus sintomas deve-se realizar uma solicitação pelo método <button class="ui blue button">GET</button> na URL:</p>
           <a href="{% url 'doctrainingapp:todos_casos_clinicos_doencas_sintomas_api' %}">{% url 'doctrainingapp:todos_casos_clinicos_doencas_sintomas_api' %}</a>
-           <a href="/api/casos_clinicos/todos/">/api/casos_clinicos/todos/</a>
+           <a href="doctraining/api/casos_clinicos/todos/">doctraining/api/casos_clinicos/todos/</a>
           <p></p>
           <p>Se for bem-sucedida, essa chamada retornará uma lista no formato de id, nome da Doença e lista de sintomas.<br />
             Note que algumas doenças irão se repetir, mas com sintomas distintos.<br />
@@ -495,26 +495,43 @@ Teste
           <div class="ui inverted segment ">
 <pre>[
     {
-        "id": 5,
-        "titulo": "Quais as diferenças entre os exames PCR e Sorologia?",
-        "descrição": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "conteudo": "PCR é a metodologia “padrão-ouro” capaz de detectar a presença do vírus nos pacientes. O exame é feito em material coletado da garganta e do nariz (em ambientes hospitalares, pode ser utilizada secreção do pulmão, o que aumenta a assertividade do teste), e por meio de técnicas de biologia molecular, detecta o material genético do vírus na amostra do paciente. O exame é recomendado para o diagnóstico de COVID-19 para pessoas com sintomas e pode detectar a presença do vírus em média até o 12º dia de sintomas.\r\n\r\n\r\nSorologia são testes imunológicos capazes de detectar os níveis de anticorpos IgM e IgG em amostra de sangue do paciente. É aconselhado para pacientes com sintomas a partir do sétimo dia, tempo que leva para os anticorpos começarem a ser produzidos. Ressaltamos que um resultado negativo NÃO exclui a presença da doença.",
-        "link": "https://dasa.com.br/coronavirus",
-        "referencia": "Dasa",
-        "imagem": "/media/conteudo/unnamed.jpg",
-        "data_criação": "2020-08-12T00:11:08Z"
+        "area": "JESA",
+        "sala": "teste j",
+        "id": 2,
+        "title": "Meu titulo",
+        "description": "minha desc",
+        "content": "cont",
+        "link": "link1111",
+        "reference": "ref",
+        "imageList": [
+            {
+                "image1": "/media/conteudo/eup.jpg",
+                "image2": "/media/conteudo/fundo_keTZnSV.PNG",
+                "image3": "/media/conteudo/viajantes_0qudJxC.PNG"
+            }
+        ],
+        "creationDate": "2020-10-08T22:34:13.095Z"
     },
     {
-        "id": 1,
-        "titulo": "aaaaaaaaaaaaaaaaaaa",
-        "descrição": "bbbbbbbbbbbbbbbbbbbbbbbb",
-        "conteudo": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
-        "link": "http://google.com",
-        "referencia": "Souza, Aleff",
-        "imagem": "/media/conteudo/istockphoto-1011498282-170667a.jpg",
-        "data_criação": "2020-08-10T16:54:35Z"
+        "area": "JESA",
+        "sala": "teste j",
+        "id": 3,
+        "title": "Teste de imagem",
+        "description": "Conteúdo com imagem para teste",
+        "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur feugiat nibh mauris, sit amet facilisis mi dapibus non. Vivamus interdum mauris ac pellentesque laoreet. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla feugiat lorem ut accumsan consectetur. Curabitur maximus auctor facilisis. Donec non lorem auctor, ultrices diam non, sagittis diam. In arcu dui, volutpat sit amet ligula in, egestas lobortis nisi. Nulla vel turpis id turpis dictum eleifend ut nec urna. Vestibulum vulputate facilisis vehicula. Integer mattis, tellus non fringilla suscipit, nisl nunc commodo dolor, sit amet porta nunc risus sit amet massa.",
+        "link": "https://pt.wikipedia.org/wiki/COVID-19",
+        "reference": "Referência: teste1",
+        "imageList": [
+            {
+                "image1": "/media/conteudo/covid19.jpg",
+                "image2": "/media/conteudo/sintomas.png",
+                "image3": ""
+            }
+        ],
+        "creationDate": "2020-10-09T12:12:36.096Z"
     }
-    ]
+]
+
 ]</pre>
 
           </div>
