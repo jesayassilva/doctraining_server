@@ -45,7 +45,7 @@ class AreaFaseForm(ModelForm):
 class FaseForm(ModelForm):
     class Meta:
         model = Fase
-        fields = ['nome_fase','descricao', 'dificuldade' ]
+        fields = ['nome_fase','descricao', 'dificuldade', 'imagem1', 'imagem2', 'imagem3' ]
 
 
     def __init__(self, *args, **kwargs):

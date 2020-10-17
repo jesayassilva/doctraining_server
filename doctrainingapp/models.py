@@ -386,6 +386,9 @@ class Fase(models.Model):
     nome_fase = models.CharField(max_length=50, blank=False,null=False,unique=True)
     descricao = models.CharField(max_length=300, blank=True,null=True)
     data_criacao = models.DateTimeField(default=datetime.now)
+    imagem1 = models.ImageField(upload_to='pergunta_fase', null=True, blank=True)
+    imagem2 = models.ImageField(upload_to='pergunta_fase', null=True, blank=True)
+    imagem3 = models.ImageField(upload_to='pergunta_fase', null=True, blank=True)
 
     DIFICULDADES_CHOICES = (
         (1, 'Muito facil'),
@@ -414,9 +417,7 @@ class PerguntaFase(models.Model):
     opcao_incorreta_1 = models.CharField(max_length=600)
     opcao_incorreta_2 = models.CharField(max_length=600)
     opcao_incorreta_3 = models.CharField(max_length=600)
-    imagem1 = models.ImageField(upload_to='pergunta_fase', null =True, blank= True)
-    imagem2 = models.ImageField(upload_to='pergunta_fase', null =True, blank= True)
-    imagem3 = models.ImageField(upload_to='pergunta_fase', null =True, blank= True)
+
 
     def __str__(self):
         return self.pergunta

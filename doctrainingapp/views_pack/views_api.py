@@ -313,14 +313,35 @@ def fases_api(request, pk_area):
             perguntas = PerguntaFase.objects.all()
             for fase in fases:
                 lista = []
+                lista_ima = []
                 linha_caso = {
                     'id': fase.pk ,
                     'description': fase.descricao,
                     'difficulty': fase.dificuldade,
-                    'questionList': lista }
+                    'questionList': lista,
+                    "imageList": lista_ima }
+
+                ima1 = ''
+                ima2 = ''
+                ima3 = ''
+                if fase.imagem1:
+                    ima1 = fase.imagem1.url
+
+                if fase.imagem2:
+                    ima2 = fase.imagem2.url
+
+                if fase.imagem3:
+                    ima3 = fase.imagem3.url
+
+                linha_ima = {
+                    'image1': ima1,
+                    'image2': ima2,
+                    'image3': ima3
+                }
+                linha_caso['imageList'].append(linha_ima)
                 for pergunta in perguntas:#todas as Linhas
                     if pergunta.fase == fase:
-                        lista = []
+
                         linha_pergunta = {
                         'questionId':pergunta.pk,
                         'mainQuestion': pergunta.pergunta,
@@ -328,27 +349,11 @@ def fases_api(request, pk_area):
                         "wrongOp01": pergunta.opcao_incorreta_1 ,
                         "wrongOp02":pergunta.opcao_incorreta_2 ,
                         "wrongOp03":pergunta.opcao_incorreta_3,
-                        "imageList": lista
+
                         }
 
-                        ima1 = ''
-                        ima2 = ''
-                        ima3 = ''
-                        if pergunta.imagem1:
-                            ima1 = pergunta.imagem1.url
 
-                        if pergunta.imagem2:
-                            ima2 = pergunta.imagem2.url
 
-                        if pergunta.imagem3:
-                            ima3 = pergunta.imagem3.url
-
-                        linha_ima = {
-                            'image1': ima1,
-                            'image2': ima2,
-                            'image3': ima3
-                        }
-                        linha_pergunta['imageList'].append(linha_ima)
                         linha_caso['questionList'].append(linha_pergunta)
                 json_lista_fases.append(linha_caso)
             return JsonResponse(json_lista_fases,safe=False)
