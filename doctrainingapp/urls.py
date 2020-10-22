@@ -159,6 +159,7 @@ urlpatterns = [
     path('upload-pergunta-sala/', views_upload.pergunta_sala_upload, name="pergunta_sala_upload"),
     path('upload-pergunta-fase/', views_upload.pergunta_fase_upload, name="pergunta_fase_upload"),
     path('upload', views_upload.upload, name='upload'),
+    path('upload-zip/', views_upload.zip_upload,name="zip_upload"),
 
     path('data_firebase/', views_firebase.data_firebase, name='data_firebase')
 

@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 import csv, io
 from django.shortcuts import render
 from django.contrib import messages
+import zipfile
 # Create your views here.
 # one parameter named request
 
@@ -123,6 +124,9 @@ def pergunta_sala_upload(request):
             opcao_incorreta_2=column[4],
             opcao_incorreta_3=column[5],
             dificuldade=column[6],
+            imagem1='pergunta_sala/'+column[7],
+            imagem2='pergunta_sala/' + column[8],
+            imagem3 = 'pergunta_sala/' + column[9]
 
         )
     context = {}
@@ -189,4 +193,19 @@ def pergunta_fase_upload(request):
 
         )
     context = {}
+    return redirect(reverse_lazy("doctrainingapp:upload"))
+
+def zip_upload(request):
+
+    if request.method == "GET":
+        return render(request, 'zipfile.html')
+    zip_file = request.FILES['file']
+    arquivo_zip = zipfile.ZipFile(zip_file)
+    arquivo_zip.extractall('media/pergunta_sala')
+    arquivo_zip.close()
+
+
+    print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+    print(zip_file)
+    print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
     return redirect(reverse_lazy("doctrainingapp:upload"))
