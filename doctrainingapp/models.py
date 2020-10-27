@@ -383,8 +383,8 @@ class AreaFase(models.Model):
 class Fase(models.Model):
     area = models.ForeignKey(AreaFase, on_delete=models.PROTECT)
     responsavel_fase = models.ForeignKey(User, on_delete=models.CASCADE)
-    nome_fase = models.CharField(max_length=50, blank=False,null=False,unique=True)
-    descricao = models.CharField(max_length=300, blank=True,null=True)
+    nome_fase = models.CharField(max_length=50, blank=False,null=False,unique=True, verbose_name='Subárea')
+    descricao = models.TextField(max_length=1000000000000000000000, blank=True,null=True,verbose_name='Descrição do Problema')
     data_criacao = models.DateTimeField(default=datetime.now)
     imagem1 = models.ImageField(upload_to='pergunta_fase', null=True, blank=True)
     imagem2 = models.ImageField(upload_to='pergunta_fase', null=True, blank=True)

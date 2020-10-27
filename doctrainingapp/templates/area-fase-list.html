@@ -1,7 +1,7 @@
 {% include 'cabecalho2.html' %}
 
 <h1>
-  Areas Fases
+  Casos Clínicos
 </h1>
 
 {% if messages %}
@@ -34,7 +34,7 @@
       <tr>
         <!-- Colunas da tabela -->
         <th>Area</th>
-          <th>Fases</th>
+          <th>Subárea</th>
          <th>Edição</th>
           <th>Deletar</th>
         <!-- colunas da tabela -->
@@ -51,7 +51,7 @@
             <tr>
               <td><b> {{area.nome}} </b></td>
                 <td>
-                      <a href="{% url 'doctrainingapp:area_fases' area.pk %}" >   Fases  <i class="edit outline icon"></i> </a>
+                      <a href="{% url 'doctrainingapp:area_fases' area.pk %}" >   Subáreas  <i class="edit outline icon"></i> </a>
 
 
               </td>
