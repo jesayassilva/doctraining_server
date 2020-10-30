@@ -1,6 +1,5 @@
 {% include 'cabecalho2.html' %}
 
-
 <script language="Javascript">
 	function confirmExclusao(id) {
 		if (confirm("Tem certeza que deseja solicitar a exclusão desse dado?")) {
@@ -72,6 +71,7 @@
 
 							<tbody>
 								<!-- <tr><td>Dados</td></tr> -->
+								
 								{% for key, value in snapshot.items %}
 								<tr>
 									<td>{{ value.avatarId}}</td>

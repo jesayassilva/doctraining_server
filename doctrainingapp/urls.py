@@ -19,6 +19,7 @@ urlpatterns = [
     path('doctraining/',login_required(doctraining),name='doctraining'),
 
     path('data_firebase/',login_required(data_firebase),name='data_firebase'),
+    path('get_rank_xp_firebase/',login_required(get_rank_xp_firebase),name='get_rank_xp_firebase'),
     
     path('user/novo/',login_required(views_user.UserCreate.as_view()),name='user_create'),
     path('user/perfil/editar/<int:pk>/',login_required(views_user.PerfilUpdate.as_view()),name='perfil_update'),
