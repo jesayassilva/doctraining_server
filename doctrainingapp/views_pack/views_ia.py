@@ -194,7 +194,7 @@ def aprender():
 
 
 
-horario_tarde = 15
+horario_tarde = 12
 horario_inicio_am = 2
 horario_fim_am = 3
 tempo_espera_segundos = 5
@@ -203,7 +203,7 @@ def chamar_funcao_aprender():
         global stop_threads
         if stop_threads:
             break#parar thread
-        if ( int(time.strftime('%H')) >= horario_inicio_am and int(time.strftime('%H')) <= horario_fim_am ) or ( int(time.strftime('%H')) == horario_tarde and int(time.strftime('%M')) <= 59 ):
+        if ( int(time.strftime('%H')) >= horario_inicio_am and int(time.strftime('%H')) <= horario_fim_am ) or ( int(time.strftime('%H')) == horario_tarde and int(time.strftime('%M')) <= 29 ):
             #print('====== CHAMADA DA FUNÇÃO RANK ======')
             #get_rank_xp_firebase()
             print('================ CHAMA FUNÇÃO RANK ================')
