@@ -11,7 +11,6 @@ from django.contrib.auth import logout
 import random
 import pandas as pd
 import numpy as np
-from doctrainingapp.views_pack import views_ia
 #DECORATORS
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
@@ -54,7 +53,7 @@ def index(request):
 def doctraining(request):
     usuario = request.user#usuario logado
     try:
-        print( views_ia.tentar_ativar_am() )
+        print(" views_ia.tentar_ativar_am()" )
     except Exception as e:
         mandar_email_error(str(e),usuario,request.resolver_match.url_name)
         # return redirect('/')
@@ -150,8 +149,7 @@ def data_firebase(request):
         return redirect(reverse_lazy('doctrainingapp:doctraining'))
     
 #dados trazidos do banco firebase ordenados por xp
-def get_rank_xp_firebase(request):
-    usuario = request.user#usuario logado
+def get_rank_xp_firebase():
     try:
         if not firebase_admin._apps:#credenciamento
             PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
@@ -192,12 +190,14 @@ def get_rank_xp_firebase(request):
             print('{0}º\t| {1} QUESTOES \t\t| {2}'.format(tamanho - i, val['totalQuestionRight'], val['name']))
             i += 1
         #resposta exemplo
-        return HttpResponse(True)
+        #return HttpResponse(True)
+        print("========== CONCLUIDO =============+===")
     except Exception as e:
-        mandar_email_error(str(e),usuario,request.resolver_match.url_name)
-        messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
+        #mandar_email_error(str(e),usuario,request.resolver_match.url_name)
+        #messages.add_message(request, ERROR, 'Ocorreu um erro. Tente novamente mais tarde.')#mensagem para o usuario
         # return redirect('/doctraining/')
-        return redirect(reverse_lazy('doctrainingapp:doctraining'))
+        #return redirect(reverse_lazy('doctrainingapp:doctraining'))
+        print('==== METODO GET RANK FALHOU ===')
 
 #Todos os casos clinicos
 def casos_clinicos(request):
@@ -774,7 +774,7 @@ def aceitar_solicitacao_alteracao_caso_clinico(request,pk):
             #Fim-------------------Executar-------------------Salvar aqui na tabela de log ----------------------------------------------------------
             solicitacao_alterar_caso_clinico.delete()#deletando solicitação, pois seus dados já se encontram na tabela de log
         #mensagem para usuario
-        print(views_ia.tentar_ativar_am() )
+        print("views_ia.tentar_ativar_am()" )
         messages.add_message(request, SUCCESS, 'Foi aceitada a alteração da amostra.')
         # return redirect('/casos_clinicos/solicitacoes/')
         return redirect(reverse_lazy("doctrainingapp:solicitacoes_alteracao_casos_clinicos"))

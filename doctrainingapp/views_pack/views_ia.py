@@ -9,7 +9,6 @@ from sklearn.model_selection import train_test_split#Importar divisão
 from sklearn.metrics import classification_report, confusion_matrix # importar metodo de avaliação
 from sklearn.linear_model import LogisticRegression #Importar regressão logistica
 from doctrainingapp.views import *
-
 ###### Threading
 import logging#Mostra logs neste caso de horario
 import threading
@@ -195,7 +194,7 @@ def aprender():
 
 
 
-horario_tarde = 12
+horario_tarde = 15
 horario_inicio_am = 2
 horario_fim_am = 3
 tempo_espera_segundos = 5
@@ -204,11 +203,16 @@ def chamar_funcao_aprender():
         global stop_threads
         if stop_threads:
             break#parar thread
-        if ( int(time.strftime('%H')) >= horario_inicio_am and int(time.strftime('%H')) <= horario_fim_am ) or ( int(time.strftime('%H')) == horario_tarde and int(time.strftime('%M')) <= 29 ):
+        if ( int(time.strftime('%H')) >= horario_inicio_am and int(time.strftime('%H')) <= horario_fim_am ) or ( int(time.strftime('%H')) == horario_tarde and int(time.strftime('%M')) <= 59 ):
+            #print('====== CHAMADA DA FUNÇÃO RANK ======')
+            #get_rank_xp_firebase()
+            print('================ CHAMA FUNÇÃO RANK ================')
+            get_rank_xp_firebase()
             print('CHAMA FUNÇÃO APRENDER')
             aprender()
             time.sleep(300)#5 min de espera após classificações
         else:
+            get_rank_xp_firebase()
             print("FORA DO HORARIO. Classificação: "+ str(horario_inicio_am) +' - '+ str(horario_fim_am) +':59 Horas e ' + str(horario_tarde) +' - '+ str(horario_tarde) + ':30 Horas')
         r = requests.get('https://doctraining.herokuapp.com')
         print(r)
