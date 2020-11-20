@@ -157,37 +157,38 @@ def get_rank_xp_firebase():
             cred = credentials.Certificate(json_url)#carrega credencial
             firebase_admin.initialize_app(cred, {'databaseURL': 'https://doctraining-cbc4a.firebaseio.com/'})#inicializa credencial
         ref = db.reference('usuarios')#busca o banco 
-        snapshot_xp = ref.order_by_child('xp').get()#ordena pelo xp dos usuarios do firebase
+        snapshot_xp = ref.get()#ordena pelo xp dos usuarios do firebase
         #snapshot_xp = OrderedDict(sorted(snapshot_xp.items(), key=lambda x: (x[1]['hospital_rec'], x[1]['name']))) # corrige ordem dos nomes na lista de xp
-        i = 0 # variavel de controle para posicao do ranking
+        i = 1 # variavel de controle para posicao do ranking
         tamanho = len(snapshot_xp.items()) # quantidade de usuarios no firebase
+        snapshot_xp = OrderedDict(sorted(snapshot_xp.items(), key=lambda x: (x[1]['xp'], x[1]['name']), reverse=True)) # ordena lista de xp baseado nos atendimentos do hospital
         #print("---------- RANK XP ------------")
         for key, val in snapshot_xp.items():
             ref_user = db.reference('usuarios/'+key)#busca o user pela chave
             ref_user.update({
-                'posRankXp': tamanho - i # atualiza posicao do ranking de XP
+                'posRankXp': i # atualiza posicao do ranking de XP
             })
-            print('{0}º\t| {1} XP \t\t| {2}'.format(tamanho - i, val['xp'], val['name']))
+            print('{0}º\t| {1} XP \t\t| {2}'.format(i, val['xp'], val['name']))
             i += 1
         #print("---------- RANK HOSPITAL ------------")
-        i = 0 # zera para iniciar posicoes do ranking
-        snapshot_hospital_rec = OrderedDict(sorted(snapshot_xp.items(), key=lambda x: (x[1]['hospital_rec'], x[1]['name']))) # ordena lista de xp baseado nos atendimentos do hospital
+        i = 1 # zera para iniciar posicoes do ranking
+        snapshot_hospital_rec = OrderedDict(sorted(snapshot_xp.items(), key=lambda x: (x[1]['hospital_rec'], x[1]['name']), reverse=True)) # ordena lista de xp baseado nos atendimentos do hospital
         for key, val in snapshot_hospital_rec.items():
             ref_user = db.reference('usuarios/'+key)#busca o user
             ref_user.update({
-                'posRankHospital': tamanho - i # atualiza posicao do ranking de atendimentos do hospital
+                'posRankHospital': i # atualiza posicao do ranking de atendimentos do hospital
             })
-            print('{0}º\t| {1} HOSPITAL \t\t| {2}'.format(tamanho - i, val['hospital_rec'], val['name']))
+            print('{0}º\t| {1} HOSPITAL \t\t| {2}'.format(i, val['hospital_rec'], val['name']))
             i += 1
         #print("---------- RANK QUESTOES ------------")
-        i = 0 # zera para iniciar posicoes do ranking
-        snapshot_questions = OrderedDict(sorted(snapshot_xp.items(), key=lambda x: (x[1]['totalQuestionRight'], x[1]['name']))) # ordena lista de xp baseado no numero de questoes certas
+        i = 1 # zera para iniciar posicoes do ranking
+        snapshot_questions = OrderedDict(sorted(snapshot_xp.items(), key=lambda x: (x[1]['totalQuestionRight'], x[1]['name']), reverse=True)) # ordena lista de xp baseado no numero de questoes certas
         for key, val in snapshot_questions.items():
             ref_user = db.reference('usuarios/'+key)#busca o user
             ref_user.update({
-                'posRankQuestion': tamanho - i # atualiza posicao do ranking de questoes
+                'posRankQuestion': i # atualiza posicao do ranking de questoes
             })
-            print('{0}º\t| {1} QUESTOES \t\t| {2}'.format(tamanho - i, val['totalQuestionRight'], val['name']))
+            print('{0}º\t| {1} QUESTOES \t\t| {2}'.format(i, val['totalQuestionRight'], val['name']))
             i += 1
         #resposta exemplo
         #return HttpResponse(True)
