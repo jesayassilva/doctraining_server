@@ -4,6 +4,7 @@ import random
 from django.shortcuts import render
 from doctrainingapp.views import *
 from doctrainingapp.views_pack import views_ia
+from datetime import datetime
 
 
 def api(request):
@@ -376,6 +377,23 @@ def areasFase(request):
                     }
                 json_lista_fases.append(linha_area)
             return JsonResponse(json_lista_fases,safe=False)
+        except Exception as e:
+            mandar_email_error(str(e),usuario,request.resolver_match.url_name)
+            return JsonResponse({"Erro":str(e)}, status = 406)
+    return JsonResponse({"Erro":"Somente Metodo GET"}, status = 404)
+
+def getdatatime(request):
+    usuario = request.user
+    if request.method == 'GET':#Mostra todos os objetos
+        try:
+            json_lista_datatime = []
+            now = datetime.now()
+            print("now =", now)
+            # dd/mm/YY H:M:S
+            dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+            print("date and time =", dt_string)
+            json_lista_datatime.append(dt_string)
+            return JsonResponse(json_lista_datatime,safe=False)
         except Exception as e:
             mandar_email_error(str(e),usuario,request.resolver_match.url_name)
             return JsonResponse({"Erro":str(e)}, status = 406)

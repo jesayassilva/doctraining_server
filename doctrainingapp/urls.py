@@ -102,6 +102,7 @@ urlpatterns = [
     url(r"^api/versao/(?P<versao_versao>\d+\.\d+)$", views_api.versao_api, name='versao-api'),
     # url(r"^item/value/(?P<dollar>\d+\.\d+)$", views.show_item, name="show-item"),
     path('api/conteudo/todos/', views_api.conteudos_api, name='conteudos_api'),
+    path('api/datatime/', views_api.getdatatime, name='datatime'),
 
 
     #APRENDIZADO DE MÁQUINA controle das threads
