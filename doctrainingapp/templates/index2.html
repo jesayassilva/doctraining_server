@@ -1,0 +1,653 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+{% load static %}
+  <!-- SITE TITTLE -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DocTraining Mobile</title>
+  
+  <!-- PLUGINS CSS STYLE -->
+  <!-- Bootstrap -->
+  <link href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <!-- Themefisher Font -->  
+  <link href= "{% static 'plugins/themefisher-font/style.css' %}" rel="stylesheet">
+  <!-- Slick Carousel -->
+  <link href="{% static 'plugins/slick/slick.css' %}" rel="stylesheet">
+  <!-- Slick Carousel Theme -->
+  <link href="{% static 'plugins/slick/slick-theme.css' %}" rel="stylesheet">
+  
+  <!-- CUSTOM CSS -->
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+  <!-- FAVICON -->
+  <link href="{% static 'imagens/logo_sem_fundo.png' %}" rel="shortcut icon">
+
+</head>
+
+<body class="body-wrapper">
+
+
+<nav class="navbar main-nav fixed-top navbar-expand-lg">
+  <div class="container">
+      <a class="navbar-brand" href="/"><img src="{% static 'imagens/images/logo.png' %}" alt="logo"></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="tf-ion-android-menu"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link scrollTo" href="#home">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link scrollTo" href="#about">Sobre</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link scrollTo" href="#feature">Recursos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link scrollTo" href="#pricing">API</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link scrollTo" href="#team">Equipe</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link scrollTo" href="#contact">Contato</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% if user.is_authenticated %}{% url 'doctrainingapp:doctraining' %}{%else%} {% url 'doctrainingapp:login' %}{%endif%}">Entrar</a>
+        </li>
+      </ul>
+      </div>
+  </div>
+</nav>
+<!--=====================================
+=            Homepage Banner            =
+======================================-->
+
+<section class="banner bg-1" id="home">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8 align-self-center">
+				<!-- Contents -->
+				<div class="content-block">
+					<h1>DocTraining Mobile</h1>
+					<h5>Jogo sério para treinamento de estudantes e profissionais da área de saúde</h5>
+					<!-- App Badge -->
+					<div class="app-badge">
+						<ul class="list-inline">
+							<li class="list-inline-item">
+								<a href="#"><img class="img-fluid" src="{% static 'imagens/images/app-badge/google-play.png' %}" alt="google-play"></a>
+							</li>
+							<li class="list-inline-item">
+								<a href="#"><img class="img-fluid" src="{% static 'imagens/images/app-badge/app-store.png' %}" alt="app-store"></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<!-- App Image -->
+				<div class="image-block">
+					<img class="img-fluid" src="{% static 'imagens/images/phones/iphone-banner.png' %}" alt="iphone-banner">
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!--====  End of Homepage Banner  ====-->
+
+<!--===========================
+=            About            =
+============================-->
+
+<section class="about section bg-2" id="about">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-5 mr-auto">
+				<!-- Image Content -->
+				<div class="image-block">
+					<img src="{% static 'imagens/images/phones/iphone-feature.png' %}" alt="iphone-feature" class="img-fluid">
+				</div>
+			</div>
+			<div class="col-lg-6 col-md-10 m-md-auto align-self-center ml-auto">
+				<div class="about-block">
+					<!-- About 01 -->
+					<div class="about-item">
+						<div class="icon">
+							<i class="tf-ion-ios-paper-outline"></i>
+						</div>
+						<div class="content">
+							<h5>Design Criativo</h5>
+							<p>Design pensado com objetivo de deixar a aplicação simples e intuitiva.</p>
+						</div>
+					</div>
+					<!-- About 02 -->
+					<div class="about-item active">
+						<div class="icon">
+							<i class="tf-globe"></i>
+						</div>
+						<div class="content">
+							<h5>Fácil de Usar</h5>
+							<p>Aplicação conta com recursos de fácil compreenção, facilitando a usabilidade.</p>
+						</div>
+					</div>
+					<!-- About 03 -->
+					<div class="about-item">
+						<div class="icon">
+							<i class="tf-circle-compass"></i>
+						</div>
+						<div class="content">
+							<h5>MELHOR EXPERIÊNCIA para o USUÁRIO</h5>
+							<p>Com objetivo educacional o DocTraining Mobile proporciona uma melhor experiência para seus usuarios.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!--====  End of About  ====-->
+
+<!--==============================
+=            Features            =
+===============================-->
+
+<section class="section feature" id="feature">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<div class="section-title">
+					<h2>Recursos do Aplicativo</h2>
+					<p>Um pouco mais sobre nossos recursos</p>
+				</div>
+			</div>
+		</div>
+		<div class="row bg-elipse">
+			<div class="col-lg-4 align-self-center text-center text-lg-right">
+				<!-- Feature Item -->
+				<div class="feature-item">
+					<!-- Icon -->
+					<div class="icon">
+						<i class="tf-circle-compass"></i>
+					</div>
+					<!-- Content -->
+					<div class="content">
+						<h5>Gameficação</h5>
+						<p>Sistema de medalhas tornando a aplicação mais atrativa.</p>
+					</div>
+				</div>
+				<!-- Feature Item -->
+				<div class="feature-item">
+					<!-- Icon -->
+					<div class="icon">
+						<i class="tf-tools-2"></i>
+					</div>
+					<!-- Content -->
+					<div class="content">
+						<h5>Sistema de Usuários</h5>
+						<p>O DocTraining conta com um completo sistema de usuários.</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 text-center">
+				<!-- Feature Item -->
+				<div class="feature-item mb-0">
+					<!-- Icon -->
+					<div class="icon">
+						<i class="tf-chat"></i>
+					</div>
+					<!-- Content -->
+					<div class="content">
+						<h5>Aprendizagem de Máquina</h5>
+						<p>Subárea de pesquisa muito importante da Inteligência Artificial, com uma importante característica para o comportamento de inteligência, que são as capacidades de aprender, generalizar, extrair padrões ou características dos dados.</p>
+					</div>
+				</div>
+				<div class="app-screen">
+					<img class="img-fluid" src="{% static 'imagens/images/phones/i-phone-screen.png' %}" alt="app-screen">
+				</div>
+				<!-- Feature Item -->
+				<div class="feature-item">
+					<!-- Icon -->
+					<div class="icon">
+						<i class="tf-hourglass"></i>
+					</div>
+					<!-- Content -->
+					<div class="content">
+						<h5>Sistema de Ranking</h5>
+						<p>O DocTraining Mobile conta com sistema de raking e classificação.</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 text-center text-lg-left align-self-center">
+				<!-- Feature Item -->
+				<div class="feature-item">
+					<!-- Icon -->
+					<div class="icon">
+						<i class="tf-mobile"></i>
+					</div>
+					<!-- Content -->
+					<div class="content">
+						<h5>Multiplataforma</h5>
+						<p>Aplicação mobile 2D disponível para sistema android e Ios. </p>
+					</div>
+				</div>
+				<!-- Feature Item -->
+				<div class="feature-item">
+					<!-- Icon -->
+					<div class="icon">
+						<i class="tf-layers"></i>
+					</div>
+					<!-- Content -->
+					<div class="content">
+						<h5>Diferentes Modos</h5>
+						<p>Diferentes modos de jogo para o usuário.</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!--====  End of Features  ====-->
+
+<!--=================================
+=            Promo Video            =
+==================================-->
+
+<section class="section promo-video bg-3 overlay">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<!-- Promo Video -->
+				<div class="video">
+					<img class="img-fluid" src="{% static 'imagens/images/backgrounds/promo-video-bg.jpg' %}" alt="video-thumbnail">
+					<div class="video-button video-box">
+						<!-- Video Play Button -->
+						<a href="javascript:void(0)">
+							<span class="icon" data-video="https://www.youtube.com/embed/g3-VxLQO7do?autoplay=1">
+								<i class="tf-ion-ios-play-outline"></i>
+							</span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!--====  End of Promo Video  ====-->
+
+<!--===================================
+=            Pricing Table            =
+====================================-->
+
+<section class="pricing section bg-shape" id="pricing">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<div class="section-title">
+					<h2>API DocTraining</h2>
+					<p>O DocTraining API é a principal forma para os aplicativos lerem os dados do DocTraining.
+					É baseada em HTTP, portanto funciona com qualquer linguagem que tenha uma biblioteca HTTP, como cURL e urllib, ou então por serviços, como o $http do AngularJS.
+					Todos as requisições são respondidas no formato JSON pela API.</p>
+
+					<a href="{% url 'doctrainingapp:api' %}" class="btn btn-main-rounded">Acessar API</a>
+				</div>
+			</div>
+		</div>		
+	</div>
+</section>
+
+<!--====  End of Pricing Table  ====-->
+
+<!--=============================================
+=            Call to Action Download            =
+==============================================-->
+
+<section class="cta-download bg-3 overlay">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-5">
+				<div class="image-block"><img class="img-fluid" src="{% static 'imagens/images/phones/iphone-chat.png' %}" alt=""></div>
+			</div>
+			<div class="col-lg-7">
+				<div class="content-block">
+					<!-- Title -->
+					<h2>Download Grátis</h2>
+					<!-- Desctcription -->
+					<p>O DocTraining Mobile está disponivel nas principais lojas de aplicativos totalmente grátis. Faça já o download!</p>
+					<!-- App Badge -->
+					<div class="app-badge">
+						<ul class="list-inline">
+							<li class="list-inline-item">
+								<a href="#"><img class="img-fluid" src="{% static 'imagens/images/app-badge/google-play.png' %}" alt="google-play"></a>
+							</li>
+							<li class="list-inline-item">
+								<a href="#"><img class="img-fluid" src="{% static 'imagens/images/app-badge/app-store.png' %}" alt="app-store"></a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!--====  End of Call to Action Download  ====-->
+
+
+<!--==========================
+=            Team            =
+===========================-->
+
+<section class="section team bg-shape-two" id="team">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<div class="section-title">
+					<h2>Nossa Equipe</h2>
+					<p>Conheça a equipe que faz o DocTraining Mobile.</p>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-lg-3 col-md-6">
+				<!-- Team Member -->
+				<div class="team-member text-center">
+					<div class="image">
+						<img class="img-fluid" src="{% static 'imagens/images/team/aleff.jpg' %}" alt="team-member">
+					</div>
+					<div class="name">
+						<h5>Aleff Souza</h5>
+					</div>
+					<div class="position">
+						<p>Programador Back-End</p>
+					</div>					
+					<ul class="social-icons list-inline">
+						<li class="list-inline-item">
+							<a href="https://www.facebook.com/aleff.jonathan" target="_blank"><i class="tf-ion-social-facebook"></i></a>
+						</li>
+						<li class="list-inline-item">
+							<a href=""><i class="tf-ion-social-twitter" target="_blank"></i></a>
+						</li>
+						<li class="list-inline-item">
+							<a href="https://www.linkedin.com/in/aleffsouza/" target="_blank"><i class="tf-ion-social-linkedin"></i></a>
+						</li>
+						<li class="list-inline-item">
+							<a href="https://www.instagram.com/aleff.j/" target="_blank"><i class="tf-ion-social-instagram-outline"></i></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+				<!-- Team Member -->
+			<div class="col-lg-3 col-md-6">
+				
+				<div class="team-member text-center">
+					<div class="image">
+						<img class="img-fluid" src="{% static 'imagens/images/team/ademar.jpg' %}" alt="team-member">
+					</div>
+					<div class="name">
+						<h5>Ademar Neto</h5>
+					</div>
+					<div class="position">
+						<p>Pesquisador</p>
+					</div>					
+					<ul class="social-icons list-inline">
+						<li class="list-inline-item">
+							<a href="https://www.facebook.com/ademarnet/"><i class="tf-ion-social-facebook" target="_blank"></i></a>
+						</li>
+						<li class="list-inline-item">
+							<a href="https://twitter.com/ademarfsn"><i class="tf-ion-social-twitter" target="_blank"></i></a>
+						</li>
+						<li class="list-inline-item">
+							<a href="https://www.linkedin.com/in/ademarfranca/"><i class="tf-ion-social-linkedin" target="_blank"></i></a>
+						</li>
+						<li class="list-inline-item">
+							<a href="https://www.instagram.com/ademarfsn/"><i class="tf-ion-social-instagram-outline" target="_blank"></i></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+				<!-- Team Member -->
+			<div class="col-lg-3 col-md-6">
+
+				<div class="team-member text-center">
+					<div class="image">
+						<img class="img-fluid" src="{% static 'imagens/images/team/everton.jpg' %}" alt="team-member">
+					</div>
+					<div class="name">
+						<h5>Everton Jales</h5>
+					</div>
+					<div class="position">
+						<p>Programador Front-End</p>
+					</div>
+					<ul class="social-icons list-inline">
+						<li class="list-inline-item">
+							<a href="#"><i class="tf-ion-social-facebook" target="_blank"></i></a>
+						</li>
+						<li class="list-inline-item">
+							<a href="#"><i class="tf-ion-social-twitter" target="_blank"></i></a>
+						</li>
+						<li class="list-inline-item">
+							<a href="https://www.linkedin.com/in/everton-jales-a3a99b104/"><i class="tf-ion-social-linkedin" target="_blank"></i></a>
+						</li>
+						<li class="list-inline-item">
+							<a href="https://www.instagram.com/evertonjaless/"><i class="tf-ion-social-instagram-outline" target="_blank"></i></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+				<!-- Team Member -->
+			<div class="col-lg-3 col-md-6">
+
+				<div class="team-member text-center">
+					<div class="image">
+						<img class="img-fluid" src="{% static 'imagens/images/team/jesa.jpg' %}" alt="team-member">
+					</div>
+					<div class="name">
+						<h5>Jesaías Carvalho</h5>
+					</div>
+					<div class="position">
+						<p>Programador Back-End</p>
+					</div>
+					<ul class="social-icons list-inline">
+						<li class="list-inline-item">
+							<a href="https://pt-br.facebook.com/jesaias.carvalho.10"><i class="tf-ion-social-facebook" target="_blank"></i></a>
+						</li>
+						<li class="list-inline-item">
+							<a href="jesaias.herokuapp.com/"><i class="tf-ion-social-twitter" target="_blank"></i></a>
+						</li>
+						<li class="list-inline-item">
+							<a href="https://www.linkedin.com/in/jesayassilva"><i class="tf-ion-social-linkedin" target="_blank"></i></a>
+						</li>
+						<li class="list-inline-item">
+							<a href="https://www.instagram.com/jesayassilva/"><i class="tf-ion-social-instagram-outline" target="_blank"></i></a>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+</section>
+
+<!--====  End of Team  ====-->
+
+<!--=================================
+=            Testimonial            =
+==================================-->
+
+<section class="section testimonial bg-primary-shape" id="testimonial">
+	<div class="container">
+		<div class="row">
+			<div class="col-12">
+				<div class="section-title">
+					<h2 class="text-white">Depoimentos</h2>
+					<p class="text-white">Alguns depoimentos sobre o DocTraining Mobile</p>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8 m-auto">
+				<!-- Testimonial Carosel -->
+<div class="testimonial-slider">
+	<!-- testimonial item -->
+	<div class="testimonial-item">
+		<div class="content">
+			<div class="name">
+				<h5>Aleff Jonathan da Silva Soares de Souza</h5>
+			</div>
+			<div class="pos-in-com">
+				<p>Graduando em Ciência da Computação - <span>UFERSA</span></p>
+			</div>
+			<div class="speech">
+				<p>O DocTraining é muito legal, gosto muito dele heueuheuehuehuehuh. </p>
+			</div>
+			<ul class="rating list-inline">
+				<li class="list-inline-item">
+					<i class="tf-ion-android-star"></i>
+					<i class="tf-ion-android-star"></i>
+					<i class="tf-ion-android-star"></i>
+					<i class="tf-ion-android-star"></i>
+					<i class="tf-ion-android-star"></i>
+				</li>
+			</ul>		</div>
+		<div class="image">
+			<img class="img-fluid" src="{% static 'imagens/images/testimonial/review-person-one.png' %}" alt="testimonial-person">
+		</div>
+	</div>
+	<!-- testimonial item -->
+	<div class="testimonial-item">
+		<div class="content">
+			<div class="name">
+				<h5>Aleff Jonathan da Silva Soares de Souza</h5>
+			</div>
+			<div class="pos-in-com">
+				<p>Graduando em Ciência da Computação - <span>UFERSA</span></p>
+			</div>
+			<div class="speech">
+				<p>O DocTraining é muito legal, gosto muito dele heueuheuehuehuehuh. </p>
+			</div>
+			<div class="rating">
+				<ul class="rating list-inline">
+					<li class="list-inline-item">
+						<i class="tf-ion-android-star"></i>
+						<i class="tf-ion-android-star"></i>
+						<i class="tf-ion-android-star"></i>
+						<i class="tf-ion-android-star"></i>
+						<i class="tf-ion-android-star"></i>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="image">
+			<img class="img-fluid" src="{% static 'imagens/images/testimonial/review-person-one.png' %}" alt="testimonial-person">
+		</div>
+	</div>
+</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+
+<!--====  End of Testimonial  ====-->
+
+<section class="section cta-subscribe" id="contact">
+	<div class="container">
+		<div class="row bg-elipse-red">
+			<div class="col-lg-4">
+				<div class="image"><img src="{% static 'imagens/images/phones/iphone-banner.png' %}" alt="iphone-app"></div>
+			</div>
+			<div class="col-lg-8 align-self-center">
+				<div class="content">
+					<div class="title">
+						<h2>Entre em contato </h2>
+					</div>
+					<div class="description">
+						<h5> Email: doctraining@ufersa.edu.br </h5>
+					</div>
+					<!--
+					<form action="#">
+						<div class="input-group">
+						    <input type="text" class="form-control main" placeholder="Enter your email address">
+						    <span class="input-group-addon tf-ion-android-send" id="btnGroupAddon"></span>
+						  </div>
+					</form>
+					<div class="subscription-tag text-right">
+						<p>Subscribe To Our Newsletter & Stay Updated</p>
+					</div>
+							-->	
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!--============================
+=            Footer            =
+=============================-->
+
+<footer class="footer-main">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 mr-auto">
+          <div class="footer-logo">
+            <img src="{% static 'imagens/images/logo.png' %}" alt="footer-logo">
+          </div>
+          <div class="copyright">
+            <p>@2020 DocTraining All Rights Reserved  
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-6 text-lg-right">
+          <!-- Social Icons -->
+          <ul class="social-icons list-inline">
+            <li class="list-inline-item">
+              <a href=""><i class="tf-ion-social-facebook"></i></a>
+            </li>
+            <li class="list-inline-item">
+              <a href=""><i class="tf-ion-social-twitter"></i></a>
+            </li>
+            <li class="list-inline-item">
+              <a href=""><i class="tf-ion-social-linkedin"></i></a>
+            </li>
+            <li class="list-inline-item">
+              <a href=""><i class="tf-ion-social-instagram-outline"></i></a>
+            </li>
+          </ul>
+          <!-- Footer Links -->
+          <ul class="footer-links list-inline">
+           
+          </ul>
+        </div>
+      </div>
+    </div>
+</footer>
+
+
+
+  <!-- JAVASCRIPTS -->
+  
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBI14J_PNWVd-m0gnUBkjmhoQyNyd7nllA" async defer></script>
+
+  <script src="{% static 'plugins/jquery/jquery.js' %}"></script>
+  <script src="{% static 'plugins/popper/popper.min.js' %}"></script>
+  <script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'plugins/waypoints/jquery.waypoints.min.js' %}"></script>
+  <script src="{% static 'plugins/slick/slick.min.js' %}"></script>
+  <script src="{% static 'plugins/smoothscroll/SmoothScroll.min.js' %}"></script>
+  <script src="{% static 'js/custom.js' %}"></script>
+  
+</body>
+
+</html>
+

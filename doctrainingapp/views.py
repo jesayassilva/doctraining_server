@@ -48,7 +48,7 @@ redirecionar_sem_permissao = 'doctrainingapp:doctraining'
 
 def index(request):
     usuario = request.user#usuario logado
-    return render(request,'index.html',{'usuario':usuario,'link':config('LINK')})
+    return render(request,'index2.html',{'usuario':usuario,'link':config('LINK')})
 
 def doctraining(request):
     usuario = request.user#usuario logado
