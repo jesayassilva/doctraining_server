@@ -434,7 +434,6 @@ class Conteudo(models.Model):
     area = models.ForeignKey(Area, on_delete=models.PROTECT)
     sala = models.ForeignKey(Sala, on_delete=models.PROTECT)
     titulo = models.CharField(max_length=100)
-    descricao = models.CharField(max_length=250, blank=True)
     conteudo = models.TextField(max_length=1000, blank=True)
     link = models.CharField(max_length=300, blank=True)
     referencia = models.CharField(max_length=100, blank=True)

@@ -72,7 +72,7 @@ class ConteudoForm(ModelForm):
 
     class Meta:
         model = Conteudo
-        fields = ['area','sala', 'titulo', 'descricao', 'conteudo', 'link', 'referencia', 'imagem1', 'imagem2', 'imagem3']
+        fields = ['area','sala', 'titulo', 'conteudo', 'link', 'referencia', 'imagem1', 'imagem2', 'imagem3']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
