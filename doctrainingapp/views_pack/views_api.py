@@ -270,7 +270,6 @@ def conteudos_api(request):
                 'sala': conteudo.sala.nome_sala,
                 'id':conteudo.pk,
                 'title': conteudo.titulo,
-                'description':conteudo.descricao,
                 'content': conteudo.conteudo,
                 'link': conteudo.link,
                 'reference': conteudo.referencia,
