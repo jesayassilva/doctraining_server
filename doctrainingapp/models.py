@@ -383,8 +383,8 @@ class AreaFase(models.Model):
 class Fase(models.Model):
     area = models.ForeignKey(AreaFase, on_delete=models.PROTECT)
     responsavel_fase = models.ForeignKey(User, on_delete=models.CASCADE)
-    nome_fase = models.CharField(max_length=50, blank=False,null=False,unique=True, verbose_name='Subárea')
-    descricao = models.TextField(max_length=1000000000000000000000, blank=True,null=True,verbose_name='Descrição do Problema')
+    nome_fase = models.CharField(max_length=50, blank=False,null=False,unique=True, verbose_name='Subárea', help_text="*Título para facilitar localização na lista. ")
+    descricao = models.TextField(max_length=1000000000000000000000, blank=True,null=True,verbose_name='Descrição do Problema', help_text="*Informações sobre o paciente")
     data_criacao = models.DateTimeField(default=datetime.now)
     imagem1 = models.ImageField(upload_to='pergunta_fase', null=True, blank=True)
     imagem2 = models.ImageField(upload_to='pergunta_fase', null=True, blank=True)
@@ -433,9 +433,9 @@ class Versao(models.Model):
 class Conteudo(models.Model):
     area = models.ForeignKey(Area, on_delete=models.PROTECT)
     sala = models.ForeignKey(Sala, on_delete=models.PROTECT)
-    titulo = models.CharField(max_length=100)
-    conteudo = models.TextField(max_length=1000, blank=True)
-    link = models.CharField(max_length=300, blank=True)
+    titulo = models.CharField(max_length=100, help_text="*Título para facilitar localização na lista. ")
+    conteudo = models.TextField(max_length=1000, blank=True, help_text="*Texto sobre o assunto.")
+    link = models.CharField(max_length=300, blank=True, help_text="*link do artigo, documentario, materia e etc ...")
     referencia = models.CharField(max_length=100, blank=True)
     imagem1 = models.ImageField(upload_to='conteudo', null=True, blank=True)
     imagem2 = models.ImageField(upload_to='conteudo', null=True, blank=True)
