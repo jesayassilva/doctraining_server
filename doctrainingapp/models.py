@@ -318,7 +318,7 @@ def email_save_user(sender, instance, **kwargs):
 
 
 class Area(models.Model):
-    nome = models.CharField(max_length=50)
+    nome = models.CharField(max_length=50, help_text='Nome da área. ex.: COVID-19')
 
    
     def quantidade_salas(self):  # retorna nome da alteração
@@ -370,7 +370,7 @@ class Pergunta(models.Model):
 
 ########################## FASES #########################
 class AreaFase(models.Model):
-    nome = models.CharField(max_length=50)
+    nome = models.CharField(max_length=50, help_text='Nome da área. ex.: COVID-19')
 
     def quantidade_fases(self):  # retorna nome da alteração
         return Fase.objects.filter(area__pk=self.pk).count()
@@ -398,8 +398,7 @@ class Fase(models.Model):
         (5, 'Muito Dificil'),
     )
     dificuldade = models.IntegerField(choices=DIFICULDADES_CHOICES, blank=True, default=1,
-                                      help_text='Dificuldade da pergunta', )
-    # email = models.EmailField(max_length=254,blank=True,null=True)
+                                      help_text='Dificuldade da fase', )
     def __str__(self):
         return self.nome_fase
 
