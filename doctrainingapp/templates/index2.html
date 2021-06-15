@@ -8,17 +8,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DocTraining Mobile</title>
-  
+
   <!-- PLUGINS CSS STYLE -->
   <!-- Bootstrap -->
   <link href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-  <!-- Themefisher Font -->  
+  <!-- Themefisher Font -->
   <link href= "{% static 'plugins/themefisher-font/style.css' %}" rel="stylesheet">
   <!-- Slick Carousel -->
   <link href="{% static 'plugins/slick/slick.css' %}" rel="stylesheet">
   <!-- Slick Carousel Theme -->
   <link href="{% static 'plugins/slick/slick-theme.css' %}" rel="stylesheet">
-  
+
   <!-- CUSTOM CSS -->
   <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
@@ -30,9 +30,9 @@
 <body class="body-wrapper">
 
 
-<nav class="navbar main-nav fixed-top navbar-expand-lg">
+<nav class="navbar main-nav fixed-top fixar_botao_celular navbar-expand-lg">
   <div class="container">
-      <a class="navbar-brand" href="/"><img src="{% static 'imagens/images/logo.png' %}" alt="logo"></a>
+      <a class="navbar-brand" href="{% url 'doctrainingapp:index' %}"><img src="{% static 'imagens/images/logo.png' %}" alt="logo"></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="tf-ion-android-menu"></span>
       </button>
@@ -299,7 +299,7 @@
 					<a href="{% url 'doctrainingapp:api' %}" class="btn btn-main-rounded">Acessar API</a>
 				</div>
 			</div>
-		</div>		
+		</div>
 	</div>
 </section>
 
@@ -367,7 +367,7 @@
 					</div>
 					<div class="position">
 						<p>Programador Back-End</p>
-					</div>					
+					</div>
 					<ul class="social-icons list-inline">
 						<li class="list-inline-item">
 							<a href="https://www.facebook.com/aleff.jonathan" target="_blank"><i class="tf-ion-social-facebook"></i></a>
@@ -386,7 +386,7 @@
 			</div>
 				<!-- Team Member -->
 			<div class="col-lg-3 col-md-6">
-				
+
 				<div class="team-member text-center">
 					<div class="image">
 						<img class="img-fluid" src="{% static 'imagens/images/team/ademar.jpg' %}" alt="team-member">
@@ -396,7 +396,7 @@
 					</div>
 					<div class="position">
 						<p>Pesquisador</p>
-					</div>					
+					</div>
 					<ul class="social-icons list-inline">
 						<li class="list-inline-item">
 							<a href="https://www.facebook.com/ademarnet/"><i class="tf-ion-social-facebook" target="_blank"></i></a>
@@ -452,7 +452,7 @@
 						<img class="img-fluid" src="{% static 'imagens/images/team/jesa.jpg' %}" alt="team-member">
 					</div>
 					<div class="name">
-						<h5>Jesaías Carvalho</h5>
+						<a href="http://jesaias.herokuapp.com/"><h5>Jesaías Carvalho</h5> </a>
 					</div>
 					<div class="position">
 						<p>Programador Back-End</p>
@@ -462,7 +462,7 @@
 							<a href="https://pt-br.facebook.com/jesaias.carvalho.10"><i class="tf-ion-social-facebook" target="_blank"></i></a>
 						</li>
 						<li class="list-inline-item">
-							<a href="jesaias.herokuapp.com/"><i class="tf-ion-social-twitter" target="_blank"></i></a>
+							<a href="http://jesaias.herokuapp.com/"><i class="tf-ion-social-twitter" target="_blank"></i></a>
 						</li>
 						<li class="list-inline-item">
 							<a href="https://www.linkedin.com/in/jesayassilva"><i class="tf-ion-social-linkedin" target="_blank"></i></a>
@@ -645,7 +645,7 @@
 					<div class="subscription-tag text-right">
 						<p>Subscribe To Our Newsletter & Stay Updated</p>
 					</div>
-							-->	
+							-->
 				</div>
 			</div>
 		</div>
@@ -664,7 +664,7 @@
             <img src="{% static 'imagens/images/logo.png' %}" alt="footer-logo">
           </div>
           <div class="copyright">
-            <p>@2020 DocTraining All Rights Reserved  
+            <p>@2020 DocTraining All Rights Reserved
             </p>
           </div>
         </div>
@@ -681,7 +681,7 @@
           </ul>
           <!-- Footer Links -->
           <ul class="footer-links list-inline">
-           
+
           </ul>
         </div>
       </div>
@@ -691,7 +691,7 @@
 
 
   <!-- JAVASCRIPTS -->
-  
+
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBI14J_PNWVd-m0gnUBkjmhoQyNyd7nllA" async defer></script>
 
   <script src="{% static 'plugins/jquery/jquery.js' %}"></script>
@@ -701,8 +701,14 @@
   <script src="{% static 'plugins/slick/slick.min.js' %}"></script>
   <script src="{% static 'plugins/smoothscroll/SmoothScroll.min.js' %}"></script>
   <script src="{% static 'js/custom.js' %}"></script>
-  
+  <style type="text/css">
+    .fixar_botao_celular {
+      position: absolute;
+
+    }
+
+  </style>
+
 </body>
 
 </html>
-

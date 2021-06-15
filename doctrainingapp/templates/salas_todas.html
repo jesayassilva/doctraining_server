@@ -1,7 +1,7 @@
 {% include 'cabecalho2.html' %}
 
 <h1>
-  Salas
+  Salas de Questões / Subárea do Glossário
 </h1>
 
 {% if messages %}
@@ -22,8 +22,8 @@
 {% endif %}
 
 
-<a href="{% url 'doctrainingapp:nova_sala' pk_area%}" class="ui button positive" > Nova Sala </a>
-
+<a href="{% url 'doctrainingapp:nova_sala' pk_area%}" class="ui button positive" > Nova Sala de Questões </a>
+<p>As salas de questões também servem como subárea das Áreas no Glossário.</p>
 
 <p></p>
 <!-- <div style="overflow: auto; width: 100%; height: 500px; border:solid 1px; position: relative;"> -->
@@ -34,8 +34,8 @@
     <thead>
       <tr>
         <!-- Colunas da tabela -->
-        <th>Area</th>
-        <th>Sala</th>
+        <th>Área</th>
+        <th>Sala de Questões / Subárea do Glossário</th>
         <th>Descrição</th>
         <th>Quantidade Pergunta(s)</th>
         <th>Criado por</th>

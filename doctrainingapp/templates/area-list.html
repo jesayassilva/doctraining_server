@@ -1,7 +1,7 @@
 {% include 'cabecalho2.html' %}
 
 <h1>
-  Areas
+  Área de Questões/Glossário
 </h1>
 
 {% if messages %}
@@ -23,7 +23,8 @@
 
 
 <a href="{% url 'doctrainingapp:area_add' %}" class="ui button positive" > Nova Área </a>
-
+ <p>As áreas servem para questões e para o Glossário.</p>
+ <p>Em "Salas de Questões/Glossário" é possivel adicional as questões.</p>
 
 <p></p>
 <!-- <div style="overflow: auto; width: 100%; height: 500px; border:solid 1px; position: relative;"> -->
@@ -33,8 +34,8 @@
     <thead>
       <tr>
         <!-- Colunas da tabela -->
-        <th>Area</th>
-          <th>Salas</th>
+        <th>Área de Questões/Glossário</th>
+          <th>Salas de Questões / Subáreas Glossário</th>
          <th>Edição</th>
           <th>Deletar</th>
         <!-- colunas da tabela -->
@@ -51,7 +52,7 @@
             <tr>
               <td><b> {{area.nome}} </b></td>
                 <td>
-                      <a href="{% url 'doctrainingapp:area_salas' area.pk %}" >   Salas  <i class="edit outline icon"></i> </a>
+                      <a href="{% url 'doctrainingapp:area_salas' area.pk %}" >   Salas de Questões  <i class="edit outline icon"></i> </a>
 
 
               </td>

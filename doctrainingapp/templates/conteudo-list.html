@@ -1,7 +1,7 @@
 {% include 'cabecalho2.html' %}
 
 <h1>
-  Conteudos
+  Glossário
 </h1>
 
 {% if messages %}
@@ -22,22 +22,26 @@
 {% endif %}
 
 
-<a href="{% url 'doctrainingapp:conteudo_add' %}" class="ui button positive" > Novo Conteudo </a>
+<a href="{% url 'doctrainingapp:conteudo_add' %}" class="ui button positive" > Novo Glossário </a>
 
 
 <p></p>
 <!-- <div style="overflow: auto; width: 100%; height: 500px; border:solid 1px; position: relative;"> -->
   <!-- <table class="ui celled striped table"> -->
 
+  <div class="dimmable">
+    <div class="ui active inverted dimmer">
+      <div class="ui active centered inline loader"></div>
+    </div>
   <table id="example" class="ui celled table" style="width:100%">
     <thead>
       <tr>
         <!-- Colunas da tabela -->
-        <th>Area</th>
-        <th>Sala</th>
-        <th>Titulo</th>
+        <th>Área</th>
+        <th>Subárea</th>
+        <th>Título do Glossário</th>
         <th>Descrição</th>
-        <th>Referencia</th>
+        <!-- <th>Referencia</th> -->
           <th>Visualização</th>
          <th>Edição</th>
           <th>Deletar</th>
@@ -58,8 +62,8 @@
 
                     <td> {{conteudo.titulo}}</td>
 
-              <td> {{conteudo.descricao}} </td>
-              <td> {{conteudo.referencia}} </td>
+              <td> {{conteudo.conteudo}} </td>
+              <!-- <td> {{conteudo.referencia}} </td> -->
                 <td>
 
                       <a href="{% url 'doctrainingapp:view-conteudo' conteudo.pk  %}" class="ui blue button" > Visualizar   <i class="folder open icon"></i> </a>
@@ -85,6 +89,8 @@
 
     </tbody>
   </table>
+</div>
+
 
 </div>
 

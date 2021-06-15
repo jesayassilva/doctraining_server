@@ -1,7 +1,7 @@
 {% include 'cabecalho2.html' %}
 
 <h1>
-  Casos Clínicos - Subáreas
+  Casos Clínicos da Área: {{fases.first.area}}
 </h1>
 
 {% if messages %}
@@ -22,7 +22,7 @@
 {% endif %}
 
 
-<a href="{% url 'doctrainingapp:nova_fase' pk_area %}" class="ui button positive" > Nova Subárea </a>
+<a href="{% url 'doctrainingapp:nova_fase' pk_area %}" class="ui button positive" > Novo Caso Clínico </a>
 
 
 <p></p>
@@ -35,7 +35,7 @@
       <tr>
         <!-- Colunas da tabela -->
         <th>Dificuldade</th>
-        <th>Subáreas</th>
+        <th>Caso Clínico</th>
         <th>Descrição</th>
         <th>Quantidade Pergunta(s)</th>
         <th>Criado por</th>

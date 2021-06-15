@@ -46,6 +46,7 @@ jQuery( document ).ready(function( $ ) {
     // setTimeout(2000);
     $("#example").DataTable({
     "bJQueryUI": true,
+    "lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
     "oLanguage": {
         "sProcessing":   "Processando...",
         "sLengthMenu":   "Mostrar _MENU_ registros",
@@ -127,35 +128,62 @@ jQuery( document ).ready(function( $ ) {
     <!-- <a class="item" href="#">exemplo1</a> -->
 
     <a class="item" href="{% url 'doctrainingapp:index' %}">DocTraining</a>
+
+
     {%if request.user.is_authenticated %}
-      <a class="item" href="{% url 'doctrainingapp:areas_list' %}">Areas de Conteudo</a>
-            <a class="item" href="{% url 'doctrainingapp:areas_fase_list' %}">Casos Clínicos</a>
+        <a class="item" href="{% url 'doctrainingapp:areas_list' %}">Questões</a>
+        <a class="item" href="{% url 'doctrainingapp:areas_fase_list' %}">Casos Clínicos</a>
+        <a class="item" href="{% url 'doctrainingapp:list-conteudo' %}">Glossário</a>
 
-	 <a class="item" href="{% url 'doctrainingapp:list-conteudo' %}">Conteudos</a>
-        <a href="{% url 'doctrainingapp:lista-versao' %}" class="item">Versões </a>
-        <a href="{% url 'doctrainingapp:upload' %}" class="item">Upload CSV </a>
-              <a href="{% url 'doctrainingapp:data_firebase' %}" class="item">Dados Firebase </a>
-        <a class="item" href="{% url 'doctrainingapp:casos_clinicos' %}">Amostras de Doenças</a>
 
-        <!-- se membro da aquipe ou adm, mesmo sem todos poderes no adm django -->
 
         {%if request.user.is_staff %}
-                <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Solicitações</a>
-                <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Histórico </a>
-                <a href="{% url 'doctrainingapp:usuarios' %}" class="item">Usuários </a>
+
+      	    <div class="ui simple dropdown item">
+
+                        <i ></i>Hospital<i class="dropdown"></i>
+
+                <div class="menu">
+                  <a class="item" href="{% url 'doctrainingapp:casos_clinicos' %}">Amostras de Doenças</a>
+                  		<a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Solicitações</a>
+                 		<a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Histórico </a>
+                </div>
+              </div>
+
+              <a href="{% url 'doctrainingapp:usuarios' %}" class="item">Usuários  </a>
 
 
-        {% else %}
-                <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Minhas Solicitações</a>
-                <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Meu Histórico </a>
-        {% endif %}
+          {% else %}
 
-        <!-- {%if request.user.is_staff %}
-              <a href="{% url 'doctrainingapp:user_create' %}" class="item">Novo Usuário </a>
-        {%endif%}
+      	    <div class="ui simple dropdown item">
 
-        <a class="item" href="{% url 'doctrainingapp:perfil_update' request.user.perfil.pk %}">Meu Perfil </a>
-        <a class="item" href="{% url 'doctrainingapp:user_update' request.user.pk %}">Minhas Informações</a> -->
+                        <i ></i>Hospital<i class="dropdown"></i>
+
+                <div class="menu">
+                  <a class="item" href="{% url 'doctrainingapp:casos_clinicos' %}">Amostras de Doenças</a>
+                  <a href="{% url 'doctrainingapp:solicitacoes_alteracao_casos_clinicos' %}" class="item">Minhas Solicitações</a>
+                  <a href="{% url 'doctrainingapp:log_solicitacoes_alteracao_casos_clinicos' %}" class="item">Meu Histórico </a>
+                </div>
+              </div>
+
+          {% endif %}
+
+
+          <div class="ui simple dropdown item right">
+
+                      <i ></i>Mais<i class="dropdown"></i>
+
+              <div class="menu">
+                  {%if request.user.is_staff %}
+            <a href="{% url 'doctrainingapp:lista-versao' %}" class="item">Versões </a>
+                  {%endif%}
+            <a href="{% url 'doctrainingapp:upload' %}" class="item">Upload CSV </a>
+                  <a href="{% url 'doctrainingapp:data_firebase' %}" class="item">Dados Firebase </a>
+              </div>
+            </div>
+
+
+
 
 
         {%if request.user.is_superuser %}
@@ -173,9 +201,9 @@ jQuery( document ).ready(function( $ ) {
             </div>
         {% endif %}
 
+    {% else %}
+      <a class="item" href="{% url 'doctrainingapp:login' %}">Login</a>
 
-        <!-- <a class="item" href="{% url 'password_change' %}">Alterar Senha</a> -->
-        <a href="{% url 'doctrainingapp:logout' %}" class="item">Sair</a>
     {% endif %}
 
   </div>

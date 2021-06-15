@@ -1,13 +1,17 @@
 {% include 'cabecalho2.html' %}
 
 <h1>
-  Subárea: {{fase.nome_fase}}
+  Caso Clínico: {{fase.nome_fase}}
 </h1>
+
 <p>Criada Por: {{fase.responsavel_fase}}</p>
 {% if fase.descricao %}
-  <p>Descrição: {{fase.descricao}}</p>
+  <p>Descrição do Caso Clínico: {{fase.descricao}}</p>
 {% endif %}
 <p>Data da criação da fase: {{fase.data_criacao}}</p>
+
+<p>Área: {{fase.area}}</p>
+
 <p>Quantidade de Perguntas: {{fase.quantidade_perguntas}}</p>
 
 {% if messages %}
@@ -32,7 +36,7 @@
 
 <a href="{% url 'doctrainingapp:areas_fase_list' %}" class="ui brown button" >Voltar</a>
 
-<a href="{% url 'doctrainingapp:delete_fase' fase.pk  %}" class="ui red button" >   Deletar Fase </a>
+<a href="{% url 'doctrainingapp:delete_fase' fase.pk  %}" class="ui red button" >   Deletar Caso Clínico </a>
 
 
 <h2>Perguntas</h2>

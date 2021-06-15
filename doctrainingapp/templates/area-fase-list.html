@@ -1,7 +1,7 @@
 {% include 'cabecalho2.html' %}
 
 <h1>
-  Casos Clínicos
+  Área de Casos Clínicos
 </h1>
 
 {% if messages %}
@@ -22,8 +22,8 @@
 {% endif %}
 
 
-<a href="{% url 'doctrainingapp:area_fase_add' %}" class="ui button positive" > Nova Área </a>
-
+<a href="{% url 'doctrainingapp:area_fase_add' %}" class="ui button positive" > Nova Área de Casos Clínicos</a>
+<p>Em Casos Clínicos você pode adicionar novas perguntas para um determinado problema clínico, os problemas são divididos por áreas de Caso Clínico.</p>
 
 <p></p>
 <!-- <div style="overflow: auto; width: 100%; height: 500px; border:solid 1px; position: relative;"> -->
@@ -33,8 +33,8 @@
     <thead>
       <tr>
         <!-- Colunas da tabela -->
-        <th>Area</th>
-          <th>Subárea</th>
+        <th>Área de Casos Clínicos</th>
+          <th>Casos Clínicos</th>
          <th>Edição</th>
           <th>Deletar</th>
         <!-- colunas da tabela -->
@@ -51,7 +51,7 @@
             <tr>
               <td><b> {{area.nome}} </b></td>
                 <td>
-                      <a href="{% url 'doctrainingapp:area_fases' area.pk %}" >   Subáreas  <i class="edit outline icon"></i> </a>
+                      <a href="{% url 'doctrainingapp:area_fases' area.pk %}" >   Caso Clínico  <i class="edit outline icon"></i> </a>
 
 
               </td>

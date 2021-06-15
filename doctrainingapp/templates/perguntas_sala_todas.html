@@ -1,7 +1,7 @@
 {% include 'cabecalho2.html' %}
 
 <h1>
-  Sala: {{sala.nome_sala}}
+  Sala de Questões: {{sala.nome_sala}}
 </h1>
 <p>Criada Por: {{sala.responsavel_sala}}</p>
 {% if sala.descricao %}
@@ -32,7 +32,7 @@
 
 <a href="{% url 'doctrainingapp:areas_list' %}" class="ui brown button" >Voltar</a>
 
-<a href="{% url 'doctrainingapp:delete_sala' sala.pk  %}" class="ui red button" >   Deletar Sala </a>
+<a href="{% url 'doctrainingapp:delete_sala' sala.pk  %}" class="ui red button" >   Deletar Sala de Questões </a>
 
 
 <h2>Perguntas</h2>
