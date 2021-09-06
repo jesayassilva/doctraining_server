@@ -72,10 +72,7 @@ else:
 
 #Se tiver na VM em les.ufersa.edu.br/doctraining/ precisa colocar '/doctraining'
 #para lincar corretamente media e login, se não apenas ''
-if PROJETO_EM_TESTE:
-    ALIAS_settings = ''  # Quando local
-else:
-    ALIAS_settings = '/doctraining'#Na VM
+
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -168,9 +165,9 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'pt-br'
 TIME_ZONE = 'America/Fortaleza'
 
-LOGIN_URL = ALIAS_settings+"/login/"
+LOGIN_URL = "/login/"
 
-LOGIN_REDIRECT_URL = ALIAS_settings+'/doctraining/'
+LOGIN_REDIRECT_URL = '/doctraining/'
 
 USE_I18N = True
 
@@ -205,7 +202,7 @@ EMAIL_USE_TLS = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 STATIC_URL = '/static/'
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'static'), ]
 
 
